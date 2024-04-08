@@ -1,0 +1,26 @@
+﻿<Page
+    x:Class="Lab2UwpApp.BlankPage3"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Lab2UwpApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="#FFB9D9DC">
+        <TextBlock HorizontalAlignment="Left" Margin="254,119,0,0" Text="Enter num1:" VerticalAlignment="Top" Height="42" Width="216" FontFamily="Calibri" FontSize="36" FontWeight="Bold"/>
+        <TextBox x:Name="txtNum1" HorizontalAlignment="Left" Margin="450,119,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="285" FontFamily="Arial Rounded MT Bold" FontSize="24"/>
+        <Button x:Name="btnAdd" Content="+" Margin="218,334,0,0" Width="98" FontSize="24" FontWeight="Bold" Click="btnProcess_Click" VerticalAlignment="Top" Tag="+"/>
+        <TextBlock HorizontalAlignment="Left" Margin="391,30,0,0" Text="Calculation Application" VerticalAlignment="Top" Height="42" Width="513" FontFamily="Calibri" FontSize="36" FontWeight="Bold"/>
+        <Button x:Name="btnSub" Content="-" Margin="410,334,0,0" Width="98" FontSize="24" FontWeight="Bold" Click="btnProcess_Click" VerticalAlignment="Top" Tag="-"/>
+        <Button x:Name="btnMuti" Content="*" Margin="606,334,0,0" Width="98" FontSize="24" FontWeight="Bold" Click="btnProcess_Click" VerticalAlignment="Top" Tag="*"/>
+        <Button x:Name="btnDiv" Content="/" Margin="804,334,0,0" VerticalAlignment="Top" Width="98" FontSize="24" FontWeight="Bold" Click="btnProcess_Click" Tag="/"/>
+        <TextBlock HorizontalAlignment="Left" Margin="254,208,0,0" VerticalAlignment="Top" Height="42" Width="216" FontFamily="Calibri" FontSize="36" FontWeight="Bold"><Run Text="Enter num"/><Run Text="2"/><Run Text=":"/></TextBlock>
+        <TextBox x:Name="txtNum2" HorizontalAlignment="Left" Margin="450,208,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="285" FontFamily="Arial Rounded MT Bold" FontSize="24"/>
+        <TextBlock HorizontalAlignment="Left" Margin="313,475,0,0" VerticalAlignment="Top" Height="42" Width="150" FontFamily="Calibri" FontSize="36" FontWeight="Bold" Text="Result:"/>
+        <TextBox x:Name="txtResult" HorizontalAlignment="Left" Margin="459,475,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="285" FontFamily="Arial Rounded MT Bold" FontSize="24" IsEnabled="False" Background="#66EDD0D0" Foreground="#FF040303"/>
+        <TextBox x:Name="txtMsg" HorizontalAlignment="Left" Margin="267,581,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="684" FontFamily="Arial Rounded MT Bold" FontSize="24" IsEnabled="False" Background="#66DDC5C5"/>
+
+    </Grid>
+</Page>

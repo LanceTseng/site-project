@@ -1,0 +1,30 @@
+﻿<Page
+    x:Class="Lab2UwpApp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Lab2UwpApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Canvas x:Name="canvasMain" Margin="10,10,-10,-10">
+            <Button x:Name="btnShowNum" Content="Show"  Click="btnShowNum_Click" FontFamily="Bahnschrift SemiBold SemiCondensed" FontSize="36" Height="155" Width="226" FontWeight="Bold" Canvas.Left="414" Canvas.Top="166" />
+            <Button x:Name="btnGuess" Content="Guess" Click="btnGuess_Click" FontFamily="Bahnschrift SemiBold SemiCondensed" FontSize="36" Height="155" Width="226" FontWeight="Bold" Canvas.Left="66" Canvas.Top="166" />
+            <Button x:Name="btnLeave" Content="Leave" Click="btnLeave_Click" VerticalAlignment="Top" FontFamily="Bahnschrift SemiBold SemiCondensed" FontSize="36" Height="155" Width="226" FontWeight="Bold" Canvas.Left="735" Canvas.Top="166" />
+            <TextBlock x:Name="lblInputNum" Canvas.Left="41" TextWrapping="Wrap" Text="Input a number:" Canvas.Top="462" Height="92" Width="366" FontFamily="Arial Black" FontSize="48" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold"/>
+            <Button x:Name="btnChangeBgColor" Content="Change Color" Click="btnChangeColor_Click" FontFamily="Bahnschrift SemiBold SemiCondensed" FontSize="36" Height="87" Width="289" FontWeight="Bold" Canvas.Left="961" Canvas.Top="10" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Top" >
+            </Button>
+
+            <TextBlock x:Name="lblTitle" Canvas.Left="387" TextWrapping="Wrap" Text="Guess a Number" Canvas.Top="47" Height="92" Width="591" FontFamily="Arial Black" FontSize="48" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Grid Height="175" Width="296" Canvas.Left="905" Canvas.Top="360" Background="LightSkyBlue" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <TextBlock x:Name="lblAns" TextWrapping="Wrap" Text="" FontFamily="Arial Black" FontSize="48" FontWeight="Bold" TextAlignment="Center" Margin="0,3,0,-5"/>
+            </Grid>
+            <TextBox x:Name="txtNum" Canvas.Left="433" TextWrapping="Wrap" Text="" Canvas.Top="462" Height="76" Width="414" FontSize="48" FontFamily="Tahoma" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" PlaceholderForeground="#FFDACCCC" PlaceholderText="Input 1-10"/>
+            <TextBlock x:Name="lblInputName" Canvas.Left="88" TextWrapping="Wrap" Text="Input name:" Canvas.Top="381" Height="92" Width="366" FontFamily="Arial Black" FontSize="48" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox x:Name="txtName" Canvas.Left="433" TextWrapping="Wrap" Text="" Canvas.Top="372" Height="76" Width="414" FontSize="48" FontFamily="Tahoma" FontWeight="Bold" PlaceholderForeground="#FFDACCCC" PlaceholderText="Name" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+        </Canvas>
+    </Grid>
+</Page>
