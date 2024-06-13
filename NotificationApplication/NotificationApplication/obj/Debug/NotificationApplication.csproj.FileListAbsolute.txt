@@ -1,0 +1,12 @@
+C:\Users\Lance Tseng\Documents\WindowsApp\NotificationApplication\NotificationApplication\bin\Debug\NotificationApplication.exe.config
+C:\Users\Lance Tseng\Documents\WindowsApp\NotificationApplication\NotificationApplication\bin\Debug\NotificationApplication.exe
+C:\Users\Lance Tseng\Documents\WindowsApp\NotificationApplication\NotificationApplication\bin\Debug\NotificationApplication.pdb
+C:\Users\Lance Tseng\Documents\WindowsApp\NotificationApplication\NotificationApplication\obj\Debug\NotificationApplication.csproj.AssemblyReference.cache
+C:\Users\Lance Tseng\Documents\WindowsApp\NotificationApplication\NotificationApplication\obj\Debug\NotificationApplication.MainForm.resources
+C:\Users\Lance Tseng\Documents\WindowsApp\NotificationApplication\NotificationApplication\obj\Debug\NotificationApplication.ManageSubscriptionForm.resources
+C:\Users\Lance Tseng\Documents\WindowsApp\NotificationApplication\NotificationApplication\obj\Debug\NotificationApplication.Properties.Resources.resources
+C:\Users\Lance Tseng\Documents\WindowsApp\NotificationApplication\NotificationApplication\obj\Debug\NotificationApplication.PublishNotificationForm.resources
+C:\Users\Lance Tseng\Documents\WindowsApp\NotificationApplication\NotificationApplication\obj\Debug\NotificationApplication.csproj.GenerateResource.cache
+C:\Users\Lance Tseng\Documents\WindowsApp\NotificationApplication\NotificationApplication\obj\Debug\NotificationApplication.csproj.CoreCompileInputs.cache
+C:\Users\Lance Tseng\Documents\WindowsApp\NotificationApplication\NotificationApplication\obj\Debug\NotificationApplication.exe
+C:\Users\Lance Tseng\Documents\WindowsApp\NotificationApplication\NotificationApplication\obj\Debug\NotificationApplication.pdb
