@@ -1,0 +1,27 @@
+Soda,Beverage,$1.95
+Tea,Beverage,$1.50
+Coffee,Beverage,$1.25
+Mineral Water,Beverage,$2.95
+Juice,Beverage,$2.50
+Milk,Beverage,$1.50
+Buffalo Wings,Appetizer,$5.95
+Buffalo Fingers,Appetizer,$6.95
+Potato Skins,Appetizer,$8.95
+Nachos,Appetizer,$8.95
+Mushroom Caps,Appetizer,$10.95
+Shrimp Cocktail,Appetizer,$12.95
+Chips and Salsa,Appetizer,$6.95
+Seafood Alfredo,Main Course,$15.95
+Chicken Alfredo,Main Course,$13.95
+Chicken Piccata,Main Course,$13.95
+Turkey Club,Main Course,$11.95
+Lobster Pie,Main Course,$19.95
+Prime Rib,Main Course,$20.95
+Shrimp Scampi,Main Course,$18.95
+Turkey Dinner,Main Course,$13.95
+Stuffed Chicken,Main Course,$14.95
+Apple Pie,Dessert,$5.95
+Sundae,Dessert,$3.95
+Carrot Cake,Dessert,$5.95
+Mud Pie,Dessert,$4.95
+Apple Crisp,Dessert,$5.95
