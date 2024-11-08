@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Role>
+@{
+    ViewData["Title"] = "Roles";
+}
+
+<h1>Roles</h1>
+
+@if (!Model.Any())
+{
+    <p>No roles available.</p>
+}
+else
+{
+    <a href="@Url.Action("CreateRole", "Admin")" class="btn btn-success">Create Role</a>
+    <a href="@Url.Action("AssignRole", "Admin")" class="btn btn-success">Assign Role</a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Role ID</th>
+            <th>Role Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var role in Model)
+        {
+            <tr>
+                <td>@role.RoleId</td>
+                <td>@role.RoleName</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
