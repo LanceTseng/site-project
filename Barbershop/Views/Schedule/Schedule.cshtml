@@ -1,0 +1,107 @@
+﻿@model SchedulingViewModel
+@{
+    ViewData["Title"] = "Schedule";
+}
+
+<div class="container mt-4">
+    <h2>Schedule Appointment</h2>
+    <div class="row">
+        <!-- Left Side: Form for scheduling -->
+        <div class="col-md-6">
+            <h4>Appointment Details</h4>
+            <form asp-action="ScheduleAppointment" method="post">
+                <!-- Customer Name (Read-Only) -->
+                <div class="mb-3">
+                    <label>Customer Name</label>
+                    <input type="text" class="form-control" value="@User.Identity.Name" readonly />
+                </div>
+
+                <!-- Barber Selection -->
+                <div class="mb-3">
+                    <label for="barberId">Select Barber</label>
+                    <select asp-for="BarberId" class="form-control" asp-items="Model.BarberList">
+                        <option value="">Select Barber</option>
+                    </select>
+                </div>
+
+                <!-- Service Selection -->
+                <div class="mb-3">
+                    <label for="serviceId">Select Service</label>
+                    <select asp-for="ServiceId" class="form-control" asp-items="Model.ServiceList" id="serviceId" onchange="updatePrice()">
+                        <option value="">Select Service</option>
+                    </select>
+                    <!-- Display Price next to the dropdown -->
+                </div>
+
+
+                <!-- Date Selection -->
+                <div class="mb-3">
+                    <label for="appointmentDate">Select Date</label>
+                    <input asp-for="AppointmentDate" type="date" class="form-control" id="appointmentDate" />
+                </div>
+
+                <!-- Time Selection -->
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="startTime">Start Time</label>
+                        <select asp-for="StartTime" class="form-control">
+                            <option value="">Select Start Time</option>
+                            @foreach (var time in Model.AvailableTimes)
+                            {
+                                <option value="@time">@time</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="endTime">End Time</label>
+                        <select asp-for="EndTime" class="form-control">
+                            <option value="">Select End Time</option>
+                            @foreach (var time in Model.AvailableTimes)
+                            {
+                                <option value="@time">@time</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+
+        <!-- Right Side: Confirmation Information -->
+        <div class="col-md-6">
+            <h4>Confirmation</h4>
+            @if (Model.ConfirmationDetails != null)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <p><strong>Customer:</strong> @Model.ConfirmationDetails.CustomerName</p>
+                        <p><strong>Barber:</strong> @Model.ConfirmationDetails.BarberName</p>
+                        <p><strong>Service:</strong> @Model.ConfirmationDetails.ServiceName</p>
+                        <p><strong>Date:</strong> @Model.ConfirmationDetails.AppointmentDate.ToString("yyyy-MM-dd")</p>
+                        <p><strong>Start Time:</strong> @Model.ConfirmationDetails.StartTime</p>
+                        <p><strong>End Time:</strong> @Model.ConfirmationDetails.EndTime</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p>No appointment details to confirm yet.</p>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    // Set the default date to today and lock previous dates
+    window.onload = function () {
+        var today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+        var appointmentDateInput = document.getElementById("appointmentDate");
+
+        // Set the min attribute to today to lock previous dates
+        appointmentDateInput.setAttribute('min', today);
+
+        // Set the default value to today's date
+        appointmentDateInput.value = today;
+    };
+</script>
