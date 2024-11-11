@@ -1,6 +1,6 @@
-﻿using Barbershop.Models;
+﻿using System.Security.Claims;
+using Barbershop.Models;
 using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Barbershop.Controllers
@@ -27,8 +27,13 @@ namespace Barbershop.Controllers
                 return View(model);
             }
 
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.Username) };
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString())
+            };
             var identity = new ClaimsIdentity(claims, "Login");
+
             var principal = new ClaimsPrincipal(identity);
             HttpContext.SignInAsync(principal);
 

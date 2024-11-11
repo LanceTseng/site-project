@@ -1,6 +1,8 @@
-﻿using Barbershop.Models;
+﻿using System.Security.Claims;
+using Barbershop.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Barbershop.Controllers
 {
@@ -28,10 +30,9 @@ namespace Barbershop.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public IActionResult ScheduleAppointment(int barberId, int serviceId, DateTime date, string time)
+        public IActionResult ScheduleAppointment(int barberId, int serviceId, DateTime appointmentDate, string startTime, string endTime)
         {
-            var userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value); // Assumes UserId is stored in claims
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             if (ModelState.IsValid)
             {
@@ -40,9 +41,9 @@ namespace Barbershop.Controllers
                     CustomerId = userId,
                     BarberId = barberId,
                     ServiceId = serviceId,
-                    StartTime = DateTime.Parse($"{date:yyyy-MM-dd} {time}"),
-                    EndTime = DateTime.Parse($"{date:yyyy-MM-dd} {time}").AddMinutes(30), // Assumes 30 mins per appointment
-                    Status = "Scheduled"
+                    StartTime = DateTime.Parse($"{appointmentDate:yyyy-MM-dd} {startTime}"),
+                    EndTime = DateTime.Parse($"{appointmentDate:yyyy-MM-dd} {endTime}"), // Assumes 30 mins per appointment
+                    Status = "New"
                 };
 
                 _context.Schedules.Add(appointment);
