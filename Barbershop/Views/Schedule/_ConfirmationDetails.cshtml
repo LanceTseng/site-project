@@ -1,0 +1,20 @@
+﻿<!-- Views/Shared/_ConfirmationDetails.cshtml -->
+@model ScheduleConfirmation
+
+@if (Model != null)
+{
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Customer:</strong> @Model.CustomerName</p>
+            <p><strong>Barber:</strong> @Model.BarberName</p>
+            <p><strong>Service:</strong> @Model.ServiceName</p>
+            <p><strong>Price:</strong> $@Model.ServicePrice</p>
+            <p><strong>Date:</strong> @Model.AppointmentDate.ToString("yyyy-MM-dd")</p>
+            <p><strong>Start Time:</strong> @Model.StartTime - @Model.EndTime </p>
+        </div>
+    </div>
+}
+else
+{
+    <p>No appointment details to confirm yet.</p>
+}

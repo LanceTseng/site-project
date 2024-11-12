@@ -10,6 +10,7 @@
         <div class="col-md-6">
             <h4>Appointment Details</h4>
             <form asp-action="ScheduleAppointment" method="post">
+                @Html.AntiForgeryToken()
                 <!-- Customer Name (Read-Only) -->
                 <div class="mb-3">
                     <label>Customer Name</label>
@@ -22,6 +23,7 @@
                     <select asp-for="BarberId" class="form-control" asp-items="Model.BarberList">
                         <option value="">Select Barber</option>
                     </select>
+                    @Html.ValidationMessageFor(model => model.BarberId)
                 </div>
 
                 <!-- Service Selection -->
@@ -72,23 +74,9 @@
         <!-- Right Side: Confirmation Information -->
         <div class="col-md-6">
             <h4>Confirmation</h4>
-            @if (Model.ConfirmationDetails != null)
-            {
-                <div class="card">
-                    <div class="card-body">
-                        <p><strong>Customer:</strong> @Model.ConfirmationDetails.CustomerName</p>
-                        <p><strong>Barber:</strong> @Model.ConfirmationDetails.BarberName</p>
-                        <p><strong>Service:</strong> @Model.ConfirmationDetails.ServiceName</p>
-                        <p><strong>Date:</strong> @Model.ConfirmationDetails.AppointmentDate.ToString("yyyy-MM-dd")</p>
-                        <p><strong>Start Time:</strong> @Model.ConfirmationDetails.StartTime</p>
-                        <p><strong>End Time:</strong> @Model.ConfirmationDetails.EndTime</p>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <p>No appointment details to confirm yet.</p>
-            }
+            <div id="confirmationDetails">
+                @await Html.PartialAsync("_ConfirmationDetails", @Model.ConfirmationDetails)
+            </div>
         </div>
     </div>
 </div>
@@ -104,4 +92,28 @@
         // Set the default value to today's date
         appointmentDateInput.value = today;
     };
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("form").on("submit", function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            $.ajax({
+                url: '@Url.Action("ScheduleAppointment", "Schedule")',
+                type: 'POST',
+                data: $(this).serialize(),
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    // Update the confirmation details section with the partial view response
+                    $("#confirmationDetails").html(response);
+                },
+                error: function (xhr) {
+                    alert("An error occurred while scheduling the appointment.");
+                }
+            });
+        });
+    });
 </script>

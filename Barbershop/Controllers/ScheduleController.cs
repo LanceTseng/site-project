@@ -2,7 +2,6 @@
 using Barbershop.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.SignalR;
 
 namespace Barbershop.Controllers
 {
@@ -30,35 +29,37 @@ namespace Barbershop.Controllers
         }
 
         [HttpPost]
-        public IActionResult ScheduleAppointment(int barberId, int serviceId, DateTime appointmentDate, string startTime, string endTime)
+        public IActionResult ScheduleAppointment(SchedulingViewModel model)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (ModelState.IsValid)
+            var appointment = new Schedule
             {
-                var appointment = new Schedule
-                {
-                    CustomerId = userId,
-                    BarberId = barberId,
-                    ServiceId = serviceId,
-                    StartTime = DateTime.Parse($"{appointmentDate:yyyy-MM-dd} {startTime}"),
-                    EndTime = DateTime.Parse($"{appointmentDate:yyyy-MM-dd} {endTime}"), // Assumes 30 mins per appointment
-                    Status = "New"
-                };
+                CustomerId = userId,
+                BarberId = model.BarberId,
+                ServiceId = model.ServiceId,
+                StartTime = DateTime.Parse($"{model.AppointmentDate:yyyy-MM-dd} {model.StartTime}"),
+                EndTime = DateTime.Parse($"{model.AppointmentDate:yyyy-MM-dd} {model.EndTime}"),
+                Status = "New"
+            };
 
-                _context.Schedules.Add(appointment);
-                _context.SaveChanges();
+            _context.Schedules.Add(appointment);
+            _context.SaveChanges();
 
-                TempData["SuccessMessage"] = "Appointment scheduled successfully!";
-                return RedirectToAction("Schedule", new { id = appointment.ScheduleId });
-            }
+            // Update the confirmation details in the model
+            model.ConfirmationDetails = new ScheduleConfirmation()
+            {
+                CustomerName = User.Identity.Name,
+                BarberName = _context.Users.Find(model.BarberId)?.Username,
+                ServiceName = _context.Services.Find(model.ServiceId)?.ServiceName,
+                ServicePrice = _context.Services.Find(model.ServiceId).Price,
+                AppointmentDate = model.AppointmentDate,
+                StartTime = model.StartTime,
+                EndTime = model.EndTime
+            };
 
-            // Reload data for the form in case of errors
-            ViewBag.Barbers = GetBarberSelectList();
-            ViewBag.Services = GetServiceSelectList();
-            ViewBag.AvailableTimes = GetAvailableTimes();
-
-            return View();
+            // Return the partial view for AJAX
+            return PartialView("_ConfirmationDetails", model.ConfirmationDetails);
         }
 
         // Helper methods for dropdown data
@@ -69,7 +70,7 @@ namespace Barbershop.Controllers
                 .Select(user => new SelectListItem
                 {
                     Value = user.UserId.ToString(),
-                    Text = user.Username // Display name of the barber
+                    Text = user.Username
                 })
                 .ToList();
         }
@@ -80,7 +81,7 @@ namespace Barbershop.Controllers
                 .Select(service => new SelectListItem
                 {
                     Value = service.ServiceId.ToString(),
-                    Text = $"{service.ServiceName} - ${service.Price}" // Display name of the service
+                    Text = $"{service.ServiceName} - ${service.Price}"
                 })
                 .ToList();
         }
