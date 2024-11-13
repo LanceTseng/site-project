@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Barbershop.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -14,6 +15,7 @@ namespace Barbershop.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Schedule()
         {

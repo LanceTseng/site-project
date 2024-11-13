@@ -1,0 +1,17 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    if (!User.Identity.IsAuthenticated)
+    {
+        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+    }
+    else
+    {
+
+        <form asp-action="Logout" asp-controller="Account" method="post" style="display: inline;">
+            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+        </form>
+
+    }
+}
