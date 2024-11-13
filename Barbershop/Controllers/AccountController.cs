@@ -1,6 +1,8 @@
-﻿using System.Security.Claims;
+﻿using System.Data;
+using System.Security.Claims;
 using Barbershop.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Barbershop.Controllers
@@ -27,11 +29,23 @@ namespace Barbershop.Controllers
                 return View(model);
             }
 
+            // Retrieve roles for the user from the database (you should have a relationship between Users and Roles)
+            var role = _context.UserRoles.Where(ur => ur.UserId == user.UserId).Select(ur => ur.Role.RoleName).FirstOrDefault();
+
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Role, role)
             };
+
+            // Log or debug the claims
+            foreach (var claim in claims)
+            {
+                Console.WriteLine($"Claim: {claim.Type} - {claim.Value}");
+            }
+
             var identity = new ClaimsIdentity(claims, "Login");
 
             var principal = new ClaimsPrincipal(identity);
@@ -66,6 +80,18 @@ namespace Barbershop.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Login");
+        }
+
+        [Authorize] // This ensures that only authenticated users can access this action
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        // Optional: Custom Unauthorized Handler if you want to explicitly redirect
+        public IActionResult UnauthorizedAccess()
+        {
+            return View("Unauthorized");
         }
     }
 }

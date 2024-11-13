@@ -19,14 +19,16 @@ namespace Barbershop
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/Account/Login";  // Redirects to login page if not authenticated
+                    options.LoginPath = "/Account/Login";  // Uncommented for login redirection
+                    options.AccessDeniedPath = "/Account/UnauthorizedAccess";
                 });
 
             // Configure authorization policies
             builder.Services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-                options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("ADMIN"));
+                options.AddPolicy("CustomerOnly", policy => policy.RequireRole("CUSTOMER"));
+                options.AddPolicy("EmployeeOnly", policy => policy.RequireRole("EMPLOYEE"));
             });
 
             var app = builder.Build();
@@ -35,7 +37,6 @@ namespace Barbershop
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -44,7 +45,8 @@ namespace Barbershop
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();  // Ensure authentication middleware is before authorization
+            app.UseAuthorization();   // Authorization middleware
 
             app.MapControllerRoute(
                 name: "default",

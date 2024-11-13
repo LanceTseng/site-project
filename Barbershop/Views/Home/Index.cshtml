@@ -2,7 +2,106 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="bg-dark text-light text-center py-5">
+        <div class="container">
+            <h1 class="display-4">Welcome to [Your Barber Shop]</h1>
+            <p class="lead">Professional barbers, quality haircuts, and a modern vibe just for you.</p>
+            <a href="@Url.Action("Book", "Appointments")" class="btn btn-primary btn-lg">Book Your Appointment</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="container my-5">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <img src="/images/barbershop-inside.jpg" class="img-fluid rounded" alt="Barber Shop">
+            </div>
+            <div class="col-md-6">
+                <h2>About Us</h2>
+                <p>At [Your Barber Shop Name], we are passionate about delivering high-quality cuts and grooming services. Our team of skilled barbers ensures that you receive a style tailored to you in a relaxing and professional environment.</p>
+                <a href="@Url.Action("About", "Home")" class="btn btn-outline-dark">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="bg-light py-5">
+        <div class="container text-center">
+            <h2 class="mb-4">Our Services</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <img src="/images/haircut.jpg" class="card-img-top" alt="Haircut">
+                        <div class="card-body">
+                            <h5 class="card-title">Classic Haircut</h5>
+                            <p class="card-text">Precision cuts to give you a fresh, clean look.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <img src="/images/beard-trim.jpg" class="card-img-top" alt="Beard Trim">
+                        <div class="card-body">
+                            <h5 class="card-title">Beard Trim & Shave</h5>
+                            <p class="card-text">Sharp lines and smooth shaves for your best look.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <img src="/images/styling.jpg" class="card-img-top" alt="Styling">
+                        <div class="card-body">
+                            <h5 class="card-title">Styling & Grooming</h5>
+                            <p class="card-text">Finish your look with top-quality styling products.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Barbers Section -->
+    <section class="container py-5">
+        <h2 class="text-center mb-4">Meet Our Barbers</h2>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <img src="/images/barber1.jpg" class="rounded-circle mb-3" width="150" height="150" alt="Barber 1">
+                <h5>John Doe</h5>
+                <p>Master Barber</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <img src="/images/barber2.jpg" class="rounded-circle mb-3" width="150" height="150" alt="Barber 2">
+                <h5>Jane Smith</h5>
+                <p>Stylist & Grooming Expert</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <img src="/images/barber3.jpg" class="rounded-circle mb-3" width="150" height="150" alt="Barber 3">
+                <h5>Mike Johnson</h5>
+                <p>Shave Specialist</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="text-center py-5 bg-primary text-light">
+        <div class="container">
+            <h2>Ready for a Fresh Look?</h2>
+            <p>Book your appointment today and experience the best cuts and styles in town.</p>
+              <a href="@Url.Action("Book", "Appointments")" class="btn btn-light btn-lg">Book Now</a>  
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
