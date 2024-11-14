@@ -5,11 +5,37 @@
 
 <h1>AssignRole</h1>
 
-<form asp-action="AssignRole" method="post">
-    <input type="number" name="userId" placeholder="User ID" />
-    <input type="number" name="roleId" placeholder="Role ID" />
+<form id="assignRoleForm" asp-action="AssignRole" method="post">
+    <input type="number" name="userId" placeholder="User ID"/>
+    <input type="number" name="roleId" placeholder="Role ID"/>    
     <button type="submit" class="btn btn-primary">Assign Role</button>
 </form>
+<script>
+    document.getElementById("assignRoleForm").addEventListener("submit", function (event) {
+        // Prevents other forms from being submitted
+        event.stopImmediatePropagation();
+        this.submit(); // Submit only this form
+    });
+</script>
+@if (TempData["StatusCode"] != null)
+{
+    var statusCode = (int)TempData["StatusCode"];
+    var message = TempData["Message"].ToString();
+
+    if (statusCode >= 200 && statusCode < 300)  // Success status codes
+    {
+        <div class="alert alert-success">
+            @message
+        </div>
+    }
+    else  // Error status codes
+    {
+        <div class="alert alert-danger">
+            @message
+        </div>
+    }
+}
+
 
 <table class="table table-striped">
     <thead>

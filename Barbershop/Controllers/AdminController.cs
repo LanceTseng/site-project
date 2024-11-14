@@ -34,7 +34,6 @@ namespace Barbershop.Controllers
                 .Include(ur => ur.Role)
                 .ToList(); // Eager load the related Role.ToList();
 
-
             return View(userRoles);
         }
 
@@ -59,15 +58,48 @@ namespace Barbershop.Controllers
             var user = await _context.Users.FindAsync(userId);
             var role = await _context.Roles.FindAsync(roleId);
 
-            if (user != null && role != null)
+            var userRoles = _context.UserRoles
+                .Include(ur => ur.User) // Eager load the related User
+                .Include(ur => ur.Role)
+                .ToList(); // Eager load the related Role.ToList();
+
+            if (user == null || role == null)
+            {
+                TempData["StatusCode"] = 400;
+                TempData["Message"] = "User or Role not found.";
+                return View("AssignRole", userRoles);
+            }
+
+            var CurrentUserRole =
+                await _context.UserRoles.FirstOrDefaultAsync(ur => ur.UserId == userId);
+
+            if (CurrentUserRole == null)
             {
                 var userRole = new UserRole { UserId = userId, RoleId = roleId };
                 _context.UserRoles.Add(userRole);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("AssignRole");
+
+                TempData["StatusCode"] = 201;
+                TempData["Message"] = "Assign role successfully.";
+            }
+            else
+            {
+                _context.UserRoles.Remove(CurrentUserRole);
+                await _context.SaveChangesAsync();
+
+                var userRole = new UserRole { UserId = userId, RoleId = roleId };
+                _context.UserRoles.Add(userRole);
+                await _context.SaveChangesAsync();
+
+                TempData["StatusCode"] = 200;
+                TempData["Message"] = "Role update successfully.";
             }
 
-            return View("AssignRole", _context.UserRoles.ToList());
+            userRoles = _context.UserRoles
+               .Include(ur => ur.User) // Eager load the related User
+               .Include(ur => ur.Role)
+               .ToList(); // Eager load the related Role.ToList();
+            return View("AssignRole", userRoles);
         }
     }
 }
