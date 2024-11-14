@@ -15,7 +15,7 @@ namespace Barbershop.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "CUSTOMER,ADMIN")]
         [HttpGet]
         public IActionResult Schedule()
         {
