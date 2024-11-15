@@ -41,8 +41,7 @@
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { uid = @item.UserId , rid = @item.RoleId}) |
-                    @Html.ActionLink("Details", "Details", new { uid = @item.UserId }) |
-                    @Html.ActionLink("Delete", "Delete", new { uid = @item.UserId})
+                    @Html.ActionLink("Delete", "Delete", new { uid = @item.UserId, rid = @item.RoleId })
                 </td>
             </tr>
         }

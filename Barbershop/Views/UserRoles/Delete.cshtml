@@ -11,23 +11,42 @@
     <h4>UserRole</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
+        <!-- User ID -->
+        <dt class="col-sm-3 font-weight-bold">
+            @Html.DisplayNameFor(model => model.User.UserId)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.User.UserId)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Role)
+
+        <!-- User Name -->
+        <dt class="col-sm-3 font-weight-bold">
+            User Name
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.User.Username)
+        </dd>
+
+        <!-- Role ID -->
+        <dt class="col-sm-3 font-weight-bold">
+            @Html.DisplayNameFor(model => model.Role.RoleId)
+        </dt>
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Role.RoleId)
+        </dd>
+
+        <!-- Role Name -->
+        <dt class="col-sm-3 font-weight-bold">
+            Role Name
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Role.RoleName)
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="UserId" />
-        <input type="hidden" asp-for="RoleId" />
+        <input type="hidden" asp-for="UserId" name="uid"/>
+        <input type="hidden" asp-for="RoleId" name="rid"/>
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

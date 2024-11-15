@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Barbershop.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Barbershop.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 
 namespace Barbershop.Controllers
 {
@@ -28,17 +22,14 @@ namespace Barbershop.Controllers
         }
 
         // GET: UserRoles/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? uid, int? rid)
         {
-            if (id == null)
+            if (uid == null)
             {
                 return NotFound();
             }
 
-            var userRole = await _context.UserRoles
-                .Include(u => u.Role)
-                .Include(u => u.User)
-                .FirstOrDefaultAsync(m => m.UserId == id);
+            var userRole = await GetUserRoleAsync(uid, rid);
             if (userRole == null)
             {
                 return NotFound();
@@ -62,23 +53,23 @@ namespace Barbershop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId,RoleId")] UserRole userRole)
         {
-            if (ModelState.IsValid)
+            if (UserRoleExists(userRole.UserId))
             {
-                if (UserRoleExists(userRole.UserId))
-                {
-                    var userRoleExist = await _context.UserRoles.FindAsync(userRole.UserId);
-                    _context.UserRoles.Remove(userRoleExist);
-                    await _context.SaveChangesAsync();
-                }
-
-                _context.Add(userRole);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                TempData["StatusCode"] = 400;
+                TempData["Message"] = "User existed.";
+                return View(); ; ;
             }
+
+            _context.Add(userRole);
+            await _context.SaveChangesAsync();
 
             ViewData["RoleId"] = new SelectList(_context.Roles, "RoleId", "RoleName", userRole.RoleId);
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Username", userRole.UserId);
-            return View(userRole);
+            var newUserRole = await GetUserRoleAsync(userRole.UserId, userRole.RoleId);
+
+            TempData["StatusCode"] = 200;
+            TempData["Message"] = "Role Create Success.";
+            return View(newUserRole);
         }
 
         // GET: UserRoles/Edit/5
@@ -89,11 +80,7 @@ namespace Barbershop.Controllers
                 return NotFound();
             }
 
-            var userRole = await _context.UserRoles
-                .Include(ur => ur.User)
-                .Include(ur => ur.Role)
-                .FirstOrDefaultAsync(ur => ur.UserId == uid && ur.RoleId == rid);
-
+            var userRole = await GetUserRoleAsync(uid, rid);
             if (userRole == null)
             {
                 return NotFound();
@@ -117,7 +104,7 @@ namespace Barbershop.Controllers
             }
             try
             {
-                var userRoleExist = await _context.UserRoles.FindAsync(uid, rid);
+                var userRoleExist = await GetUserRoleAsync(uid, rid);
                 _context.UserRoles.Remove(userRoleExist);
                 await _context.SaveChangesAsync();
 
@@ -141,26 +128,20 @@ namespace Barbershop.Controllers
             TempData["StatusCode"] = 200;
             TempData["Message"] = "Role Update Success.";
 
-            var userRoleNew = await _context.UserRoles
-                  .Include(ur => ur.User)
-                  .Include(ur => ur.Role)
-                  .FirstOrDefaultAsync(ur => ur.UserId == userRole.UserId && ur.RoleId == userRole.RoleId);
+            var userRoleNew = await GetUserRoleAsync(userRole.UserId, userRole.RoleId);
 
             return View(userRoleNew);
         }
 
         // GET: UserRoles/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? uid, int? rid)
         {
-            if (id == null)
+            if (uid == null)
             {
                 return NotFound();
             }
 
-            var userRole = await _context.UserRoles
-                .Include(u => u.Role)
-                .Include(u => u.User)
-                .FirstOrDefaultAsync(m => m.UserId == id);
+            var userRole = await GetUserRoleAsync(uid, rid);
             if (userRole == null)
             {
                 return NotFound();
@@ -172,9 +153,9 @@ namespace Barbershop.Controllers
         // POST: UserRoles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int uid, int rid)
         {
-            var userRole = await _context.UserRoles.FindAsync(id);
+            var userRole = await GetUserRoleAsync(uid, rid);
             if (userRole != null)
             {
                 _context.UserRoles.Remove(userRole);
@@ -187,6 +168,14 @@ namespace Barbershop.Controllers
         private bool UserRoleExists(int id)
         {
             return _context.UserRoles.Any(e => e.UserId == id);
+        }
+
+        public async Task<UserRole> GetUserRoleAsync(int? userId, int? roleId)
+        {
+            return await _context.UserRoles
+                .Include(ur => ur.User)
+                .Include(ur => ur.Role)
+                .FirstOrDefaultAsync(ur => ur.UserId == userId && ur.RoleId == roleId);
         }
     }
 }
