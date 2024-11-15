@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
 }
 
@@ -8,7 +7,7 @@
 <div class="container mt-4">
     <div class="row">
         <!-- User Management Section -->
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card text-center">
                 <div class="card-header bg-primary text-white">
                     User Management
@@ -16,11 +15,12 @@
                 <div class="card-body">
                     <p>Manage user accounts, roles, and permissions.</p>
                     <a href="@Url.Action("Index", "Users")" class="btn btn-primary">Manage Users</a>
+                    <a href="@Url.Action("Index", "Roles")" class="btn btn-primary">Manage Roles</a>
                     <a href="@Url.Action("Index", "UserRoles")" class="btn btn-primary">Assign Roles</a>
                 </div>
             </div>
         </div>
- 
+
 
         <!-- Reports Section -->
         <div class="col-md-4">
@@ -36,6 +36,5 @@
         </div>
     </div>
 
- 
-    </div>
+
 </div>
