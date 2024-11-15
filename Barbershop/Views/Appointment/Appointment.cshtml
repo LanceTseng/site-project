@@ -100,7 +100,7 @@
             e.preventDefault(); // Prevent default form submission
 
             $.ajax({
-                url: '@Url.Action("ScheduleAppointment", "Schedule")',
+                url: '@Url.Action("ScheduleAppointment", "Appointment")',
                 type: 'POST',
                 data: $(this).serialize(),
                 headers: {
