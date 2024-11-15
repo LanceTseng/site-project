@@ -1,27 +1,57 @@
 ﻿@model Barbershop.Models.UserRole
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit User Role";
 }
 
-<h1>Edit</h1>
+<h1>Edit User Role</h1>
 
-<h4>UserRole</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="UserId" />
-            <input type="hidden" asp-for="RoleId" />
+
+            <!-- Display Username (Read-only) -->
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label asp-for="User.Username" class="control-label">User</label>
+                <input type="text" class="form-control" value="@Model.User?.Username" readonly />
+            </div>
+            <input type="hidden" name="UserId" value="@Model.User?.UserId" />
+            <input type="hidden" name="uid" value="@Model.User?.UserId" />
+
+            <!-- Display Current Role (Read-only) -->
+            <div class="form-group">
+                <label class="control-label">Current Role</label>
+                <input type="text" class="form-control" value="@Model.Role?.RoleName" readonly />
+            </div>
+            <input type="hidden" name="rid" value="@Model.Role?.RoleId" />
+
+            <!-- Dropdown for Selecting New Role -->
+            <div class="form-group">
+                <label asp-for="RoleId" class="control-label">New Role</label>
+                <select asp-for="RoleId" class="form-control" asp-items="ViewBag.RoleIdList">
+                    <option value="">Select a New Role</option>
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary"  />
             </div>
         </form>
     </div>
 </div>
+@if (TempData["StatusCode"] != null)
+{
+    var statusCode = (int)TempData["StatusCode"];
+    if (statusCode == 200)
+    {
+        <div class="alert alert-success">
+            @TempData["Message"]
+        </div>
+    }
+}
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-

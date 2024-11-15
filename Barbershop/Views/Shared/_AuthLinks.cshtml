@@ -8,7 +8,14 @@
     }
     else
     {
-        <a href="javascript:void(0);" class="nav-link text-dark" onclick="document.getElementById('logoutForm').submit()">Logout</a>
-        <form id="logoutForm" asp-action="Logout" asp-controller="Account" method="post" style="display: none;"/>
+        <a href="javascript:void(0);" class="nav-link text-dark" onclick="submitLogoutForm(event)">Logout</a>
+        <form id="logoutForm" asp-action="Logout" asp-controller="Account" method="post" style="display: none;"></form>
     }
 }
+
+<script>
+    function submitLogoutForm(event) {
+        event.preventDefault();  // Prevent any default behavior (like form submission)
+        document.getElementById('logoutForm').submit();  // Manually submit the logout form
+    }
+</script>
