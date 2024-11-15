@@ -14,6 +14,7 @@ namespace Barbershop.Models
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Service> Services { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
