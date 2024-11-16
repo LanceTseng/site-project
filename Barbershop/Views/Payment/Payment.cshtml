@@ -39,10 +39,10 @@
             </ul>
             <ul class="list-group">
                 <div class="card">
-                    <div class="card-body text-end">
-                        <p><strong>Total:</strong>  <span class="badge bg-info rounded-pill">15.00</span></p>
-                        <p><strong>Tax:</strong> <span class="badge bg-primary rounded-pill">15.00</span></p>
-                        <p><strong>SubTotal:</strong> <span class="badge bg-primary rounded-pill">15.00</span></p>
+                    <div class=" card-body text-end" id="paymentList">
+                        <p><strong>Total:</strong> <span class="badge text-light bg-dark rounded-pill">0.00</span></p>
+                        <p><strong>Tax:</strong> <span class="badge text-light bg-dark rounded-pill">0.00</span></p>
+                        <p><strong>SubTotal:</strong> <span class="badge text-light bg-dark rounded-pill">0.00</span></p>
                     </div>
                 </div>
             </ul>
@@ -136,15 +136,23 @@
 
                 const services = await response.json();
 
+                // Service list element
                 const serviceList = document.getElementById('serviceList');
+                const paymentList = document.getElementById('paymentList');
+
                 if (!serviceList) {
                     console.error('Service list element with ID "serviceList" not found in the DOM.');
                     return;
                 }
 
+                // Clear previous content
                 serviceList.innerHTML = '';
+                paymentList.innerHTML = '';
 
                 if (Array.isArray(services) && services.length > 0) {
+                    let total = 0;
+
+                    // Populate the service list
                     services.forEach(service => {
                         const listItem = document.createElement('li');
                         listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
@@ -157,13 +165,29 @@
                                 ${service.serviceName || 'Unknown Service'}
                                 <span class="badge bg-primary rounded-pill">${price}</span>
                             `;
+
+                        total += service.price || 0; // Accumulate total
                         serviceList.appendChild(listItem);
                     });
+
+                    // Calculate tax and subtotal
+                    const tax = (total * 0.13).toFixed(2);
+                    const subtotal = (total + parseFloat(tax)).toFixed(2);
+
+                    // Update the payment details
+                    paymentList.innerHTML = `
+                            <div class="card-body text-end">
+                                <p><strong>Total:</strong> <span class="badge text-light bg-dark rounded-pill">${total.toFixed(2)}</span></p>
+                                <p><strong>Tax:</strong> <span class="badge text-light bg-dark rounded-pill">${tax}</span></p>
+                                <p><strong>SubTotal:</strong> <span class="badge text-light bg-dark rounded-pill">${subtotal}</span></p>
+                            </div>
+                        `;
                 } else {
                     serviceList.innerHTML = '<li class="list-group-item text-muted">No services available for this schedule.</li>';
                 }
             } catch (error) {
                 console.error('An error occurred while updating the service list:', error);
+
                 const serviceList = document.getElementById('serviceList');
                 if (serviceList) {
                     serviceList.innerHTML = '<li class="list-group-item text-muted">Error fetching services.</li>';
