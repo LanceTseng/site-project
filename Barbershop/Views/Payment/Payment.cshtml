@@ -37,6 +37,15 @@
                 <!-- Dynamically updated based on selected schedule -->
                 <li class="list-group-item text-muted">Select a schedule to view services.</li>
             </ul>
+            <ul class="list-group">
+                <div class="card">
+                    <div class="card-body text-end">
+                        <p><strong>Total:</strong>  <span class="badge bg-info rounded-pill">15.00</span></p>
+                        <p><strong>Tax:</strong> <span class="badge bg-primary rounded-pill">15.00</span></p>
+                        <p><strong>SubTotal:</strong> <span class="badge bg-primary rounded-pill">15.00</span></p>
+                    </div>
+                </div>
+            </ul>
         </div>
 
         <!-- Right Side: Payment Options -->
@@ -162,9 +171,6 @@
             }
         });
     });
-
-
-
 
     // Toggle payment sections
     document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
