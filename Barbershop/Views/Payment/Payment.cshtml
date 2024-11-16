@@ -31,7 +31,7 @@
             </div>
         </div>
         <!-- Middle Section: Services -->
-        <div class="col-md-5 border-end">
+        <div class="col-md-3 border-end">
             <h5>Services</h5>
             <ul class="list-group" id="serviceList">
                 <!-- Dynamically updated based on selected schedule -->
@@ -60,15 +60,6 @@
                 <label class="form-check-label" for="creditCardOption">Credit Card</label>
             </div>
 
-            <!-- Cash Payment Details -->
-            <div id="cashPayment" class="mt-3">
-                <div class="form-group mb-3">
-                    <label for="paidInput">Paid Amount</label>
-                    <input type="number" id="paidInput" class="form-control" placeholder="Enter amount paid" />
-                </div>
-
-            </div>
-
             <!-- Credit Card Payment Details -->
             <div id="creditCardPayment" class="mt-3" style="display: none;">
                 <div class="form-group mb-3">
@@ -88,6 +79,14 @@
                     <input type="text" id="cardName" class="form-control" placeholder="Enter cardholder name" />
                 </div>
             </div>
+            <!-- Subtotal Details -->
+            <div>
+                <div class="form-group mb-3">
+                    <label for="subtotalPayment">Subtotal</label>
+                    <input type="number" id="subtotalPayment" class="form-control" disabled="" />
+                </div>
+            </div>
+            <!-- Tip Details -->
             <div>
                 <div class="form-group mb-3">
                     <label for="tipOption">Tip</label>
@@ -96,7 +95,7 @@
                         <option value="0.1">10%</option>
                         <option value="0.18">18%</option>
                         <option value="0.25">25%</option>
-                        <option value="custom">Other</option>
+                        @* <option value="custom">Other</option> *@
                     </select>
                 </div>
                 <div class="form-group mb-3" id="customTipContainer" style="display: none;">
@@ -108,12 +107,58 @@
                     <input type="number" id="percentTip" class="form-control" disabled="" />
                 </div>
             </div>
+
+            <hr />
+            <!-- Amount Details -->
+            <div>
+                <p><strong>Amount:</strong> <span id="amountPayment" class="badge text-light bg-dark rounded-pill">0.00</span></p>
+            </div>
+
+            <!-- Cash Payment Details -->
+            <div id="cashPayment" class="mt-3">
+                <div class="form-group mb-3">
+                    <label for="paidInput">Paid Amount</label>
+                    <input type="number" id="paidInput" class="form-control" placeholder="Enter amount paid" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="changeOutput">Change</label>
+                    <input type="number" id="changeOutput" class="form-control" disabled="" />
+                </div>
+            </div>
+
+
         </div>
 
     </div>
 </div>
 
 <script>
+    // Utility Functions
+    const displayError = (message) => {
+        const serviceList = document.getElementById('serviceList');
+        if (serviceList) {
+            serviceList.innerHTML = `<li class="list-group-item text-muted">${message}</li>`;
+        }
+    };
+
+    const displaySubTotalPayment = (subtotal) => {
+        const subtotalPaymentField = document.getElementById('subtotalPayment');
+        if (subtotalPaymentField) {
+            subtotalPaymentField.value = subtotal
+        } else {
+            console.error('Subtotal payment field not found.');
+        }
+    };
+
+    const displayAmountPayment = (amount) => {
+        const amountPaymentField = document.getElementById('amountPayment');
+        if (amountPaymentField) {
+            amountPaymentField.innerHTML = amount.toFixed(2); // Display the amount with two decimal places
+        } else {
+            console.error('Amount payment field not found.');
+        }
+    };
+
     // Fetch and update services for the selected schedule
     const updateServicesBySchedule = async (scheduleId) => {
         try {
@@ -160,9 +205,9 @@
                     : 'N/A';
 
                 listItem.innerHTML = `
-                            ${service.serviceName || 'Unknown Service'}
-                            <span class="badge bg-primary rounded-pill">${price}</span>
-                        `;
+                                    ${service.serviceName || 'Unknown Service'}
+                                    <span class="badge bg-success rounded-pill">${price}</span>
+                                `;
 
                 total += service.price || 0;
                 serviceList.appendChild(listItem);
@@ -174,23 +219,72 @@
 
             // Update payment details
             paymentList.innerHTML = `
-                        <div class="card-body text-end">
-                            <p><strong>Total:</strong> <span class="badge text-light bg-dark rounded-pill">${total.toFixed(2)}</span></p>
-                            <p><strong>Tax:</strong> <span class="badge text-light bg-dark rounded-pill">${tax}</span></p>
-                            <p><strong>SubTotal:</strong> <span class="badge text-light bg-dark rounded-pill">${subtotal}</span></p>
-                        </div>
-                    `;
+                                <div class="card-body text-end">
+                                    <p><strong>Total:</strong> <span class="badge text-light bg-dark rounded-pill">${total.toFixed(2)}</span></p>
+                                    <p><strong>Tax:</strong> <span class="badge text-light bg-dark rounded-pill">${tax}</span></p>
+                                    <p><strong>SubTotal:</strong> <span class="badge text-light bg-dark rounded-pill">${subtotal}</span></p>
+                                </div>
+                            `;
+
+            updateTipOnTotalChange(); // Recalculate tip when subtotal changes
+
+            displaySubTotalPayment(subtotal);
         } else {
             serviceList.innerHTML = '<li class="list-group-item text-muted">No services available for this schedule.</li>';
         }
     };
 
-    // Display error message
-    const displayError = (message) => {
-        const serviceList = document.getElementById('serviceList');
-        if (serviceList) {
-            serviceList.innerHTML = `<li class="list-group-item text-muted">${message}</li>`;
+    // Calculate and display the tip
+    const calculateTip = (tipOptionId, totalId, customTipContainerId, percentTipContainerId, percentTipId) => {
+        const tipOption = document.getElementById(tipOptionId);
+        const customTipContainer = document.getElementById(customTipContainerId);
+        const percentTipContainer = document.getElementById(percentTipContainerId);
+        const percentTip = document.getElementById(percentTipId);
+        const totalElement = document.querySelector(`#${totalId} .badge.text-light.bg-dark`);
+
+        if (!totalElement) {
+            console.error('Total element not found.');
+            return;
         }
+
+        const total = parseFloat(totalElement.textContent);
+
+        if (isNaN(total)) {
+            console.error('Invalid total value.');
+            return;
+        }
+
+        // Initialize the calculatedTip variable at the start
+        let calculatedTip = 0;
+
+        if (tipOption.value === 'custom') {
+            // Show custom tip input
+            customTipContainer.style.display = 'block';
+            percentTipContainer.style.display = 'none';
+            percentTip.value = ''; // Clear the percentage tip value
+        } else {
+            // Calculate percentage tip
+            customTipContainer.style.display = 'none';
+            percentTipContainer.style.display = 'block';
+
+            const percentage = parseFloat(tipOption.value);
+
+            if (!isNaN(percentage)) {
+                calculatedTip = (percentage * total).toFixed(2); // Only calculate if the percentage is valid
+            } else {
+                calculatedTip = 0; // Default to 0 if the percentage is invalid
+            }
+
+            percentTip.value = calculatedTip; // Display the calculated tip
+        }
+
+        // Ensure the calculatedTip is a valid number before adding to total
+        displayAmountPayment(total * 1.13 + parseFloat(calculatedTip)); // Ensure calculatedTip is parsed as a number
+    }
+
+    // Recalculate the tip when total changes dynamically
+    const updateTipOnTotalChange = () => {
+        calculateTip('tipOption', 'paymentList', 'customTipContainer', 'percentTipContainer', 'percentTip');
     };
 
     // Initialize schedule change listeners
@@ -213,62 +307,20 @@
         });
     };
 
+    // Attach event listeners for cash payment tip
+    const initializeTipListeners = () => {
+        document.querySelector('#tipOption').addEventListener('change', function () {
+            calculateTip('tipOption', 'paymentList', 'customTipContainer', 'percentTipContainer', 'percentTip');
+        });
+    };
+
     // Initialize all event listeners
     const initializeEventListeners = () => {
         initializeScheduleListeners();
         togglePaymentSections();
+        initializeTipListeners();
     };
 
     // Run initialization on page load
     document.addEventListener('DOMContentLoaded', initializeEventListeners);
-</script>
-<script>
-    // Function to calculate and display the tip
-    function calculateTip(tipOptionId, totalId, customTipContainerId, percentTipContainerId, percentTipId) {
-        const tipOption = document.getElementById(tipOptionId);
-        const customTipContainer = document.getElementById(customTipContainerId);
-        const percentTipContainer = document.getElementById(percentTipContainerId);
-        const percentTip = document.getElementById(percentTipId);
-        const totalElement = document.querySelector(`#${totalId} .badge.text-light.bg-dark`);
-
-        if (!totalElement) {
-            console.error('Total element not found.');
-            return;
-        }
-
-        const total = parseFloat(totalElement.textContent);
-
-        if (isNaN(total)) {
-            console.error('Invalid total value.');
-            return;
-        }
-
-        if (tipOption.value === 'custom') {
-            // Show custom tip input
-            customTipContainer.style.display = 'block';
-            percentTipContainer.style.display = 'none';
-            percentTip.value = ''; // Clear the percentage tip value
-        } else {
-            // Calculate percentage tip
-            customTipContainer.style.display = 'none';
-            percentTipContainer.style.display = 'block';
-
-            const percentage = parseFloat(tipOption.value);
-            const calculatedTip = (percentage * total).toFixed(2);
-
-            percentTip.value = calculatedTip; // Display the calculated tip
-        }
-    }
-
-    // Attach event listeners for cash payment tip
-    document.querySelector('#tipOption').addEventListener('change', function () {
-        calculateTip('tipOption', 'paymentList', 'customTipContainer', 'percentTipContainer', 'percentTip');
-    });
-
-
-    // Recalculate the tip when total changes dynamically
-    function updateTipOnTotalChange() {
-        calculateTip('tipOption', 'paymentList', 'customTipContainer', 'percentTipContainer', 'percentTip');
-    }
-
 </script>
