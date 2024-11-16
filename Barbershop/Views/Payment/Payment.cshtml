@@ -66,20 +66,7 @@
                     <label for="paidInput">Paid Amount</label>
                     <input type="number" id="paidInput" class="form-control" placeholder="Enter amount paid" />
                 </div>
-                <div class="form-group mb-3">
-                    <label for="tipOption">Tip</label>
-                    <select id="tipOption" class="form-select">
-                        <option value="0">None</option>
-                        <option value="0.1">10%</option>
-                        <option value="0.18">18%</option>
-                        <option value="0.25">25%</option>
-                        <option value="custom">Other</option>
-                    </select>
-                </div>
-                <div class="form-group mb-3" id="customTipContainer" style="display: none;">
-                    <label for="customTip">Custom Tip</label>
-                    <input type="number" id="customTip" class="form-control" placeholder="Enter custom tip amount" />
-                </div>
+
             </div>
 
             <!-- Credit Card Payment Details -->
@@ -100,9 +87,29 @@
                     <label for="cardName">Cardholder Name</label>
                     <input type="text" id="cardName" class="form-control" placeholder="Enter cardholder name" />
                 </div>
+                @*    <div class="form-group mb-3">
+                <label for="creditTipOption">Tip</label>
+                <select id="creditTipOption" class="form-select">
+                <option value="0">None</option>
+                <option value="0.1">10%</option>
+                <option value="0.18">18%</option>
+                <option value="0.25">25%</option>
+                <option value="custom">Other</option>
+                </select>
+                </div>
+                <div class="form-group mb-3" id="creditCustomTipContainer" style="display: none;">
+                <label for="creditCustomTip">Custom Tip</label>
+                <input type="number" id="creditCustomTip" class="form-control" placeholder="Enter custom tip amount" />
+                </div>
+                <div class="form-group mb-3" id="creditPercentTipContainer" style="display: none;">
+                <label for="creditCustomTip">Custom Tip</label>
+                <input type="number" id="creditPercentTip" class="form-control" disabled=""/>
+                </div> *@
+            </div>
+            <div>
                 <div class="form-group mb-3">
-                    <label for="creditTipOption">Tip</label>
-                    <select id="creditTipOption" class="form-select">
+                    <label for="tipOption">Tip</label>
+                    <select id="tipOption" class="form-select">
                         <option value="0">None</option>
                         <option value="0.1">10%</option>
                         <option value="0.18">18%</option>
@@ -110,9 +117,13 @@
                         <option value="custom">Other</option>
                     </select>
                 </div>
-                <div class="form-group mb-3" id="creditCustomTipContainer" style="display: none;">
-                    <label for="creditCustomTip">Custom Tip</label>
-                    <input type="number" id="creditCustomTip" class="form-control" placeholder="Enter custom tip amount" />
+                <div class="form-group mb-3" id="customTipContainer" style="display: none;">
+                    <label for="customTip">Custom Tip</label>
+                    <input type="number" id="customTip" class="form-control" placeholder="Enter custom tip amount" />
+                </div>
+                <div class="form-group mb-3" id="percentTipContainer" style="display: none;">
+                    <label for="customTip">Custom Tip</label>
+                    <input type="number" id="percentTip" class="form-control" disabled="" />
                 </div>
             </div>
         </div>
@@ -162,9 +173,9 @@
                             : 'N/A';
 
                         listItem.innerHTML = `
-                                ${service.serviceName || 'Unknown Service'}
-                                <span class="badge bg-primary rounded-pill">${price}</span>
-                            `;
+                                    ${service.serviceName || 'Unknown Service'}
+                                    <span class="badge bg-primary rounded-pill">${price}</span>
+                                `;
 
                         total += service.price || 0; // Accumulate total
                         serviceList.appendChild(listItem);
@@ -176,12 +187,12 @@
 
                     // Update the payment details
                     paymentList.innerHTML = `
-                            <div class="card-body text-end">
-                                <p><strong>Total:</strong> <span class="badge text-light bg-dark rounded-pill">${total.toFixed(2)}</span></p>
-                                <p><strong>Tax:</strong> <span class="badge text-light bg-dark rounded-pill">${tax}</span></p>
-                                <p><strong>SubTotal:</strong> <span class="badge text-light bg-dark rounded-pill">${subtotal}</span></p>
-                            </div>
-                        `;
+                                <div class="card-body text-end">
+                                    <p><strong>Total:</strong> <span class="badge text-light bg-dark rounded-pill">${total.toFixed(2)}</span></p>
+                                    <p><strong>Tax:</strong> <span class="badge text-light bg-dark rounded-pill">${tax}</span></p>
+                                    <p><strong>SubTotal:</strong> <span class="badge text-light bg-dark rounded-pill">${subtotal}</span></p>
+                                </div>
+                            `;
                 } else {
                     serviceList.innerHTML = '<li class="list-group-item text-muted">No services available for this schedule.</li>';
                 }
@@ -204,12 +215,54 @@
         });
     });
 
-    // Toggle custom tip input
+</script>
+<script>
+    // Function to calculate and display the tip
+    function calculateTip(tipOptionId, totalId, customTipContainerId, percentTipContainerId, percentTipId) {
+        const tipOption = document.getElementById(tipOptionId);
+        const customTipContainer = document.getElementById(customTipContainerId);
+        const percentTipContainer = document.getElementById(percentTipContainerId);
+        const percentTip = document.getElementById(percentTipId);
+        const totalElement = document.querySelector(`#${totalId} .badge.text-light.bg-dark`);
+
+        if (!totalElement) {
+            console.error('Total element not found.');
+            return;
+        }
+
+        const total = parseFloat(totalElement.textContent);
+
+        if (isNaN(total)) {
+            console.error('Invalid total value.');
+            return;
+        }
+
+        if (tipOption.value === 'custom') {
+            // Show custom tip input
+            customTipContainer.style.display = 'block';
+            percentTipContainer.style.display = 'none';
+            percentTip.value = ''; // Clear the percentage tip value
+        } else {
+            // Calculate percentage tip
+            customTipContainer.style.display = 'none';
+            percentTipContainer.style.display = 'block';
+
+            const percentage = parseFloat(tipOption.value);
+            const calculatedTip = (percentage * total).toFixed(2);
+
+            percentTip.value = calculatedTip; // Display the calculated tip
+        }
+    }
+
+    // Attach event listeners for cash payment tip
     document.querySelector('#tipOption').addEventListener('change', function () {
-        document.getElementById('customTipContainer').style.display = this.value === 'custom' ? 'block' : 'none';
+        calculateTip('tipOption', 'paymentList', 'customTipContainer', 'percentTipContainer', 'percentTip');
     });
 
-    document.querySelector('#creditTipOption').addEventListener('change', function () {
-        document.getElementById('creditCustomTipContainer').style.display = this.value === 'custom' ? 'block' : 'none';
-    });
+
+    // Recalculate the tip when total changes dynamically
+    function updateTipOnTotalChange() {
+        calculateTip('tipOption', 'paymentList', 'customTipContainer', 'percentTipContainer', 'percentTip');
+    }
+
 </script>
