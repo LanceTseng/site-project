@@ -87,24 +87,6 @@
                     <label for="cardName">Cardholder Name</label>
                     <input type="text" id="cardName" class="form-control" placeholder="Enter cardholder name" />
                 </div>
-                @*    <div class="form-group mb-3">
-                <label for="creditTipOption">Tip</label>
-                <select id="creditTipOption" class="form-select">
-                <option value="0">None</option>
-                <option value="0.1">10%</option>
-                <option value="0.18">18%</option>
-                <option value="0.25">25%</option>
-                <option value="custom">Other</option>
-                </select>
-                </div>
-                <div class="form-group mb-3" id="creditCustomTipContainer" style="display: none;">
-                <label for="creditCustomTip">Custom Tip</label>
-                <input type="number" id="creditCustomTip" class="form-control" placeholder="Enter custom tip amount" />
-                </div>
-                <div class="form-group mb-3" id="creditPercentTipContainer" style="display: none;">
-                <label for="creditCustomTip">Custom Tip</label>
-                <input type="number" id="creditPercentTip" class="form-control" disabled=""/>
-                </div> *@
             </div>
             <div>
                 <div class="form-group mb-3">
@@ -132,89 +114,113 @@
 </div>
 
 <script>
-    // Update services based on the selected schedule
-    document.querySelectorAll('.schedule-radio').forEach(radio => {
-        radio.addEventListener('change', async () => {
-            const scheduleId = radio.value;
+    // Fetch and update services for the selected schedule
+    const updateServicesBySchedule = async (scheduleId) => {
+        try {
+            const response = await fetch(`/payment/GetServicesBySchedule?scheduleId=${scheduleId}`);
 
-            try {
-                const response = await fetch(`/payment/GetServicesBySchedule?scheduleId=${scheduleId}`);
-
-                if (!response.ok) {
-                    console.error('Failed to fetch services:', response.statusText);
-                    return;
-                }
-
-                const services = await response.json();
-
-                // Service list element
-                const serviceList = document.getElementById('serviceList');
-                const paymentList = document.getElementById('paymentList');
-
-                if (!serviceList) {
-                    console.error('Service list element with ID "serviceList" not found in the DOM.');
-                    return;
-                }
-
-                // Clear previous content
-                serviceList.innerHTML = '';
-                paymentList.innerHTML = '';
-
-                if (Array.isArray(services) && services.length > 0) {
-                    let total = 0;
-
-                    // Populate the service list
-                    services.forEach(service => {
-                        const listItem = document.createElement('li');
-                        listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
-
-                        const price = service.price !== undefined && service.price !== null
-                            ? service.price.toFixed(2)
-                            : 'N/A';
-
-                        listItem.innerHTML = `
-                                    ${service.serviceName || 'Unknown Service'}
-                                    <span class="badge bg-primary rounded-pill">${price}</span>
-                                `;
-
-                        total += service.price || 0; // Accumulate total
-                        serviceList.appendChild(listItem);
-                    });
-
-                    // Calculate tax and subtotal
-                    const tax = (total * 0.13).toFixed(2);
-                    const subtotal = (total + parseFloat(tax)).toFixed(2);
-
-                    // Update the payment details
-                    paymentList.innerHTML = `
-                                <div class="card-body text-end">
-                                    <p><strong>Total:</strong> <span class="badge text-light bg-dark rounded-pill">${total.toFixed(2)}</span></p>
-                                    <p><strong>Tax:</strong> <span class="badge text-light bg-dark rounded-pill">${tax}</span></p>
-                                    <p><strong>SubTotal:</strong> <span class="badge text-light bg-dark rounded-pill">${subtotal}</span></p>
-                                </div>
-                            `;
-                } else {
-                    serviceList.innerHTML = '<li class="list-group-item text-muted">No services available for this schedule.</li>';
-                }
-            } catch (error) {
-                console.error('An error occurred while updating the service list:', error);
-
-                const serviceList = document.getElementById('serviceList');
-                if (serviceList) {
-                    serviceList.innerHTML = '<li class="list-group-item text-muted">Error fetching services.</li>';
-                }
+            if (!response.ok) {
+                console.error('Failed to fetch services:', response.statusText);
+                displayError('Error fetching services.');
+                return;
             }
-        });
-    });
 
-    // Toggle payment sections
-    document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            document.getElementById('cashPayment').style.display = radio.id === 'cashOption' ? 'block' : 'none';
-            document.getElementById('creditCardPayment').style.display = radio.id === 'creditCardOption' ? 'block' : 'none';
-        });
-    });
+            const services = await response.json();
+            renderServices(services);
+        } catch (error) {
+            console.error('An error occurred while updating the service list:', error);
+            displayError('Error fetching services.');
+        }
+    };
 
+    // Render services and payment details
+    const renderServices = (services) => {
+        const serviceList = document.getElementById('serviceList');
+        const paymentList = document.getElementById('paymentList');
+
+        if (!serviceList || !paymentList) {
+            console.error('Service list or payment list element not found in the DOM.');
+            return;
+        }
+
+        // Clear previous content
+        serviceList.innerHTML = '';
+        paymentList.innerHTML = '';
+
+        if (Array.isArray(services) && services.length > 0) {
+            let total = 0;
+
+            // Populate service list
+            services.forEach(service => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+                const price = service.price !== undefined && service.price !== null
+                    ? service.price.toFixed(2)
+                    : 'N/A';
+
+                listItem.innerHTML = `
+                            ${service.serviceName || 'Unknown Service'}
+                            <span class="badge bg-primary rounded-pill">${price}</span>
+                        `;
+
+                total += service.price || 0;
+                serviceList.appendChild(listItem);
+            });
+
+            // Calculate tax and subtotal
+            const tax = (total * 0.13).toFixed(2);
+            const subtotal = (total + parseFloat(tax)).toFixed(2);
+
+            // Update payment details
+            paymentList.innerHTML = `
+                        <div class="card-body text-end">
+                            <p><strong>Total:</strong> <span class="badge text-light bg-dark rounded-pill">${total.toFixed(2)}</span></p>
+                            <p><strong>Tax:</strong> <span class="badge text-light bg-dark rounded-pill">${tax}</span></p>
+                            <p><strong>SubTotal:</strong> <span class="badge text-light bg-dark rounded-pill">${subtotal}</span></p>
+                        </div>
+                    `;
+        } else {
+            serviceList.innerHTML = '<li class="list-group-item text-muted">No services available for this schedule.</li>';
+        }
+    };
+
+    // Display error message
+    const displayError = (message) => {
+        const serviceList = document.getElementById('serviceList');
+        if (serviceList) {
+            serviceList.innerHTML = `<li class="list-group-item text-muted">${message}</li>`;
+        }
+    };
+
+    // Initialize schedule change listeners
+    const initializeScheduleListeners = () => {
+        document.querySelectorAll('.schedule-radio').forEach(radio => {
+            radio.addEventListener('change', () => {
+                updateServicesBySchedule(radio.value);
+            });
+        });
+    };
+
+    // Toggle payment sections based on selected payment method
+    const togglePaymentSections = () => {
+        document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const isCash = radio.id === 'cashOption';
+                document.getElementById('cashPayment').style.display = isCash ? 'block' : 'none';
+                document.getElementById('creditCardPayment').style.display = !isCash ? 'block' : 'none';
+            });
+        });
+    };
+
+    // Initialize all event listeners
+    const initializeEventListeners = () => {
+        initializeScheduleListeners();
+        togglePaymentSections();
+    };
+
+    // Run initialization on page load
+    document.addEventListener('DOMContentLoaded', initializeEventListeners);
 </script>
 <script>
     // Function to calculate and display the tip
