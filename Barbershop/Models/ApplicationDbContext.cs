@@ -50,6 +50,7 @@ namespace Barbershop.Models
                 .WithMany(sv => sv.ServiceSchedules)
                 .HasForeignKey(s => s.ServiceId)
                 .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

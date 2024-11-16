@@ -1,0 +1,185 @@
+﻿@model PaymentViewModel
+@{
+    ViewData["Title"] = "Payment";
+}
+
+<h1>Payment</h1>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Left Side: Schedule List -->
+        <div class="col-md-3 border-end">
+            <h5>Schedule List</h5>
+            <div style="height: 700px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+                <ul class="list-group" id="scheduleList">
+                    @foreach (var schedule in Model.Schedules)
+                    {
+                        <li class="list-group-item">
+                            <input type="radio" name="selectedSchedule" value="@schedule.ScheduleId" class="schedule-radio" />
+                            S# @schedule.ScheduleId - @schedule.Status
+                            <div class="card">
+                                <div class="card-body">
+                                    <p><strong>Customer:</strong> @schedule.Customer.Username</p>
+                                    <p><strong>Barber:</strong> @schedule.Barber.Username</p>
+                                    <p><strong>Date:</strong> @schedule.StartTime.ToString("yyyy-MM-dd")</p>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <!-- Middle Section: Services -->
+        <div class="col-md-5 border-end">
+            <h5>Services</h5>
+            <ul class="list-group" id="serviceList">
+                <!-- Dynamically updated based on selected schedule -->
+                <li class="list-group-item text-muted">Select a schedule to view services.</li>
+            </ul>
+        </div>
+
+        <!-- Right Side: Payment Options -->
+        <div class="col-md-4">
+            <h5>Payment Method</h5>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="cashOption" value="Cash" checked />
+                <label class="form-check-label" for="cashOption">Cash</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="creditCardOption" value="CreditCard" />
+                <label class="form-check-label" for="creditCardOption">Credit Card</label>
+            </div>
+
+            <!-- Cash Payment Details -->
+            <div id="cashPayment" class="mt-3">
+                <div class="form-group mb-3">
+                    <label for="paidInput">Paid Amount</label>
+                    <input type="number" id="paidInput" class="form-control" placeholder="Enter amount paid" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="tipOption">Tip</label>
+                    <select id="tipOption" class="form-select">
+                        <option value="0">None</option>
+                        <option value="0.1">10%</option>
+                        <option value="0.18">18%</option>
+                        <option value="0.25">25%</option>
+                        <option value="custom">Other</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3" id="customTipContainer" style="display: none;">
+                    <label for="customTip">Custom Tip</label>
+                    <input type="number" id="customTip" class="form-control" placeholder="Enter custom tip amount" />
+                </div>
+            </div>
+
+            <!-- Credit Card Payment Details -->
+            <div id="creditCardPayment" class="mt-3" style="display: none;">
+                <div class="form-group mb-3">
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" id="cardNumber" class="form-control" placeholder="Enter card number" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="cardCSV">CSV</label>
+                    <input type="text" id="cardCSV" class="form-control" placeholder="Enter CSV" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="cardExpiry">Expiry Date</label>
+                    <input type="month" id="cardExpiry" class="form-control" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="cardName">Cardholder Name</label>
+                    <input type="text" id="cardName" class="form-control" placeholder="Enter cardholder name" />
+                </div>
+                <div class="form-group mb-3">
+                    <label for="creditTipOption">Tip</label>
+                    <select id="creditTipOption" class="form-select">
+                        <option value="0">None</option>
+                        <option value="0.1">10%</option>
+                        <option value="0.18">18%</option>
+                        <option value="0.25">25%</option>
+                        <option value="custom">Other</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3" id="creditCustomTipContainer" style="display: none;">
+                    <label for="creditCustomTip">Custom Tip</label>
+                    <input type="number" id="creditCustomTip" class="form-control" placeholder="Enter custom tip amount" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Update services based on the selected schedule
+    document.querySelectorAll('.schedule-radio').forEach(radio => {
+        radio.addEventListener('change', async () => {
+            const scheduleId = radio.value;
+
+            try {
+                const response = await fetch(`/payment/GetServicesBySchedule?scheduleId=${scheduleId}`);
+
+                if (!response.ok) {
+                    console.error('Failed to fetch services:', response.statusText);
+                    return;
+                }
+
+                const services = await response.json();
+
+                const serviceList = document.getElementById('serviceList');
+                if (!serviceList) {
+                    console.error('Service list element with ID "serviceList" not found in the DOM.');
+                    return;
+                }
+
+                serviceList.innerHTML = '';
+
+                if (Array.isArray(services) && services.length > 0) {
+                    services.forEach(service => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+                        const price = service.price !== undefined && service.price !== null
+                            ? service.price.toFixed(2)
+                            : 'N/A';
+
+                        listItem.innerHTML = `
+                                ${service.serviceName || 'Unknown Service'}
+                                <span class="badge bg-primary rounded-pill">${price}</span>
+                            `;
+                        serviceList.appendChild(listItem);
+                    });
+                } else {
+                    serviceList.innerHTML = '<li class="list-group-item text-muted">No services available for this schedule.</li>';
+                }
+            } catch (error) {
+                console.error('An error occurred while updating the service list:', error);
+                const serviceList = document.getElementById('serviceList');
+                if (serviceList) {
+                    serviceList.innerHTML = '<li class="list-group-item text-muted">Error fetching services.</li>';
+                }
+            }
+        });
+    });
+
+
+
+
+    // Toggle payment sections
+    document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.getElementById('cashPayment').style.display = radio.id === 'cashOption' ? 'block' : 'none';
+            document.getElementById('creditCardPayment').style.display = radio.id === 'creditCardOption' ? 'block' : 'none';
+        });
+    });
+
+    // Toggle custom tip input
+    document.querySelector('#tipOption').addEventListener('change', function () {
+        document.getElementById('customTipContainer').style.display = this.value === 'custom' ? 'block' : 'none';
+    });
+
+    document.querySelector('#creditTipOption').addEventListener('change', function () {
+        document.getElementById('creditCustomTipContainer').style.display = this.value === 'custom' ? 'block' : 'none';
+    });
+</script>

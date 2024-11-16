@@ -1,9 +1,10 @@
-﻿namespace Barbershop.Models
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace Barbershop.Models
 {
-    public class Order
+    public class PaymentViewModel
     {
-        public int OrderId { get; set; }
-        public string PaymentType  { get; set; }
+        public string PaymentType { get; set; }
         public int ScheduleId { get; set; }
         public decimal AdditionalFee { get; set; }
         public decimal Total { get; set; }
@@ -13,7 +14,7 @@
         public int TotalPaid { get; set; }
         public string TransactionCode { get; set; }
         public DateTime CreatedDate { get; set; }
-        public Schedule Schedule { get; set; }
-
+        public List<Schedule> Schedules { get; set; }
     }
+
 }
