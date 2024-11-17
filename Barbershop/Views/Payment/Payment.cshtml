@@ -205,9 +205,9 @@
                     : 'N/A';
 
                 listItem.innerHTML = `
-                                    ${service.serviceName || 'Unknown Service'}
-                                    <span class="badge bg-success rounded-pill">${price}</span>
-                                `;
+                                        ${service.serviceName || 'Unknown Service'}
+                                        <span class="badge bg-success rounded-pill">${price}</span>
+                                    `;
 
                 total += service.price || 0;
                 serviceList.appendChild(listItem);
@@ -219,12 +219,12 @@
 
             // Update payment details
             paymentList.innerHTML = `
-                                <div class="card-body text-end">
-                                    <p><strong>Total:</strong> <span class="badge text-light bg-dark rounded-pill">${total.toFixed(2)}</span></p>
-                                    <p><strong>Tax:</strong> <span class="badge text-light bg-dark rounded-pill">${tax}</span></p>
-                                    <p><strong>SubTotal:</strong> <span class="badge text-light bg-dark rounded-pill">${subtotal}</span></p>
-                                </div>
-                            `;
+                                    <div class="card-body text-end">
+                                        <p><strong>Total:</strong> <span class="badge text-light bg-dark rounded-pill">${total.toFixed(2)}</span></p>
+                                        <p><strong>Tax:</strong> <span class="badge text-light bg-dark rounded-pill">${tax}</span></p>
+                                        <p><strong>SubTotal:</strong> <span class="badge text-light bg-dark rounded-pill">${subtotal}</span></p>
+                                    </div>
+                                `;
 
             updateTipOnTotalChange(); // Recalculate tip when subtotal changes
 
@@ -296,6 +296,29 @@
         });
     };
 
+    const calculateChange = (amountPaymentId, paidInputId) => {
+        const amountPaidField = document.getElementById(paidInputId);
+        const amountField = document.getElementById(amountPaymentId);
+        const changeOutputField = document.getElementById('changeOutput');
+
+        if (!amountPaidField || !amountField || !changeOutputField) {
+            console.error('One or more elements are missing.');
+            return;
+        }
+
+        const amountPaid = parseFloat(amountPaidField.value);
+        const totalAmount = parseFloat(amountField.textContent);
+
+        if (isNaN(amountPaid) || isNaN(totalAmount)) {
+            console.error('Invalid amount entered.');
+            changeOutputField.value = '0.00';
+            return;
+        }
+
+        const change = amountPaid - totalAmount;
+        changeOutputField.value = change.toFixed(2); // Display change with two decimal places
+    };
+
     // Toggle payment sections based on selected payment method
     const togglePaymentSections = () => {
         document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
@@ -314,11 +337,19 @@
         });
     };
 
+    // Attach event listeners for cash change 
+    const initializeCashListeners = () => {
+        document.querySelector('#paidInput').addEventListener('change', function () {
+            calculateChange('amountPayment', 'paidInput');
+        });
+    };
+
     // Initialize all event listeners
     const initializeEventListeners = () => {
         initializeScheduleListeners();
         togglePaymentSections();
         initializeTipListeners();
+        initializeCashListeners();
     };
 
     // Run initialization on page load
