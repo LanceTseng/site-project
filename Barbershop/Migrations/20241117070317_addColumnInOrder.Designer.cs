@@ -4,6 +4,7 @@ using Barbershop.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Barbershop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241117070317_addColumnInOrder")]
+    partial class addColumnInOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,6 +32,9 @@ namespace Barbershop.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
+
+                    b.Property<decimal>("AdditionalFee")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("CardLastDigit")
                         .HasColumnType("int");
@@ -55,11 +61,11 @@ namespace Barbershop.Migrations
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("TotalPaid")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("TotamAmount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("TransactionCode")
                         .IsRequired()
