@@ -297,7 +297,7 @@
 
             const scheduleId = parseInt(selectedSchedule.value);
             const transactionCode = document.getElementById('paymentTransectionCode')?.textContent || '';
-            const paymentType = document.querySelector('input[name="paymentType"]:checked')?.value || '';
+            const paymentType = document.querySelector('input[name="paymentMethod"]:checked')?.value || '';
             const total = parseFloat(document.getElementById('serviceTotal')?.textContent || '0'); // without tax
             const tax = parseFloat(document.getElementById('serviceTax')?.textContent || '0');
             const tip = parseFloat(document.getElementById('percentTip')?.value || '0');
