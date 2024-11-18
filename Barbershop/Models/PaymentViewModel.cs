@@ -6,11 +6,11 @@ namespace Barbershop.Models
     {
         public string PaymentType { get; set; }
         public int ScheduleId { get; set; }
-        public decimal AdditionalFee { get; set; }
         public decimal Total { get; set; }
         public decimal Tax { get; set; }
         public decimal SubTotal { get; set; }
         public int? CardLastDigit { get; set; }
+        public decimal Tip { get; set; }
         public int TotalPaid { get; set; }
         public string TransactionCode { get; set; }
         public DateTime CreatedDate { get; set; }

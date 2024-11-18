@@ -59,7 +59,7 @@
                 <input class="form-check-input" type="radio" name="paymentMethod" id="creditCardOption" value="CreditCard" />
                 <label class="form-check-label" for="creditCardOption">Credit Card</label>
             </div>
-
+            <div><p><strong>Transaction#</strong> <span id="paymentTransectionCode">@Model.TransactionCode</span></p></div>
             <!-- Credit Card Payment Details -->
             <div id="creditCardPayment" class="mt-3" style="display: none;">
                 <div class="form-group mb-3">
@@ -98,12 +98,12 @@
                         @* <option value="custom">Other</option> *@
                     </select>
                 </div>
-                <div class="form-group mb-3" id="customTipContainer" style="display: none;">
-                    <label for="customTip">Custom Tip</label>
-                    <input type="number" id="customTip" class="form-control" placeholder="Enter custom tip amount" />
-                </div>
+                @*   <div class="form-group mb-3" id="customTipContainer" style="display: none;">
+                <label for="customTip">Custom Tip</label>
+                <input type="number" id="customTip" class="form-control" placeholder="Enter custom tip amount" />
+                </div> *@
                 <div class="form-group mb-3" id="percentTipContainer" style="display: none;">
-                    <label for="customTip">Custom Tip</label>
+                    <label for="customTip">Tip</label>
                     <input type="number" id="percentTip" class="form-control" disabled="" />
                 </div>
             </div>
@@ -125,7 +125,9 @@
                     <input type="number" id="changeOutput" class="form-control" disabled="" />
                 </div>
             </div>
-
+            <div>
+                <button id="placeOrder" type="button" class="btn btn-success">Place Order</button>
+            </div>
 
         </div>
 
@@ -205,9 +207,9 @@
                     : 'N/A';
 
                 listItem.innerHTML = `
-                                        ${service.serviceName || 'Unknown Service'}
-                                        <span class="badge bg-success rounded-pill">${price}</span>
-                                    `;
+                                                ${service.serviceName || 'Unknown Service'}
+                                                <span class="badge bg-success rounded-pill">${price}</span>
+                                            `;
 
                 total += service.price || 0;
                 serviceList.appendChild(listItem);
@@ -219,12 +221,12 @@
 
             // Update payment details
             paymentList.innerHTML = `
-                                    <div class="card-body text-end">
-                                        <p><strong>Total:</strong> <span class="badge text-light bg-dark rounded-pill">${total.toFixed(2)}</span></p>
-                                        <p><strong>Tax:</strong> <span class="badge text-light bg-dark rounded-pill">${tax}</span></p>
-                                        <p><strong>SubTotal:</strong> <span class="badge text-light bg-dark rounded-pill">${subtotal}</span></p>
-                                    </div>
-                                `;
+                                            <div class="card-body text-end">
+                                                <p><strong>Total:</strong> <span id="serviceTotal" class="badge text-light bg-dark rounded-pill">${total.toFixed(2)}</span></p>
+                                                    <p><strong>Tax:</strong> <span  id="serviceTax" class="badge text-light bg-dark rounded-pill">${tax}</span></p>
+                                                    <p><strong>SubTotal:</strong> <span  id="serviceSubTotal" class="badge text-light bg-dark rounded-pill">${subtotal}</span></p>
+                                            </div>
+                                        `;
 
             updateTipOnTotalChange(); // Recalculate tip when subtotal changes
 
@@ -235,9 +237,8 @@
     };
 
     // Calculate and display the tip
-    const calculateTip = (tipOptionId, totalId, customTipContainerId, percentTipContainerId, percentTipId) => {
+    const calculateTip = (tipOptionId, totalId, percentTipContainerId, percentTipId) => {
         const tipOption = document.getElementById(tipOptionId);
-        const customTipContainer = document.getElementById(customTipContainerId);
         const percentTipContainer = document.getElementById(percentTipContainerId);
         const percentTip = document.getElementById(percentTipId);
         const totalElement = document.querySelector(`#${totalId} .badge.text-light.bg-dark`);
@@ -259,12 +260,10 @@
 
         if (tipOption.value === 'custom') {
             // Show custom tip input
-            customTipContainer.style.display = 'block';
             percentTipContainer.style.display = 'none';
             percentTip.value = ''; // Clear the percentage tip value
         } else {
             // Calculate percentage tip
-            customTipContainer.style.display = 'none';
             percentTipContainer.style.display = 'block';
 
             const percentage = parseFloat(tipOption.value);
@@ -284,7 +283,71 @@
 
     // Recalculate the tip when total changes dynamically
     const updateTipOnTotalChange = () => {
-        calculateTip('tipOption', 'paymentList', 'customTipContainer', 'percentTipContainer', 'percentTip');
+        calculateTip('tipOption', 'paymentList', 'percentTipContainer', 'percentTip');
+    };
+
+    const placeOrder = async () => {
+        try {
+            // Gather necessary data for the order
+            const selectedSchedule = document.querySelector('input[name="selectedSchedule"]:checked');
+            if (!selectedSchedule) {
+                alert('Please select a schedule before placing an order.');
+                return;
+            }
+
+            const scheduleId = selectedSchedule.value;
+            const transactionCode = document.getElementById('paymentTransectionCode')?.textContent || '';
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || '';
+            const total = document.getElementById('serviceTotal')?.textContent || '0'; // without tax
+            const tax = document.getElementById('serviceTax')?.textContent || '0';
+            const tip = document.getElementById('percentTip')?.value || '0';
+            const totalAmount = parseFloat(document.getElementById('amountPayment')?.textContent || '0'); // total + tax + tip
+            const totalPaid = paymentMethod === "Cash" ? parseFloat(document.getElementById('inputPaid')?.value || '0') : totalAmount;
+
+            // Credit card: check if element exists
+            const cardNumberElement = document.getElementById('cardNumber');
+            const last4CardNum = paymentMethod === "Cash" || !cardNumberElement
+                ? null
+                : cardNumberElement.value.slice(-4);
+
+            // Create order data object
+            const orderData = {
+                scheduleId: parseInt(scheduleId),
+                paymentType: paymentMethod,
+                total,
+                tax,
+                subtotal: totalAmount,
+                tip: parseFloat(tip),
+                totalpaid: totalPaid,
+                cardlastdigit: last4CardNum,
+                transactioncode: transactionCode,
+            };
+
+            console.log('Order Data:', orderData);
+
+            // Post to the controller
+            const response = await fetch('/Payment/PlaceOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                console.error('Failed to place order:', errorMessage);
+                alert('Error placing the order: ' + errorMessage);
+                return;
+            }
+
+            // Success
+            const result = await response.json();
+            alert(`Order placed successfully! Order ID: ${result.scheduleId}`);
+        } catch (error) {
+            console.error('An error occurred while placing the order:', error);
+            alert('An unexpected error occurred.');
+        }
     };
 
     // Initialize schedule change listeners
@@ -333,16 +396,22 @@
     // Attach event listeners for cash payment tip
     const initializeTipListeners = () => {
         document.querySelector('#tipOption').addEventListener('change', function () {
-            calculateTip('tipOption', 'paymentList', 'customTipContainer', 'percentTipContainer', 'percentTip');
+            calculateTip('tipOption', 'paymentList', 'percentTipContainer', 'percentTip');
         });
     };
 
-    // Attach event listeners for cash change 
+    // Attach event listeners for cash change
     const initializeCashListeners = () => {
         document.querySelector('#paidInput').addEventListener('change', function () {
             calculateChange('amountPayment', 'paidInput');
         });
     };
+
+    const initializePlaceOrderListeners = () => {
+        document.querySelector('#placeOrder').addEventListener('click', function () {
+            placeOrder();
+        });
+    }
 
     // Initialize all event listeners
     const initializeEventListeners = () => {
@@ -350,6 +419,7 @@
         togglePaymentSections();
         initializeTipListeners();
         initializeCashListeners();
+        initializePlaceOrderListeners();;
     };
 
     // Run initialization on page load

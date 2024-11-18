@@ -83,5 +83,22 @@ namespace Barbershop.Controllers
             return Json(services);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> PlaceOrder([FromBody] PaymentViewModel order)
+        {
+            if (order == null || order.ScheduleId <= 0 || order.SubTotal <= 0)
+            {
+                return BadRequest("Invalid order details.");
+            }
+
+            var response = await _context.Schedules.Where(s => s.ScheduleId == order.ScheduleId).Select(s => new
+            {
+                s.ScheduleId
+            }).FirstOrDefaultAsync();
+
+            // Return the result
+            return Ok(response.ScheduleId);
+        }
+
     }
 }
