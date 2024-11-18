@@ -302,7 +302,7 @@
             const tax = document.getElementById('serviceTax')?.textContent || '0';
             const tip = document.getElementById('percentTip')?.value || '0';
             const totalAmount = parseFloat(document.getElementById('amountPayment')?.textContent || '0'); // total + tax + tip
-            const totalPaid = paymentMethod === "Cash" ? parseFloat(document.getElementById('inputPaid')?.value || '0') : totalAmount;
+            const totalPaid = paymentMethod === "Cash" ? parseFloat(document.getElementById('paidInput')?.value || '0') : totalAmount;
 
             // Credit card: check if element exists
             const cardNumberElement = document.getElementById('cardNumber');
@@ -316,14 +316,12 @@
                 paymentType: paymentMethod,
                 total,
                 tax,
-                subtotal: totalAmount,
+                totalAmount,
                 tip: parseFloat(tip),
                 totalpaid: totalPaid,
                 cardlastdigit: last4CardNum,
                 transactioncode: transactionCode,
             };
-
-            console.log('Order Data:', orderData);
 
             // Post to the controller
             const response = await fetch('/Payment/PlaceOrder', {
@@ -334,6 +332,7 @@
                 body: JSON.stringify(orderData),
             });
 
+
             if (!response.ok) {
                 const errorMessage = await response.text();
                 console.error('Failed to place order:', errorMessage);
@@ -343,7 +342,7 @@
 
             // Success
             const result = await response.json();
-            alert(`Order placed successfully! Order ID: ${result.scheduleId}`);
+            alert(`Order placed successfully! Transaction Code: ${result.transactioncode}`);
         } catch (error) {
             console.error('An error occurred while placing the order:', error);
             alert('An unexpected error occurred.');

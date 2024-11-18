@@ -8,7 +8,7 @@ namespace Barbershop.Models
         public int ScheduleId { get; set; }
         public decimal Total { get; set; }
         public decimal Tax { get; set; }
-        public decimal SubTotal { get; set; }
+        public decimal TotalAmount { get; set; }
         public int? CardLastDigit { get; set; }
         public decimal Tip { get; set; }
         public int TotalPaid { get; set; }

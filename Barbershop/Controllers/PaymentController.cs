@@ -1,8 +1,10 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using System.Transactions;
 using Barbershop.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 
 namespace Barbershop.Controllers
 {
@@ -67,7 +69,7 @@ namespace Barbershop.Controllers
 
             // Query the services associated with the provided schedule ID
             var services = await _context.Services
-                .Where(s => s.ServiceId == schedule.ScheduleId)
+                .Where(s => s.ServiceId == schedule.ServiceId)
                 .Select(s => new
                 {
                     s.ServiceName,
@@ -86,18 +88,43 @@ namespace Barbershop.Controllers
         [HttpPost]
         public async Task<IActionResult> PlaceOrder([FromBody] PaymentViewModel order)
         {
-            if (order == null || order.ScheduleId <= 0 || order.SubTotal <= 0)
+            if (order == null || order.ScheduleId <= 0 || order.TotalAmount <= 0)
             {
                 return BadRequest("Invalid order details.");
             }
+            var schedule = await _context.Schedules.FindAsync(order.ScheduleId);
 
-            var response = await _context.Schedules.Where(s => s.ScheduleId == order.ScheduleId).Select(s => new
+            var model = new Order
             {
-                s.ScheduleId
-            }).FirstOrDefaultAsync();
+                PaymentType = order.PaymentType, // Replace with actual value
+                ScheduleId = order.ScheduleId, // Replace with actual value
+                Total = order.Total, // Replace with actual value
+                Tax = order.Tax, // Replace with actual value
+                Tip = order.Tip, // Replace with actual value
+                CardLastDigit = order.CardLastDigit, // Replace with actual value or null
+                TotalAmount = order.TotalAmount, // Replace with actual value
+                TotalPaid = order.TotalPaid, // Replace with actual value
+                TransactionCode = order.TransactionCode, // Replace with actual value
+                CreatedDate = DateTime.UtcNow, // Replace with actual value
+            };
+
+            _context.Orders.Add(model);
+            _context.SaveChangesAsync();
+
+            var response = _context.Orders.FirstOrDefaultAsync(o => o.TransactionCode == order.TransactionCode);
+            if (response == null)
+            {
+                return BadRequest("Invalid TransactionCode provided.");
+            }
+
+            schedule.Status = "Closed";
+            _context.SaveChangesAsync();
 
             // Return the result
-            return Ok(response.ScheduleId);
+            return Ok(new
+            {
+                order.TransactionCode
+            }.ToJson());
         }
 
     }
