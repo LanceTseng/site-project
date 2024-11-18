@@ -12,9 +12,24 @@
         </div>
         <h1 class="fw-bold text-success">Payment Successful!</h1>
         <p class="text-muted mt-3">Thank you for your payment. Your transaction has been processed successfully.</p>
+        <p id="transactionCode" class="text-muted mt-3"></p> <!-- Placeholder for the transaction code -->
         <button onclick="window.location.href='@Url.Action("Index", "Home")'"
                 class="btn btn-lg btn-success mt-4 px-5">
             Go to Home
         </button>
     </div>
 </div>
+
+<script>
+    // Function to extract the transaction code from the URL
+    function getTransactionCode() {
+        const params = new URLSearchParams(window.location.search); // Get query parameters from the URL
+        return params.get("transactionCode"); // Replace 'transactionCode' with your actual query parameter key
+    }
+
+    // Display the transaction code in the designated <p> element
+    const transactionCode = getTransactionCode();
+    if (transactionCode) {
+        document.getElementById("transactionCode").textContent = `Transaction Code: ${transactionCode}`;
+    }
+</script>

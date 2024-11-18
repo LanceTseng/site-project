@@ -323,8 +323,6 @@
                     transactionCode,
             };
 
-            console.log(orderData);
-
             // Post to the controller
             const response = await fetch('/Payment/PlaceOrder', {
                 method: 'POST',
@@ -344,8 +342,7 @@
 
             // Success
             const result = await response.json();
-            console.log(result);
-            window.location.href = `/Payment/SuccessPayment?transactionCode=${result.transactioncode}`;
+            window.location.href = `/Payment/SuccessPayment?transactionCode=${result.TransactionCode}`;
         } catch (error) {
             console.error('An error occurred while placing the order:', error);
             alert('An unexpected error occurred.');
