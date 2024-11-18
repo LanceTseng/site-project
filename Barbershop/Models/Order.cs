@@ -8,9 +8,9 @@
         public decimal Total { get; set; }
         public decimal Tax { get; set; }
         public decimal Tip { get; set; }
-        public int? CardLastDigit { get; set; }
+        public string CardLastDigit { get; set; }
         public decimal TotalAmount { get; set; }
-        public int TotalPaid { get; set; }
+        public decimal TotalPaid { get; set; }
         public string TransactionCode { get; set; }
         public DateTime CreatedDate { get; set; }
         public Schedule Schedule { get; set; }

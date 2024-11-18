@@ -295,33 +295,35 @@
                 return;
             }
 
-            const scheduleId = selectedSchedule.value;
+            const scheduleId = parseInt(selectedSchedule.value);
             const transactionCode = document.getElementById('paymentTransectionCode')?.textContent || '';
-            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || '';
-            const total = document.getElementById('serviceTotal')?.textContent || '0'; // without tax
-            const tax = document.getElementById('serviceTax')?.textContent || '0';
-            const tip = document.getElementById('percentTip')?.value || '0';
+            const paymentType = document.querySelector('input[name="paymentType"]:checked')?.value || '';
+            const total = parseFloat(document.getElementById('serviceTotal')?.textContent || '0'); // without tax
+            const tax = parseFloat(document.getElementById('serviceTax')?.textContent || '0');
+            const tip = parseFloat(document.getElementById('percentTip')?.value || '0');
             const totalAmount = parseFloat(document.getElementById('amountPayment')?.textContent || '0'); // total + tax + tip
-            const totalPaid = paymentMethod === "Cash" ? parseFloat(document.getElementById('paidInput')?.value || '0') : totalAmount;
-
+            let totalPaid = parseFloat(document.getElementById('paidInput'));
+            let cardLastDigit = "0000";
             // Credit card: check if element exists
-            const cardNumberElement = document.getElementById('cardNumber');
-            const last4CardNum = paymentMethod === "Cash" || !cardNumberElement
-                ? null
-                : cardNumberElement.value.slice(-4);
-
+            if(paymentType != "Cash"){
+                totalPaid = totalAmount;
+                cardLastDigit  = document.getElementById('cardNumber').value.slice(-4)
+            }
+             
             // Create order data object
             const orderData = {
-                scheduleId: parseInt(scheduleId),
-                paymentType: paymentMethod,
-                total,
-                tax,
-                totalAmount,
-                tip: parseFloat(tip),
-                totalpaid: totalPaid,
-                cardlastdigit: last4CardNum,
-                transactioncode: transactionCode,
+                    scheduleId,
+                    paymentType,
+                    total,
+                    tax,
+                    totalAmount,
+                    cardLastDigit,
+                    tip,
+                    totalPaid,
+                    transactionCode,
             };
+
+            console.log(orderData);
 
             // Post to the controller
             const response = await fetch('/Payment/PlaceOrder', {
@@ -342,7 +344,8 @@
 
             // Success
             const result = await response.json();
-            alert(`Order placed successfully! Transaction Code: ${result.transactioncode}`);
+            console.log(result);
+            window.location.href = `/Payment/SuccessPayment?transactionCode=${result.transactioncode}`;
         } catch (error) {
             console.error('An error occurred while placing the order:', error);
             alert('An unexpected error occurred.');

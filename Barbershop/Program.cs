@@ -30,6 +30,10 @@ namespace Barbershop
                 options.AddPolicy("CustomerOnly", policy => policy.RequireRole("CUSTOMER"));
                 options.AddPolicy("EmployeeOnly", policy => policy.RequireRole("EMPLOYEE"));
             });
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            });
 
             var app = builder.Build();
 
@@ -47,6 +51,8 @@ namespace Barbershop
 
             app.UseAuthentication();  // Ensure authentication middleware is before authorization
             app.UseAuthorization();   // Authorization middleware
+
+
 
             app.MapControllerRoute(
                 name: "default",

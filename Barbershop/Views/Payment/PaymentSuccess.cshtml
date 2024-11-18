@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewData["Title"] = "PaymentSuccess";
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+    <div class="text-center shadow-lg p-5 rounded bg-white">
+        <div class="icon-container mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="text-success" width="80" height="80" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M16 8a8 8 0 1 1-16 0 8 8 0 0 1 16 0zM6.93 11.481l4.482-4.482a.5.5 0 0 0-.707-.707L6.5 10.293 4.854 8.646a.5.5 0 1 0-.708.708l2.182 2.182a.5.5 0 0 0 .707 0z" />
+            </svg>
+        </div>
+        <h1 class="fw-bold text-success">Payment Successful!</h1>
+        <p class="text-muted mt-3">Thank you for your payment. Your transaction has been processed successfully.</p>
+        <button onclick="window.location.href='@Url.Action("Index", "Home")'"
+                class="btn btn-lg btn-success mt-4 px-5">
+            Go to Home
+        </button>
+    </div>
+</div>

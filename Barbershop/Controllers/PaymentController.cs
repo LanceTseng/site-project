@@ -24,7 +24,6 @@ namespace Barbershop.Controllers
             {
                 Schedules = GetScheduleList(),
                 TransactionCode = GenerateSecureRandomString(6),
-
             };
             return View("Payment", model);
         }
@@ -51,9 +50,9 @@ namespace Barbershop.Controllers
         {
             return _context.Schedules
                 .Where(s => s.Status == "New")
-                .Include(s => s.Service) 
-                .Include(s=>s.Barber)
-                .Include(s=>s.Customer)// Include related services
+                .Include(s => s.Service)
+                .Include(s => s.Barber)
+                .Include(s => s.Customer)// Include related services
                 .ToList();
         }
 
@@ -96,16 +95,16 @@ namespace Barbershop.Controllers
 
             var model = new Order
             {
-                PaymentType = order.PaymentType, // Replace with actual value
-                ScheduleId = order.ScheduleId, // Replace with actual value
-                Total = order.Total, // Replace with actual value
-                Tax = order.Tax, // Replace with actual value
-                Tip = order.Tip, // Replace with actual value
-                CardLastDigit = order.CardLastDigit, // Replace with actual value or null
-                TotalAmount = order.TotalAmount, // Replace with actual value
-                TotalPaid = order.TotalPaid, // Replace with actual value
-                TransactionCode = order.TransactionCode, // Replace with actual value
-                CreatedDate = DateTime.UtcNow, // Replace with actual value
+                PaymentType = order.PaymentType,
+                ScheduleId = order.ScheduleId,
+                Total = order.Total,
+                Tax = order.Tax,
+                Tip = order.Tip,
+                CardLastDigit = order.CardLastDigit,
+                TotalAmount = order.TotalAmount,
+                TotalPaid = order.TotalPaid,
+                TransactionCode = order.TransactionCode,
+                CreatedDate = DateTime.UtcNow,
             };
 
             _context.Orders.Add(model);
@@ -127,5 +126,10 @@ namespace Barbershop.Controllers
             }.ToJson());
         }
 
+        [HttpGet]
+        public IActionResult SuccessPayment()
+        {
+            return View("PaymentSuccess");
+        }
     }
 }
