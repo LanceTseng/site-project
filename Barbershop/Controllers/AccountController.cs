@@ -79,6 +79,15 @@ namespace Barbershop.Controllers
             _context.Users.Add(user);
             _context.SaveChanges();
 
+            var userId = _context.Users.FirstOrDefault(s => s.Username == model.Username).UserId;
+            var roleId = _context.Roles.FirstOrDefault(s => s.RoleName == "CUSTOMER").RoleId;
+            _context.UserRoles.Add(new UserRole()
+            {
+                UserId = userId,
+                RoleId = roleId
+            });
+            _context.SaveChanges();
+
             return RedirectToAction("Login");
         }
 
