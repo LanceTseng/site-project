@@ -35,6 +35,8 @@ namespace Barbershop
                 options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
             });
 
+            builder.Services.AddRazorPages();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -3,6 +3,7 @@ using Barbershop.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace Barbershop.Controllers
 {
@@ -91,7 +92,7 @@ namespace Barbershop.Controllers
         private List<string> GetAvailableTimes()
         {
             var startTime = new TimeSpan(9, 0, 0); // 9:00 AM
-            var endTime = new TimeSpan(17, 0, 0);  // 5:00 PM
+            var endTime = new TimeSpan(17, 0, 0); // 5:00 PM
             var interval = TimeSpan.FromMinutes(30); // 30-minute intervals
             var availableTimes = new List<string>();
 
@@ -101,6 +102,28 @@ namespace Barbershop.Controllers
             }
 
             return availableTimes;
+        }
+
+        //[Authorize(Roles = "EMPLOYEE")]
+        [HttpGet]
+        public IActionResult Approval()
+        {
+            var model = new ApprovalViewModel()
+            {
+                Barbers = GetBarberSelectList(),
+                Schedules = GetScheduleByStatus("New")
+            };
+
+            return View("Approval", model);
+        }
+
+        private List<Schedule> GetScheduleByStatus(string status)
+        {
+            return _context.Schedules.Where(s => s.Status == status)
+                .Include(s => s.Service)
+                .Include(c => c.Customer)
+                .Include(b => b.Barber)
+                .ToList();
         }
     }
 }
