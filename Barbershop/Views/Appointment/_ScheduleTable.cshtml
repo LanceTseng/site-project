@@ -55,50 +55,54 @@
 </table>
 
 <script>
-      const reloadForm = () => {
-        fetch('/Appointment/GetSchedules') // Update with your actual controller and action
-            .then(response => {
-                if (!response.ok) throw new Error('Failed to load schedule data.');
-                return response.text();
-            })
-            .then(html => {
-                document.querySelector('#scheduleContainer').innerHTML = html;
-                initialActionListeners(); // Reattach event listeners
-            })
-            .catch(error => console.error(error));
-    };
+        const reloadForm = () => {
+            fetch('/Appointment/GetSchedules') // Update with your actual controller and action
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load schedule data.');
+                    return response.text();
+                })
+                .then(html => {
+                    document.querySelector('#scheduleTableContainer').innerHTML = html;
+                    // Event listeners will still work with delegation; no need to reattach here
+                })
+                .catch(error => console.error(error));
+        };
 
-    const actionAppointment = (scheduleId, status) => {
-        fetch('/Appointment/UpdateAppointmentStatus', { // Replace with your actual update endpoint
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ scheduleId, status })
-        })
-            .then(response => {
-                if (response.ok) {
-                    console.log(`Schedule ${scheduleId} updated to ${status}`);
-                    reloadForm(); // Refresh the partial view
-                } else {
-                    throw new Error('Failed to update schedule.');
+        const actionAppointment = (scheduleId, status) => {
+            fetch('/Appointment/UpdateAppointmentStatus', { // Replace with your actual update endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ scheduleId, status })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log(`Schedule ${scheduleId} updated to ${status}`);
+                        reloadForm(); // Refresh the partial view
+                    } else {
+                        throw new Error('Failed to update schedule.');
+                    }
+                })
+                .catch(error => console.error(error));
+        };
+
+        const initialActionListeners = () => {
+            // Use event delegation for dynamic content
+            document.querySelector('#scheduleTableContainer').addEventListener('click', function (e) {
+                const approvalButton = e.target.closest('#approval'); // Match buttons with `id="approval"`
+                const cancelButton = e.target.closest('#cancel');     // Match buttons with `id="cancel"`
+
+                if (approvalButton) {
+                    const scheduleId = approvalButton.getAttribute('data-id');
+                    actionAppointment(scheduleId, 'Confirmed');
+                } else if (cancelButton) {
+                    const scheduleId = cancelButton.getAttribute('data-id');
+                    actionAppointment(scheduleId, 'Cancel');
                 }
-            })
-            .catch(error => console.error(error));
-    };
+            });
+        };
 
-    const initialActionListeners = () => {
-               document.querySelector('#scheduleTableContainer').addEventListener('click', function (e) {
-            if (e.target.closest('.approval')) {
-                const scheduleId = e.target.closest('.approval').getAttribute('data-id');
-                actionAppointment(scheduleId, "Confirmed");
-            } else if (e.target.closest('.cancel')) {
-                const scheduleId = e.target.closest('.cancel').getAttribute('data-id');
-                actionAppointment(scheduleId, "Cancel");
-            }
-        });
-    };
-
-    // Initialize all event listeners
-    initialActionListeners();
+        // Run initialization on page load
+        document.addEventListener('DOMContentLoaded', initialActionListeners);
 </script>
