@@ -49,7 +49,7 @@ namespace Barbershop.Controllers
         public List<Schedule> GetScheduleList()
         {
             return _context.Schedules
-                .Where(s => s.Status == "New")
+                .Where(s => s.Status == "Confirmed")
                 .Include(s => s.Service)
                 .Include(s => s.Barber)
                 .Include(s => s.Customer)// Include related services

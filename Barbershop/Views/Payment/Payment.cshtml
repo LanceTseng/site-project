@@ -302,14 +302,14 @@
             const tax = parseFloat(document.getElementById('serviceTax')?.textContent || '0');
             const tip = parseFloat(document.getElementById('percentTip')?.value || '0');
             const totalAmount = parseFloat(document.getElementById('amountPayment')?.textContent || '0'); // total + tax + tip
-            let totalPaid = parseFloat(document.getElementById('paidInput'));
+            let totalPaid = parseFloat(document.getElementById('paidInput').value || '0');
             let cardLastDigit = "0000";
             // Credit card: check if element exists
             if(paymentType != "Cash"){
                 totalPaid = totalAmount;
                 cardLastDigit  = document.getElementById('cardNumber').value.slice(-4)
             }
-             
+                console.log(totalPaid);
             // Create order data object
             const orderData = {
                     scheduleId,
@@ -322,6 +322,8 @@
                     totalPaid,
                     transactionCode,
             };
+
+         
 
             // Post to the controller
             const response = await fetch('/Payment/PlaceOrder', {

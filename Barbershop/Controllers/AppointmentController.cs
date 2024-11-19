@@ -104,7 +104,7 @@ namespace Barbershop.Controllers
             return availableTimes;
         }
 
-        //[Authorize(Roles = "EMPLOYEE")]
+        [Authorize(Roles = "EMPLOYEE,ADMIN")]
         [HttpGet]
         public IActionResult Approval()
         {
@@ -117,6 +117,29 @@ namespace Barbershop.Controllers
             return View("Approval", model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateAppointmentStatus([FromBody] ActionSchedule actionSchedule)
+        {
+            if (actionSchedule == null || string.IsNullOrEmpty(actionSchedule.Status))
+            {
+                return BadRequest(new { error = "Invalid input data." });
+            }
+
+            var schedule = await GetScheduleByIdAsync(actionSchedule.ScheduleId);
+
+            if (schedule == null)
+            {
+                return NotFound(new { error = "Schedule not found." });
+            }
+
+            schedule.Status = actionSchedule.Status;
+            _context.Schedules.Update(schedule);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true });
+        }
+
         private List<Schedule> GetScheduleByStatus(string status)
         {
             return _context.Schedules.Where(s => s.Status == status)
@@ -124,6 +147,15 @@ namespace Barbershop.Controllers
                 .Include(c => c.Customer)
                 .Include(b => b.Barber)
                 .ToList();
+        }
+
+        private async Task<Schedule> GetScheduleByIdAsync(int id)
+        {
+            return await _context.Schedules
+                .Include(s => s.Service)
+                .Include(c => c.Customer)
+                .Include(b => b.Barber)
+                .FirstOrDefaultAsync(s => s.ScheduleId == id);
         }
     }
 }

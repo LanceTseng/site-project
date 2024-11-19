@@ -9,6 +9,8 @@ namespace Barbershop.Models
         public List<SelectListItem> Barbers { get; set; }
         public List<Schedule> Schedules { get; set; }
 
+        public int ScheduleId { get; set; }
+
         [BindProperty]
         public ScheduleFilter Filter { get; set; }
 
@@ -17,6 +19,12 @@ namespace Barbershop.Models
     {
         public int? BarberId { get; set; }
         public DateTime? Date { get; set; }
+        public string Status { get; set; }
+    }
+
+    public class ActionSchedule()
+    {
+        public int ScheduleId { get; set; }
         public string Status { get; set; }
     }
 
