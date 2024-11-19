@@ -7,7 +7,7 @@
         <!-- Left Panel: Filter Form -->
         <div class="col-md-4 bg-light p-4 rounded shadow-sm">
             <h4 class="fw-bold mb-4">Approval Filters</h4>
-            <form method="post">
+            <form id="filterForm" method="post">
                 <div class="mb-3">
                     <label for="barberSelect" class="form-label">Select Barber</label>
                     <select id="barberSelect" class="form-select" asp-for="Filter.BarberId">
@@ -31,118 +31,87 @@
                         <option value="Cancel">Cancel</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Process Query</button>
+                <button type="submit" class="btn btn-primary w-100">Search</button>
             </form>
         </div>
 
         <!-- Right Panel: Schedule Table -->
         <div class="col-md-8">
             <h4 class="fw-bold mb-4">Schedule Approvals</h4>
-            <table class="table table-bordered table-hover shadow-sm">
-                <thead class="table-light">
-                    <tr>
-                        <th>Schedule ID</th>
-                        <th>Date</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>Barber</th>
-                        <th>Customer</th>
-                        <th>Service</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var schedule in Model.Schedules)
-                    {
-                        <tr>
-                            <td>@schedule.ScheduleId</td>
-                            <td>@schedule.StartTime.ToShortDateString()</td>
-                            <td>@schedule.StartTime.ToShortTimeString()</td>
-                            <td>@schedule.EndTime.ToShortTimeString()</td>
-                            <td>@schedule.Barber.Username</td>
-                            <td>@schedule.Customer.Username</td>
-                            <td>@schedule.Service.ServiceName</td>
-                            <td>
-                                <select class="form-select form-select-sm" asp-for="@schedule.Status" disabled="">
-                                    <option value="New">New</option>
-                                    <option value="Confirmed">Confirmed</option>
-                                    <option value="Cancel">Cancel</option>
-                                </select>
-                            </td>
-                            <td>
-                                <button id="approval" type="button" class="btn btn-outline-success" data-id="@schedule.ScheduleId">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2-square" viewBox="0 0 16 16">
-                                        <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5z"></path>
-                                        <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0"></path>
-                                    </svg>
-                                </button>
-                                <button id="cancel" type="button" class="btn btn-outline-danger" data-id="@schedule.ScheduleId">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"></path>
-                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"></path>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <div id="scheduleTableContainer">
+                @await Html.PartialAsync("_ScheduleTable", Model.Schedules)
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    //https://localhost:7268/appointment/approval
-    const actionAppointment = async (scheduleId, status)=>{
 
-        const appointmentData = {
-            scheduleId,
-            status
+       const querySchedule = async (scheduleDate, barber, status) => {
+           const scheduleTableContainer = document.getElementById('scheduleTableContainer');
+
+           const loadingIndicator = document.createElement('div');
+    loadingIndicator.innerText = 'Loading...';
+    scheduleTableContainer.appendChild(loadingIndicator);
+
+    const filterData = {
+        barberId: barber || null,  // If barber is empty, send null
+        date: scheduleDate ? new Date(scheduleDate) : null,  // If date is empty, send null
+        status: status || null     // If status is empty, send null
+    };
+
+    console.log(JSON.stringify(filterData));
+    try {
+        const response = await fetch('/Appointment/GetFilteredSchedules', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(filterData),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch filtered schedules.');
         }
 
-         const response = await fetch('/Appointment/UpdateAppointmentStatus', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(appointmentData),
-            });
+        const result = await response.text();
+        console.log(result);
+        // If no schedules found, show a message
+        if (response.error) {
+            // Show a Bootstrap alert for no data found
+            scheduleTableContainer.innerHTML = `
+                <div class="alert alert-warning" role="alert">
+                    ${result.error}
+                </div>
+            `;
+        } else {
+            // Update the schedule table container with new data
+              scheduleTableContainer.innerHTML = result;
+        }
 
-             if (!response.ok) {
-                const errorMessage = await response.text();
-                console.error('Failed to update appointment status:', errorMessage);
-                alert('Error update appointment status: ' + errorMessage);
-                return ;
-            }
-
-            // Success
-            const result = await response.json();
-            console.log(result);
-
+    } catch (error) {
+        console.error(error);
+        alert('Error refreshing schedule table. Please try again.');
+    } finally {
+        // Remove the loading indicator once the data is fetched or failed
+        loadingIndicator.remove();
     }
-
-    const initialActionListeners = ()=>{
-    document.querySelectorAll('#approval').forEach(button => {
-        button.addEventListener('click', function () {
-            const scheduleId = this.getAttribute('data-id');
-            console.log(`Approve button clicked for Schedule ID: ${scheduleId}`);
-            actionAppointment(scheduleId, "Confirmed");
-        });
-    });
-
-    document.querySelectorAll('#cancel').forEach(button => {
-        button.addEventListener('click', function () {
-            const scheduleId = this.getAttribute('data-id');
-            console.log(`Cancel button clicked for Schedule ID: ${scheduleId}`);
-             actionAppointment(scheduleId, "Cancel");
-        });
-    });
-    }
-     // Initialize all event listeners
-    const initializeEventListeners = () => {
-       initialActionListeners();
     };
+
+    const initializeEventListeners = () => {
+    // Attach event listener to the form
+       document.getElementById('filterForm').addEventListener('submit', function (e) {
+            event.preventDefault(); // Prevent form submission
+
+            // Get filter values
+            const scheduleDate = document.getElementById('dateSelect').value;
+            const barber = document.getElementById('barberSelect').value;
+            const status = document.getElementById('statusSelect').value;
+
+            // Call the query function
+            querySchedule(scheduleDate, barber, status);
+        });
+    }
 
     // Run initialization on page load
     document.addEventListener('DOMContentLoaded', initializeEventListeners);

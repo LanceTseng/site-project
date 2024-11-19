@@ -6,13 +6,9 @@ namespace Barbershop.Models
 {
     public class ApprovalViewModel 
     {
+        public ScheduleFilter Filter { get; set; }
         public List<SelectListItem> Barbers { get; set; }
         public List<Schedule> Schedules { get; set; }
-
-        public int ScheduleId { get; set; }
-
-        [BindProperty]
-        public ScheduleFilter Filter { get; set; }
 
     }
     public class ScheduleFilter

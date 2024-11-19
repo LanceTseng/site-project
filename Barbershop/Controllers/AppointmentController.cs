@@ -2,8 +2,10 @@
 using Barbershop.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 
 namespace Barbershop.Controllers
 {
@@ -140,6 +142,8 @@ namespace Barbershop.Controllers
             return Ok(new { success = true });
         }
 
+
+
         private List<Schedule> GetScheduleByStatus(string status)
         {
             return _context.Schedules.Where(s => s.Status == status)
@@ -156,6 +160,47 @@ namespace Barbershop.Controllers
                 .Include(c => c.Customer)
                 .Include(b => b.Barber)
                 .FirstOrDefaultAsync(s => s.ScheduleId == id);
+        }
+
+        private List<Schedule> GetAllSchedules()
+        {
+            return _context.Schedules
+                .Include(s => s.Service)
+                .Include(c => c.Customer)
+                .Include(b => b.Barber).ToList();
+        }
+
+        public IActionResult GetSchedules()
+        {
+            var schedules = GetAllSchedules(); // Fetch updated data
+            return PartialView("_ScheduleTable", schedules); // Return the partial view
+        }
+
+        //
+        [HttpPost]
+        public async Task<IActionResult> GetFilteredSchedules([FromBody] ScheduleFilter filter)
+        {
+            // Get the filtered schedules based on the filter
+            var schedules = GetSchedulesByCondition(filter);
+
+            if (schedules == null || !schedules.Any())
+            {
+                return Json(new { error = "Schedules not found." });
+            }
+
+            // Return success response
+            return PartialView("_ScheduleTable", schedules);
+        }
+
+        private List<Schedule> GetSchedulesByCondition(ScheduleFilter filter)
+        {
+            return GetAllSchedules()
+                .Where(s =>
+                    (filter.Status == null || s.Status == filter.Status) &&
+                    (filter.BarberId == null || s.BarberId == filter.BarberId) &&
+                    (filter.Date == null || s.StartTime.Date == filter.Date.Value.Date)
+                )
+                .ToList();
         }
     }
 }
