@@ -32,26 +32,29 @@
                 </div>
             </div>
         </div>
-        <!-- Check Out Card -->
-        <div class="col-lg-3 col-md-6">
-            <div class="card shadow h-100 clickable-card" data-action="/payment">
-                <div class="card-body d-flex flex-column align-items-center">
-                    <i class="bi bi-cart-check display-4 text-warning mb-3"></i>
-                    <h5 class="card-title">Check Out</h5>
-                    <p class="card-text text-muted">Finalize payments and receipts.</p>
+        @if (role == "EMPLOYEE" || role == "ADMIN")
+        {
+            <!-- Check Out Card -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card shadow h-100 clickable-card" data-action="/payment">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <i class="bi bi-cart-check display-4 text-warning mb-3"></i>
+                        <h5 class="card-title">Check Out</h5>
+                        <p class="card-text text-muted">Finalize payments and receipts.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Report Card -->
-        <div class="col-lg-3 col-md-6">
-            <div class="card shadow h-100 clickable-card" data-action="/Reports">
-                <div class="card-body d-flex flex-column align-items-center">
-                    <i class="bi bi-bar-chart-line display-4 text-danger mb-3"></i>
-                    <h5 class="card-title">Report</h5>
-                    <p class="card-text text-muted">Analyze business performance.</p>
+            <!-- Report Card -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card shadow h-100 clickable-card" data-action="/Reports">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <i class="bi bi-bar-chart-line display-4 text-danger mb-3"></i>
+                        <h5 class="card-title">Report</h5>
+                        <p class="card-text text-muted">Analyze business performance.</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     </div>
 </div>
 

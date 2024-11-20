@@ -30,6 +30,8 @@ namespace Barbershop.Controllers
                 ConfirmationDetails = null // or retrieve from session/state as needed
             };
 
+            SetUserContext();
+
             return View("Appointment", model);
         }
 
@@ -94,7 +96,7 @@ namespace Barbershop.Controllers
         private List<string> GetAvailableTimes()
         {
             var startTime = new TimeSpan(9, 0, 0); // 9:00 AM
-            var endTime = new TimeSpan(17, 0, 0); // 5:00 PM
+            var endTime = new TimeSpan(21, 0, 0); // 5:00 PM
             var interval = TimeSpan.FromMinutes(30); // 30-minute intervals
             var availableTimes = new List<string>();
 
@@ -115,7 +117,7 @@ namespace Barbershop.Controllers
             var model = new ApprovalViewModel()
             {
                 Barbers = GetBarberSelectList(),
-                Schedules = GetScheduleByStatus("New")
+                Schedules = GetScheduleByCondition("New", UserId)
             };
 
             return View("Approval", model);
@@ -144,14 +146,19 @@ namespace Barbershop.Controllers
             return Ok(new { success = true });
         }
 
-
-
-        private List<Schedule> GetScheduleByStatus(string status)
+        private List<Schedule> GetAllSchedules()
         {
-            return _context.Schedules.Where(s => s.Status == status)
+            return _context.Schedules
                 .Include(s => s.Service)
                 .Include(c => c.Customer)
-                .Include(b => b.Barber)
+                .Include(b => b.Barber).ToList();
+        }
+
+        private List<Schedule> GetScheduleByCondition(string status = null, int? barberId = null, int? scheduleId = null)
+        {
+            return GetAllSchedules().Where(s => (status == null ||s.Status == status)
+                                              && (barberId == null || s.BarberId == barberId)
+                                              && (scheduleId==null || s.ScheduleId == scheduleId))
                 .ToList();
         }
 
@@ -164,17 +171,11 @@ namespace Barbershop.Controllers
                 .FirstOrDefaultAsync(s => s.ScheduleId == id);
         }
 
-        private List<Schedule> GetAllSchedules()
-        {
-            return _context.Schedules
-                .Include(s => s.Service)
-                .Include(c => c.Customer)
-                .Include(b => b.Barber).ToList();
-        }
 
+        [HttpGet]
         public IActionResult GetSchedules()
         {
-            var schedules = GetAllSchedules(); // Fetch updated data
+            var schedules = GetScheduleByCondition(null, UserId); // Fetch updated data
             return PartialView("_ScheduleTable", schedules); // Return the partial view
         }
 

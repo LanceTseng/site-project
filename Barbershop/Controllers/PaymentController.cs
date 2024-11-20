@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using System.Transactions;
 using Barbershop.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,7 @@ using NuGet.Protocol;
 
 namespace Barbershop.Controllers
 {
-    public class PaymentController : Controller
+    public class PaymentController : BaseController
     {
         private readonly ApplicationDbContext _context;
 
@@ -22,9 +21,10 @@ namespace Barbershop.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            var schedules = (UserRole == "EMPLOYEE") ? GetScheduleList(UserId, "Confirmed") : GetScheduleList();
             var model = new PaymentViewModel()
             {
-                Schedules = GetScheduleList(),
+                Schedules = schedules,
                 TransactionCode = GenerateSecureRandomString(6),
             };
             return View("Payment", model);
@@ -48,13 +48,14 @@ namespace Barbershop.Controllers
             return result.ToString();
         }
 
-        public List<Schedule> GetScheduleList()
+        public List<Schedule> GetScheduleList(int? barberId = null, string status = null)
         {
             return _context.Schedules
-                .Where(s => s.Status == "Confirmed")
+                .Where(s => (status == null || s.Status == status)
+                                 && (barberId == null || s.BarberId == barberId)) // Use s.BarberId
                 .Include(s => s.Service)
                 .Include(s => s.Barber)
-                .Include(s => s.Customer)// Include related services
+                .Include(s => s.Customer)
                 .ToList();
         }
 
