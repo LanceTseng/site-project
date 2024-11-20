@@ -2,6 +2,7 @@
 using System.Text;
 using System.Transactions;
 using Barbershop.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
@@ -17,6 +18,7 @@ namespace Barbershop.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "EMPLOYEE,ADMIN")]
         [HttpGet]
         public IActionResult Index()
         {

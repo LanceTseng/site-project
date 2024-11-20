@@ -178,7 +178,7 @@ namespace Barbershop.Controllers
             return PartialView("_ScheduleTable", schedules); // Return the partial view
         }
 
-        //
+     
         [HttpPost]
         public async Task<IActionResult> GetFilteredSchedules([FromBody] ScheduleFilter filter)
         {
