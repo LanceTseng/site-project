@@ -40,18 +40,17 @@ namespace Barbershop.Controllers
                 new Claim(ClaimTypes.Role, role)
             };
 
-            // Log or debug the claims
-            foreach (var claim in claims)
-            {
-                Console.WriteLine($"Claim: {claim.Type} - {claim.Value}");
-            }
-
             var identity = new ClaimsIdentity(claims, "Login");
 
             var principal = new ClaimsPrincipal(identity);
             HttpContext.SignInAsync(principal);
 
-            return RedirectToAction("Index", "Home");
+            if (role == "ADMIN")
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+
+            return RedirectToAction("Index", "Dashboard");
         }
 
         [HttpPost]

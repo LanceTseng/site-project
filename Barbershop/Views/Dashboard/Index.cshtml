@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container py-5">
+    <div class="row text-center">
+        <h2 class="mb-4">Dashboard</h2>
+    </div>
+    <div class="row g-4">
+        <!-- Booking Card -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow h-100 clickable-card" data-action="/appointment">
+                <div class="card-body d-flex flex-column align-items-center">
+                    <i class="bi bi-calendar-check display-4 text-primary mb-3"></i>
+                    <h5 class="card-title">Booking</h5>
+                    <p class="card-text text-muted">Manage customer bookings easily.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Appointments Card -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow h-100 clickable-card" data-action="/appointment/approval">
+                <div class="card-body d-flex flex-column align-items-center">
+                    <i class="bi bi-people-fill display-4 text-success mb-3"></i>
+                    <h5 class="card-title">Appointments</h5>
+                    <p class="card-text text-muted">Track and update appointments.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Check Out Card -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow h-100 clickable-card" data-action="/payment">
+                <div class="card-body d-flex flex-column align-items-center">
+                    <i class="bi bi-cart-check display-4 text-warning mb-3"></i>
+                    <h5 class="card-title">Check Out</h5>
+                    <p class="card-text text-muted">Finalize payments and receipts.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Report Card -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow h-100 clickable-card" data-action="/Reports">
+                <div class="card-body d-flex flex-column align-items-center">
+                    <i class="bi bi-bar-chart-line display-4 text-danger mb-3"></i>
+                    <h5 class="card-title">Report</h5>
+                    <p class="card-text text-muted">Analyze business performance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .clickable-card {
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .clickable-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            background-color: lemonchiffon
+        }
+</style>
+
+@section Scripts {
+    <script>
+        // Add click event to navigate to the respective sections
+        document.querySelectorAll('.clickable-card').forEach(card => {
+            card.addEventListener('click', function () {
+                window.location.href = this.getAttribute('data-action');
+            });
+        });
+    </script>
+}
