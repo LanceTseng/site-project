@@ -1,11 +1,15 @@
 ﻿
 @{
     ViewData["Title"] = "Index";
+    var role = ViewBag.UserRole;
+    var userName = ViewBag.UserName;
 }
+
 
 <div class="container py-5">
     <div class="row text-center">
         <h2 class="mb-4">Dashboard</h2>
+        <h3 class="mb-4">Hello, @userName (@role)</h3>
     </div>
     <div class="row g-4">
         <!-- Booking Card -->

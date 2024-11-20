@@ -9,7 +9,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace Barbershop.Controllers
 {
-    public class AppointmentController : Controller
+    public class AppointmentController : BaseController
     {
         private readonly ApplicationDbContext _context;
 
@@ -110,6 +110,8 @@ namespace Barbershop.Controllers
         [HttpGet]
         public IActionResult Approval()
         {
+            SetUserContext();
+
             var model = new ApprovalViewModel()
             {
                 Barbers = GetBarberSelectList(),
