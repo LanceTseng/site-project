@@ -45,11 +45,6 @@ namespace Barbershop.Controllers
             var principal = new ClaimsPrincipal(identity);
             HttpContext.SignInAsync(principal);
 
-            if (role == "ADMIN")
-            {
-                return RedirectToAction("Index", "Admin");
-            }
-
             return RedirectToAction("Index", "Dashboard");
         }
 

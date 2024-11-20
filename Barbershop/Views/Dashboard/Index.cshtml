@@ -55,6 +55,19 @@
                 </div>
             </div>
         }
+        @if (role == "ADMIN")
+        {
+            <!-- Admin Card -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card shadow h-100 clickable-card" data-action="/admin">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <i class="bi bi-bar-chart-line display-4 text-danger mb-3"></i>
+                        <h5 class="card-title">Admin</h5>
+                        <p class="card-text text-muted">Administrator maintenance.</p>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </div>
 
