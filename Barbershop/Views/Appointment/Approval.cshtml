@@ -76,7 +76,6 @@
         status: status || null     // If status is empty, send null
     };
 
-    console.log(JSON.stringify(filterData));
     try {
         const response = await fetch('/Appointment/GetFilteredSchedules', {
             method: 'POST',

@@ -1,0 +1,75 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<AppointmentView>
+
+<table class="table table-bordered table-hover shadow-sm">
+    <thead class="table-light">
+    <tr>
+        <th>Schedule ID</th>
+        <th>Schedule Date</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Status</th>
+        <th>Customer</th>
+        <th>Barber</th>
+        <th>Service</th>
+        <th>Price</th>
+        <th>Order Date</th>
+        <th>Total Amount</th>
+        <th>Tip</th>
+        <th>Payment Type</th>
+        <th>Card Last 4 Digits</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var appointment in Model)
+    {
+        <tr>
+            <td>@appointment.ScheduleId</td>
+            <td>@appointment.ScheduleDate.ToShortDateString()</td>
+            <td>@appointment.StartTime.ToShortTimeString()</td>
+            <td>@appointment.EndTime.ToShortTimeString()</td>
+            <td>@appointment.Status</td>
+            <td>@appointment.CustomerUsername</td>
+            <td>@appointment.BarberUsername</td>
+            <td>@appointment.ServiceName</td>
+            <td>@appointment.Price.ToString("C")</td>
+            <td>@(appointment.OrderDate?.ToShortDateString() ?? "N/A")</td>
+            <td>@(appointment.TotalAmount?.ToString("C") ?? "N/A")</td>
+            <td>@(appointment.Tip?.ToString("C") ?? "N/A")</td>
+            <td>@(appointment.PaymentType ?? "N/A")</td>
+            <td>@(appointment.CardLastDigit ?? "N/A")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<script>
+    const reloadForm = () => {
+        fetch('/history/GetFilteredHistory') // Update with your actual controller and action
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to load schedule data.');
+                return response.text();
+            })
+            .then(html => {
+                document.querySelector('#scheduleTableContainer').innerHTML = html;
+                // Event listeners will still work with delegation; no need to reattach here
+            })
+            .catch(error => console.error(error));
+    };
+
+   
+
+    const initialActionListeners = () => {
+        // Use event delegation for dynamic content
+       
+    };
+
+    // Run initialization on page load
+    document.addEventListener('DOMContentLoaded', initialActionListeners);
+</script>

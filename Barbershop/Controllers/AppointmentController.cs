@@ -205,5 +205,6 @@ namespace Barbershop.Controllers
                 )
                 .ToList();
         }
+
     }
 }

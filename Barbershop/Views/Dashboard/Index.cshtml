@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
     var role = ViewBag.UserRole;
     var userName = ViewBag.UserName;
@@ -22,18 +21,33 @@
                 </div>
             </div>
         </div>
-        <!-- Appointments Card -->
-        <div class="col-lg-3 col-md-6">
-            <div class="card shadow h-100 clickable-card" data-action="/appointment/approval">
-                <div class="card-body d-flex flex-column align-items-center">
-                    <i class="bi bi-people-fill display-4 text-success mb-3"></i>
-                    <h5 class="card-title">Appointments</h5>
-                    <p class="card-text text-muted">Track and update appointments.</p>
+        @if (role == "CUSTOMER" || role == "ADMIN")
+        {
+            <!-- Appointments Card -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card shadow h-100 clickable-card" data-action="/appointment/history">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <i class="bi bi-people-fill display-4 text-success mb-3"></i>
+                        <h5 class="card-title">History</h5>
+                        <p class="card-text text-muted">Track and update appointments.</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+    
+
         @if (role == "EMPLOYEE" || role == "ADMIN")
         {
+            <!-- Appointments Card -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card shadow h-100 clickable-card" data-action="/appointment/approval">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <i class="bi bi-people-fill display-4 text-success mb-3"></i>
+                        <h5 class="card-title">Appointments</h5>
+                        <p class="card-text text-muted">Track and update appointments.</p>
+                    </div>
+                </div>
+            </div>
             <!-- Check Out Card -->
             <div class="col-lg-3 col-md-6">
                 <div class="card shadow h-100 clickable-card" data-action="/payment">

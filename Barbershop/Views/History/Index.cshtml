@@ -1,0 +1,63 @@
+﻿@model AppointmentFilterViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Left Side: Query Conditions -->
+        <div class="col-md-3 border-end">
+            <h5>Query Conditions</h5>
+            <form id="queryForm">
+                <div class="mb-3">
+                    <label for="startDate" class="form-label">Appointment Date</label>
+                    <input type="date" class="form-control" id="startDate" name="startDate">
+                </div>
+                <div class="mb-3">
+                    <label for="customer" class="form-label">Customer</label>
+                    <select class="form-select" id="customer" name="customer">
+                        <option value="">All Customers</option>
+                        @foreach (var customer in Model.Customers)
+                        {
+                            <option value="@customer.Value">@customer.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="barber" class="form-label">Barber</label>
+                    <select class="form-select" id="barber" name="barber">
+                        <option value="">All Barbers</option>
+                        @foreach (var barber in Model.Barbers)
+                        {
+                            <option value="@barber.Value">@barber.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">All Statuses</option>
+                        <option value="New">New</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Closed">Closed</option>
+                        <option value="Cancel">Cancel</option>
+                    </select>
+                </div>
+                <div class="d-grid">
+                    <button type="button" class="btn btn-primary" id="queryButton">Query</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right Side: Partial View for Table -->
+        <div class="col-md-9">
+            <div id="historyTableContainer">
+                @await Html.PartialAsync("_HistoryTable", Model.HistoryList)
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+</script>

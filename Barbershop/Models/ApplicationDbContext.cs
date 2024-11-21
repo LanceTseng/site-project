@@ -15,6 +15,7 @@ namespace Barbershop.Models
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<AppointmentView> AppointmentView { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -50,6 +51,10 @@ namespace Barbershop.Models
                 .WithMany(sv => sv.ServiceSchedules)
                 .HasForeignKey(s => s.ServiceId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<AppointmentView>()
+                .HasNoKey()
+                .ToView("appointmentview");
 
         }
     }
