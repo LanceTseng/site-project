@@ -20,7 +20,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="customer" class="form-label">Customer</label>
-                    @if (isEmployee)
+                    @if (isEmployee || isAdmin) 
                     {
                         <select id="customerSelect" class="form-select" name="customer">
                             <option value="">All Customers</option>
@@ -43,7 +43,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="barber" class="form-label">Barber</label>
-                    @if (isCustomer)
+                    @if (isCustomer || isAdmin)
                     {
                         <select id="barberSelect" class="form-select" name="barber">
                             <option value="">All Barbers</option>
