@@ -9,14 +9,14 @@
         <!-- Left Side: Query Conditions -->
         <div class="col-md-3 border-end">
             <h5>Query Conditions</h5>
-            <form id="queryForm">
+            <form id="queryForm" method="post">
                 <div class="mb-3">
                     <label for="startDate" class="form-label">Appointment Date</label>
                     <input type="date" class="form-control" id="startDate" name="startDate">
                 </div>
                 <div class="mb-3">
                     <label for="customer" class="form-label">Customer</label>
-                    <select class="form-select" id="customer" name="customer">
+                    <select id="customerSelect" class="form-select" name="customer">
                         <option value="">All Customers</option>
                         @foreach (var customer in Model.Customers)
                         {
@@ -26,7 +26,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="barber" class="form-label">Barber</label>
-                    <select class="form-select" id="barber" name="barber">
+                    <select id="barberSelect" class="form-select" name="barber">
                         <option value="">All Barbers</option>
                         @foreach (var barber in Model.Barbers)
                         {
@@ -36,7 +36,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="status" class="form-label">Status</label>
-                    <select class="form-select" id="status" name="status">
+                    <select id="statusSelect" class="form-select" name="status">
                         <option value="">All Statuses</option>
                         <option value="New">New</option>
                         <option value="Confirmed">Confirmed</option>
@@ -59,5 +59,77 @@
     </div>
 </div>
 <script>
+    const queryHistory = async (barber, customer, scheduleDate, status) => {
+        const historyTableContainer = document.getElementById('historyTableContainer');
 
+        // Remove any existing loading indicator
+        const existingIndicator = document.querySelector('.loading-indicator');
+        if (existingIndicator) existingIndicator.remove();
+
+        // Add a new loading indicator
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.innerText = 'Loading...';
+        loadingIndicator.classList.add('loading-indicator');
+        historyTableContainer.appendChild(loadingIndicator);
+
+        const filterData = {
+            scheduleDate: scheduleDate || null,
+            barberId: barber || null,
+            customerId: customer || null,
+            status: status || null,
+        };
+
+        console.log(filterData);
+
+        try {
+            const response = await fetch('/history/GetFilteredHistory', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(filterData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch filtered history.');
+            }
+
+            const result = await response.text();
+
+            if (!result.trim()) {
+                historyTableContainer.innerHTML = `
+                    <div class="alert alert-warning" role="alert">
+                        No records found for the selected filters.
+                    </div>
+                `;
+            } else {
+                historyTableContainer.innerHTML = result;
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error refreshing the history table. Please try again.');
+        } finally {
+            loadingIndicator.remove();
+        }
+    };
+
+    document.getElementById('queryButton').addEventListener('click', function () {
+        // Get filter values
+        const scheduleDate = document.getElementById('startDate').value;
+        const barber = document.getElementById('barberSelect').value;
+        const customer = document.getElementById('customerSelect').value;
+        const status = document.getElementById('statusSelect').value;
+
+        // Call the query function
+        queryHistory(barber, customer, scheduleDate, status);
+    });
 </script>
+<style>
+    .loading-indicator {
+        font-size: 18px;
+        color: #007bff;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>

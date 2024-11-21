@@ -41,4 +41,12 @@ namespace Barbershop.Models
         public List<SelectListItem> Customers { get; set; }
         public List<AppointmentView> HistoryList { get; set; }
     }
+
+    public class AppointmentFilterModel
+    {
+        public int? BarberId { get; set; }
+        public int? CustomerId { get; set; }
+        public string? Status { get; set; }
+        public DateTime? ScheduleDate { get; set; }
+    }
 }

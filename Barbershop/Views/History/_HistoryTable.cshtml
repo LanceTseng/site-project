@@ -48,28 +48,3 @@
     }
     </tbody>
 </table>
-
-<script>
-    const reloadForm = () => {
-        fetch('/history/GetFilteredHistory') // Update with your actual controller and action
-            .then(response => {
-                if (!response.ok) throw new Error('Failed to load schedule data.');
-                return response.text();
-            })
-            .then(html => {
-                document.querySelector('#scheduleTableContainer').innerHTML = html;
-                // Event listeners will still work with delegation; no need to reattach here
-            })
-            .catch(error => console.error(error));
-    };
-
-   
-
-    const initialActionListeners = () => {
-        // Use event delegation for dynamic content
-       
-    };
-
-    // Run initialization on page load
-    document.addEventListener('DOMContentLoaded', initialActionListeners);
-</script>

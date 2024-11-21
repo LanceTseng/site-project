@@ -41,6 +41,7 @@ namespace Barbershop.Controllers
                 .OrderBy(x => x.Text) // Sort alphabetically by BarberUsername
                 .ToList();
         }
+
         private List<SelectListItem> GetCustomerList()
         {
             return _context.AppointmentView
@@ -58,8 +59,8 @@ namespace Barbershop.Controllers
         private List<AppointmentView> GetHistoryList(int? barberId = null, int? customerId = null, string status = null)
         {
             return _context.AppointmentView
-                .Where(x=>(barberId == null || x.BarberUserId == barberId) &&
-                                        (customerId == null || x.CustomerUserId == customerId) && 
+                .Where(x => (barberId == null || x.BarberUserId == barberId) &&
+                                        (customerId == null || x.CustomerUserId == customerId) &&
                                         (status == null || x.Status == status))
                 .ToList();
         }
@@ -70,25 +71,30 @@ namespace Barbershop.Controllers
             {
                 case "CUSTOMER":
                     return GetHistoryList(null, UserId);
-          
+
                 case "EMPLOYEE":
-                    return  GetHistoryList(UserId);
+                    return GetHistoryList(UserId);
+
                 default:
                     return GetHistoryList();
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetFilteredHistory([FromBody] AppointmentView filter)
+        [HttpPost]
+        public async Task<IActionResult> GetFilteredHistory([FromBody] AppointmentFilterModel filter)
         {
             try
             {
                 //Console.WriteLine(_context.AppointmentView.ToQueryString());
                 // Fetch all data from the AppointmentView
-                var overview = await _context.AppointmentView.ToListAsync();
+                var overview = await _context.AppointmentView
+                    .Where(x => (filter.BarberId == null || x.BarberUserId == filter.BarberId) &&
+                                             (filter.CustomerId == null || x.CustomerUserId == filter.CustomerId) &&
+                                                (filter.Status == null || x.Status == filter.Status) &&
+                                             (filter.ScheduleDate == null || x.ScheduleDate == filter.ScheduleDate)).ToListAsync();
 
                 // Return a JSON success response with the data
-                return Json(new { success = true, data = overview });
+                return PartialView("_HistoryTable", overview);
             }
             catch (Exception ex)
             {

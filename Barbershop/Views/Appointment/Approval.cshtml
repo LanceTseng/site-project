@@ -68,6 +68,7 @@
 
            const loadingIndicator = document.createElement('div');
     loadingIndicator.innerText = 'Loading...';
+    loadingIndicator.classList.add('loading-indicator');  // Optional: Add CSS class for styling
     scheduleTableContainer.appendChild(loadingIndicator);
 
     const filterData = {
@@ -131,3 +132,12 @@
     // Run initialization on page load
     document.addEventListener('DOMContentLoaded', initializeEventListeners);
 </script>
+<style>
+    .loading-indicator {
+        font-size: 18px;
+        color: #007bff;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
