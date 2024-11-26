@@ -21,6 +21,7 @@
         <th>Tip</th>
         <th>Payment Type</th>
         <th>Card Last 4 Digits</th>
+        <th>Transaction Code</th>
     </tr>
     </thead>
     <tbody>
@@ -41,6 +42,7 @@
             <td>@(appointment.Tip?.ToString("C") ?? "N/A")</td>
             <td>@(appointment.PaymentType ?? "N/A")</td>
             <td>@(appointment.CardLastDigit ?? "N/A")</td>
+            <td>@(appointment.TransactionCode ?? "N/A")</td>
         </tr>
     }
     </tbody>
