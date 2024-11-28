@@ -4,11 +4,25 @@
     var userName = ViewBag.UserName;
 }
 
-
 <div class="container py-5">
     <div class="row text-center">
         <h2 class="mb-4">Dashboard</h2>
-        <h3 class="mb-4">Hello, @userName (@role)</h3>
+        <h3 class="mb-4">
+            <div class="content">
+                <div class="content__container">
+                   @*  <p class="content__container__text">
+                        Hello
+                    </p> *@
+
+                    <ul class="content__container__list">
+                        <li class="content__container__list__item"> @userName</li>
+                        <li class="content__container__list__item">@role</li>
+                        <li class="content__container__list__item"> @userName (@role)</li>
+                    </ul>
+                </div>
+            </div>
+        </h3>
+
     </div>
     <div class="row g-4">
         <!-- Booking Card -->
@@ -83,6 +97,20 @@
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        // Add click event to navigate to the respective sections
+        document.querySelectorAll('.clickable-card').forEach(card => {
+            card.addEventListener('click', function () {
+                window.location.href = this.getAttribute('data-action');
+            });
+        });
+    </script>
+}
+
+
+
+@* CSS Style*@
 <style>
     .clickable-card {
         cursor: pointer;
@@ -95,14 +123,77 @@
             background-color: lemonchiffon
         }
 </style>
+<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+<style>
+    .content {
+        position: relative;
+        height: 40px; /* Matches the line height of one item */
+        overflow: hidden;
+        font-family: 'Lato', sans-serif;
+        font-size: 35px;
+        line-height: 40px;
+        color: #000000;
+        text-align: center;
+    }
 
-@section Scripts {
-    <script>
-        // Add click event to navigate to the respective sections
-        document.querySelectorAll('.clickable-card').forEach(card => {
-            card.addEventListener('click', function () {
-                window.location.href = this.getAttribute('data-action');
-            });
-        });
-    </script>
-}
+    .content__container {
+        font-weight: 600;
+        display: inline-block;
+        position: relative;
+        white-space: nowrap;
+        padding: 0 20px; /* Space inside the brackets */
+    }
+
+    .content__container:before,
+    .content__container:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        font-size: 35px;
+        color: #16a085;
+    }
+
+    .content__container:before {
+        content: '[';
+        left: -20px;
+    }
+
+    .content__container:after {
+        content: ']';
+        right: -20px;
+    }
+
+    .content__container__list {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        animation: change 6s infinite;
+    }
+
+    .content__container__list__item {
+        display: block;
+        height: 40px;
+        line-height: 40px;
+        margin: 0;
+    }
+
+    /* Keyframes for animation */
+    @@keyframes change {
+        0% {
+            transform: translateY(0);
+        }
+        25% {
+            transform: translateY(-40px);
+        }
+        50% {
+            transform: translateY(-80px);
+        }
+        75% {
+            transform: translateY(-120px);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+</style>
