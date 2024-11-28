@@ -7,7 +7,7 @@
 <h1>Role Management</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="bi bi-plus-square-fill fs-2"></a>
 </p>
 <table class="table table-striped">
     <thead class="bg-dark text-white">
@@ -25,8 +25,8 @@
                 @Html.DisplayFor(modelItem => item.RoleName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.RoleId">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.RoleId">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.RoleId" class="bi bi-pencil-square btn-primary"></a> |
+                    <a asp-action="Delete" asp-route-id="@item.RoleId" class="bi bi-trash btn-danger"></a>
             </td>
         </tr>
 }

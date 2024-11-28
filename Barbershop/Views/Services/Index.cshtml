@@ -7,7 +7,7 @@
 <h1>Service Management</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="bi bi-plus-square-fill fs-2"></a>
 </p>
 <table class="table table-striped">
     <thead class="bg-dark text-white">
@@ -31,9 +31,9 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ServiceId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ServiceId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ServiceId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.ServiceId" class="bi bi-pencil-square btn-primary"></a> |
+                <a asp-action="Details" asp-route-id="@item.ServiceId" class="bi bi-file-earmark-text btn-success"></a> |
+                    <a asp-action="Delete" asp-route-id="@item.ServiceId" class="bi bi-trash btn-danger"></a>
             </td>
         </tr>
 }
