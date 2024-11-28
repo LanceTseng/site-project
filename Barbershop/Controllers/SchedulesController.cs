@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Barbershop.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Barbershop.Models;
 
 namespace Barbershop.Controllers
 {
@@ -98,30 +94,23 @@ namespace Barbershop.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(schedule);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ScheduleExists(schedule.ScheduleId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(schedule);
+                await _context.SaveChangesAsync();
             }
-            ViewData["BarberId"] = new SelectList(_context.Users, "UserId", "UserId", schedule.BarberId);
-            ViewData["CustomerId"] = new SelectList(_context.Users, "UserId", "UserId", schedule.CustomerId);
-            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceId", "ServiceId", schedule.ServiceId);
-            return View(schedule);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ScheduleExists(schedule.ScheduleId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Schedules/Delete/5

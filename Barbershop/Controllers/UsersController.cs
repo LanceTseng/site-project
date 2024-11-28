@@ -55,12 +55,10 @@ namespace Barbershop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("UserId,Username,Password,Email,Phone")] User user)
         {
-
             _context.Add(user);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
 
-            return View(user);
         }
 
         // GET: Users/Edit/5
@@ -109,7 +107,7 @@ namespace Barbershop.Controllers
                 }
             }
 
-            return View(user);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Users/Delete/5

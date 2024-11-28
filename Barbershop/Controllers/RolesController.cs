@@ -108,6 +108,9 @@ namespace Barbershop.Controllers
                 return NotFound();
             }
 
+            _context.Roles.Remove(role);
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
