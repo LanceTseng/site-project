@@ -62,16 +62,9 @@ namespace Barbershop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ScheduleId,CustomerId,BarberId,ServiceId,StartTime,EndTime,Status")] Schedule schedule)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(schedule);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["BarberId"] = new SelectList(_context.Users, "UserId", "UserId", schedule.BarberId);
-            ViewData["CustomerId"] = new SelectList(_context.Users, "UserId", "UserId", schedule.CustomerId);
-            ViewData["ServiceId"] = new SelectList(_context.Services, "ServiceId", "ServiceId", schedule.ServiceId);
-            return View(schedule);
+            _context.Add(schedule);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Schedules/Edit/5
