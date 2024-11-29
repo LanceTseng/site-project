@@ -10,8 +10,8 @@
         <h3 class="mb-4">
             <div class="content">
                 <div class="content__container">
-                   @*  <p class="content__container__text">
-                        Hello
+                    @*  <p class="content__container__text">
+                    Hello
                     </p> *@
 
                     <ul class="content__container__list">
@@ -144,24 +144,24 @@
         padding: 0 20px; /* Space inside the brackets */
     }
 
-    .content__container:before,
-    .content__container:after {
-        content: '';
-        position: absolute;
-        top: 0;
-        font-size: 35px;
-        color: #16a085;
-    }
+        .content__container:before,
+        .content__container:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            font-size: 35px;
+            color: #16a085;
+        }
 
-    .content__container:before {
-        content: '[';
-        left: -20px;
-    }
+        .content__container:before {
+            content: '[';
+            left: -20px;
+        }
 
-    .content__container:after {
-        content: ']';
-        right: -20px;
-    }
+        .content__container:after {
+            content: ']';
+            right: -20px;
+        }
 
     .content__container__list {
         display: inline-block;
@@ -183,17 +183,38 @@
         0% {
             transform: translateY(0);
         }
+
         25% {
             transform: translateY(-40px);
         }
+
         50% {
             transform: translateY(-80px);
         }
+
         75% {
             transform: translateY(-120px);
         }
+
         100% {
             transform: translateY(0);
         }
     }
+</style>
+<style>
+    .clickable-card {
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .clickable-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            background-color: lemonchiffon;
+        }
+
+    body {
+        background-color: #bbdaf4;
+    }
+
 </style>
