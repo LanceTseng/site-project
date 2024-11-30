@@ -24,7 +24,7 @@ namespace FashionShop.Controllers
                 .ToList();
 
 
-            var cartItems = _dbContext.Carts.Where(x => x.UserId == 123 && x.Status == "New").Select(c =>
+            var cartItems = _dbContext.Carts.Where(x => x.UserId == 2 && x.Status == "New").Select(c =>
                 new CartViewModel
                 {
                     ProductId = c.ProductId,
@@ -35,7 +35,7 @@ namespace FashionShop.Controllers
             
 
             var subTotal = cartItems.Sum(x => x.SubTotal);
-            var tax = subTotal * 1.13m; // Example 10% tax
+            var tax = subTotal * 0.13m; // Example 10% tax
             var total = subTotal + tax;
 
             var viewModel = new OrderViewModel

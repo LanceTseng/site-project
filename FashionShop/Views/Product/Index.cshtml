@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Index";
+
 }
 
 @model OrderViewModel
@@ -66,52 +67,55 @@
     function addToCart(productId) {
         let qty = parseInt(document.getElementById(`qty-${productId}`).value);
 
-        fetch('/product/AddToCart', {
+        
+        fetch('/cart/AddToCart', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                // 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
             },
-            body: JSON.stringify({ productId, qty })
+            body: JSON.stringify({ productId, qty})
         })
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 // Update Cart
-                let cartContainer = document.getElementById('cart-container');
+               let cartContainer = document.getElementById('cart-container');
                 cartContainer.innerHTML = generateCartHtml(data.cartItems);
-
+            
                 // Update Summary
-                document.getElementById('subtotal').innerText = data.subTotal.toFixed(2);
-                document.getElementById('tax').innerText = data.tax.toFixed(2);
-                document.getElementById('total').innerText = data.total.toFixed(2);
+            document.getElementById('subtotal').innerText = data.subTotal.toFixed(2);
+            document.getElementById('tax').innerText = data.tax.toFixed(2);
+            document.getElementById('total').innerText = data.total.toFixed(2);
             })
             .catch(error => console.error('Error:', error));
     }
 
-    function generateCartHtml(cartItems) {
+     function generateCartHtml(cartItems) {
         let html = `
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Product ID</th>
-                                <th>Product Name</th>
-                                <th>Qty</th>
-                                <th>Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Qty</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
         cartItems.forEach(item => {
             html += `
-                        <tr>
-                            <td>${item.ProductId}</td>
-                            <td>${item.ProductName}</td>
-                            <td>${item.Qty}</td>
-                            <td>$${item.SubTotal.toFixed(2)}</td>
-                        </tr>
-                    `;
+                <tr>
+                    <td>${item.productId}</td>
+                    <td>${item.productName}</td>
+                    <td>${item.qty}</td>
+                    <td>$${item.subTotal.toFixed(2)}</td>
+                </tr>
+            `;
         });
         html += `</tbody></table>`;
         return html;
     }
+
 </script>

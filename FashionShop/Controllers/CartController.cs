@@ -1,87 +1,81 @@
 ﻿using FashionShop.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace FashionShop.Controllers
 {
     public class CartController : Controller
     {
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
-        private static List<CartViewModel> CartItems = new List<CartViewModel>();
+        private readonly FashionshopDbContext _context;
 
-        private static List<ProductViewModel> Products = new List<ProductViewModel>
-    {
-        new ProductViewModel { Id = 1, ProductName = "Product A", Price = 10.99m, ImageUrl = "/images/product-a.jpg" },
-        new ProductViewModel { Id = 2, ProductName = "Product B", Price = 15.49m, ImageUrl = "/images/product-b.jpg" },
-        new ProductViewModel { Id = 3, ProductName = "Product C", Price = 7.99m, ImageUrl = "/images/product-c.jpg" }
-    };
-
-        public IActionResult Index()
+        public CartController(FashionshopDbContext context)
         {
-            var model = new OrderViewModel
-            {
-                Products = Products,
-                CartItems = CartItems,
-                SubTotal = CartItems.Sum(x => x.SubTotal),
-                Tax = CartItems.Sum(x => x.SubTotal) * 0.1m, // Example tax calculation (10%)
-                Total = CartItems.Sum(x => x.SubTotal) * 1.1m // Subtotal + Tax
-            };
-
-            return View(model);
+            _context = context;
         }
 
         [HttpPost]
-        public IActionResult AddToCart(int productId, int qty)
+        public async Task<IActionResult> AddToCart([FromBody] AddToCart addToCart)
         {
-            // Find the product
-            var product = Products.FirstOrDefault(p => p.Id == productId);
+            // Find the product in the database
+            var product = _context.Products.FirstOrDefault(p => p.Id == addToCart.ProductId);
 
             if (product == null)
                 return BadRequest("Product not found.");
 
-            // Check if the product is already in the cart
-            var existingCartItem = CartItems.FirstOrDefault(c => c.ProductId == productId);
+            // Check if the product is already in the cart for the user
+            var cartItem = _context.Carts.FirstOrDefault(c => c.ProductId == addToCart.ProductId && c.Status == "New" && c.UserId == 2);
 
-            if (existingCartItem != null)
+            if (cartItem != null)
             {
-                // Update the quantity
-                existingCartItem.Qty += qty;
-                existingCartItem.SubTotal = Convert.ToDecimal(existingCartItem.Qty * product.Price);
+                // Update quantity and subtotal
+                cartItem.Qty += addToCart.Qty;
+                _context.Carts.Update(cartItem);
             }
             else
             {
-                // Add new item to the cart
-                CartItems.Add(new CartViewModel
+                // Add new cart item
+                var newCartItem = new Cart
                 {
                     ProductId = product.Id,
-                    ProductName = product.ProductName,
-                    Qty = qty,
-                    SubTotal =Convert.ToDecimal(qty * product.Price) 
-                });
+                    Qty = addToCart.Qty,
+                    Status = "New",
+                    UserId = 2,
+                    Created = DateTime.Now,
+                    CartCode = null
+                };
+                _context.Carts.Add(newCartItem);
             }
 
-            // Recalculate totals
-            var subTotal = CartItems.Sum(x => x.SubTotal);
-            var tax = subTotal * 0.1m; // Example 10% tax
+            // Save changes to the database
+            _context.SaveChanges();
+
+            // Fetch updated cart items for the response
+            var updatedCartItems = _context.Carts
+                .Where(c => c.Status == "New" && c.UserId == 2)
+                .Select(c => new CartViewModel
+                {
+                    ProductId = c.Product.Id,
+                    ProductName = c.Product.ProductName,
+                    Qty = c.Qty,
+                    SubTotal = Convert.ToDecimal(c.Qty * c.Product.Price)
+                })
+                .ToList();
+
+            var subTotal = updatedCartItems.Sum(item => item.SubTotal);
+            var tax = subTotal * 0.13m;
             var total = subTotal + tax;
 
-            // Return updated cart
+            // Return updated cart as JSON
             return Json(new
             {
-                cartItems = CartItems,
-                subTotal,
-                tax,
-                total
+                cartItems = updatedCartItems,
+                subTotal = subTotal,
+                tax = tax,
+                total = total
             });
-        }
-
-        [HttpGet]
-        public IActionResult GetCart()
-        {
-            // Return the partial view for the cart
-            return PartialView("_Cart", CartItems);
         }
     }
 }

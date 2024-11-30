@@ -28,6 +28,10 @@
         public decimal SubTotal { get; set; }
     }
 
-   
+    public class AddToCart
+    {
+        public int ProductId { get; set; }
+        public int Qty { get; set; }
+    }
 
 }
