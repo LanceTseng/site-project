@@ -50,7 +50,7 @@
             <p>Subtotal: $<span id="subtotal">@Model.SubTotal</span></p>
             <p>Tax: $<span id="tax">@Model.Tax</span></p>
             <h5>Total: $<span id="total">@Model.Total</span></h5>
-            <button class="btn btn-success w-100">Place Order</button>
+            <button class="btn btn-success w-100" onclick="placeOrder()">Place Order</button>
         </div>
     </div>
 </div>  
@@ -122,5 +122,27 @@
         html += `</tbody></table>`;
         return html;
     }
+
+        function placeOrder() {
+    const subtotal = document.getElementById('subtotal').innerText;
+
+    fetch('/order/PlaceOrder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ subtotal })
+    })
+    .then(response => {
+        if (response.ok) {
+            // Redirect to the PaymentSuccess page after successful order placement
+            window.location.href = '/Order';
+        } else {
+            // Handle error response (optional)
+            console.error('Error placing order:', response.statusText);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
 
 </script>

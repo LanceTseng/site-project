@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FashionShop.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
 
@@ -15,6 +15,7 @@ namespace FashionShop.Controllers
 
         public IActionResult Index()
         {
+            SetUserContext();
             return View();
         }
 

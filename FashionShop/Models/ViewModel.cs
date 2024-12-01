@@ -34,4 +34,10 @@
         public int Qty { get; set; }
     }
 
+    public class PlaceOrder
+    {
+        public decimal SubTotal { get; set; }
+       
+    }
+
 }

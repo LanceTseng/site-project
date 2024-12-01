@@ -38,7 +38,7 @@ namespace FashionShop.Controllers
             
 
             var subTotal = cartItems.Sum(x => x.SubTotal);
-            var tax = subTotal * 0.13m; // Example 10% tax
+            var tax = subTotal * 0.13m; 
             var total = subTotal + tax;
 
             var viewModel = new OrderViewModel

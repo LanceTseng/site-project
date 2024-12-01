@@ -1,5 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var role = ViewBag.UserRole;
+    var userName = ViewBag.UserName;
 }
 
 <div class="text-center">
@@ -7,7 +9,28 @@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-<div class="text-center mt-4">
-    <a asp-action="Login" asp-controller="User" class="btn btn-primary btn-lg">Login</a>
-    <a asp-action="Register" asp-controller="User" class="btn btn-secondary btn-lg ml-2">Register</a>
-</div>
+@if (role == null)
+{
+    <div class="text-center mt-4">
+        <a asp-action="Login" asp-controller="User" class="btn btn-primary btn-lg">Login</a>
+        <a asp-action="Register" asp-controller="User" class="btn btn-success btn-lg ml-2">Register</a>
+    </div>
+}
+@if(role != null)
+{
+    <div class="text-center mt-4">
+        <a asp-action="Index" asp-controller="Product" class="btn btn-info btn-lg text-dark">Product</a>
+        <a asp-action="Logout" asp-controller="User" class="btn btn-info btn-lg text-dark">Logout</a>
+    </div>
+
+    if (role == "Admin")
+    {
+        <div class="text-center mt-4">
+        <h1 class="display-4">Administrator</h1>
+            <a asp-action="Index" asp-controller="Users" class="btn btn-warning btn-lg text-dark">Users Mgmt</a>
+            <a asp-action="Index" asp-controller="Products" class="btn btn-warning btn-lg text-dark">Product Mgmt</a>
+            <a asp-action="Index" asp-controller="Carts" class="btn btn-warning btn-lg text-dark">Cart Mgmt</a>
+            <a asp-action="Index" asp-controller="Orders" class="btn btn-warning btn-lg text-dark">Order Mgmt</a>
+        </div>
+    }
+}

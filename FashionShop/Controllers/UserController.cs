@@ -79,7 +79,7 @@ namespace FashionShop.Controllers
                 var principal = new ClaimsPrincipal(identity);
                 HttpContext.SignInAsync(principal);
 
-                return RedirectToAction("Index", "Product");
+                return RedirectToAction("Index", "Home");
             }
             else
             {
@@ -94,6 +94,7 @@ namespace FashionShop.Controllers
             // Clear session data
             currentUser = null;
             TempData["SuccessMessage"] = "You have been logged out.";
+            HttpContext.SignOutAsync();
             return RedirectToAction("Login");
         }
         // A helper method to check if a user is logged in
