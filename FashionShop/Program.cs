@@ -15,6 +15,13 @@ namespace FashionShop
             builder.Services.AddDbContext<FashionshopDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            builder.Services.AddAuthentication("Cookies")
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/User/Login";
+                    options.LogoutPath = "/User/Logout";
+                });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -31,6 +38,7 @@ namespace FashionShop
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.MapControllerRoute(
                 name: "default",

@@ -1,10 +1,15 @@
 ﻿@{
     ViewData["Title"] = "Index";
-
+    var role = ViewBag.UserRole;
+    var userName = ViewBag.UserName;
 }
 
 @model OrderViewModel
 
+<div class="text-center mt-4">
+    Hello, @userName
+    <a asp-action="Logout" asp-controller="User" class="btn btn-info text-dark btn-lg ml-2">Logout</a>
+</div>
 <div class="container mt-4">
     <div class="row">
         <!-- Product Cards -->

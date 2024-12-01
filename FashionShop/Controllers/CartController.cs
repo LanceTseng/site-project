@@ -1,4 +1,5 @@
-﻿using FashionShop.Models;
+﻿using System.Security.Claims;
+using FashionShop.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,6 +20,8 @@ namespace FashionShop.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart([FromBody] AddToCart addToCart)
         {
+            var userId = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             // Find the product in the database
             var product = _context.Products.FirstOrDefault(p => p.Id == addToCart.ProductId);
 
@@ -26,7 +29,7 @@ namespace FashionShop.Controllers
                 return BadRequest("Product not found.");
 
             // Check if the product is already in the cart for the user
-            var cartItem = _context.Carts.FirstOrDefault(c => c.ProductId == addToCart.ProductId && c.Status == "New" && c.UserId == 2);
+            var cartItem = _context.Carts.FirstOrDefault(c => c.ProductId == addToCart.ProductId && c.Status == "New" && c.UserId == userId);
 
             if (cartItem != null)
             {
@@ -42,7 +45,7 @@ namespace FashionShop.Controllers
                     ProductId = product.Id,
                     Qty = addToCart.Qty,
                     Status = "New",
-                    UserId = 2,
+                    UserId = userId,
                     Created = DateTime.Now,
                     CartCode = null
                 };
@@ -54,7 +57,7 @@ namespace FashionShop.Controllers
 
             // Fetch updated cart items for the response
             var updatedCartItems = _context.Carts
-                .Where(c => c.Status == "New" && c.UserId == 2)
+                .Where(c => c.Status == "New" && c.UserId == userId)
                 .Select(c => new CartViewModel
                 {
                     ProductId = c.Product.Id,

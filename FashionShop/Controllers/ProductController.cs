@@ -1,9 +1,10 @@
 ﻿using FashionShop.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FashionShop.Controllers
 {
-    public class ProductController : Controller
+    public class ProductController : BaseController
     {
         private FashionshopDbContext _dbContext;
         public ProductController(FashionshopDbContext dbContext)
@@ -12,6 +13,8 @@ namespace FashionShop.Controllers
         }
         public IActionResult Index()
         {
+            var userId = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             // Sample data, replace with real database fetch
             var products = _dbContext.Products
                 .Select(p => new ProductViewModel
@@ -24,7 +27,7 @@ namespace FashionShop.Controllers
                 .ToList();
 
 
-            var cartItems = _dbContext.Carts.Where(x => x.UserId == 2 && x.Status == "New").Select(c =>
+            var cartItems = _dbContext.Carts.Where(x => x.UserId == userId && x.Status == "New").Select(c =>
                 new CartViewModel
                 {
                     ProductId = c.ProductId,
@@ -46,6 +49,8 @@ namespace FashionShop.Controllers
                 Tax = tax,
                 Total = total
             };
+
+            SetUserContext();
 
             return View(viewModel);
         }
