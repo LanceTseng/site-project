@@ -6,9 +6,13 @@
 }
  
 <div class="container mt-5">
+    <div class="header">
+        <img src="https://graphicprojectteam.atlassian.net/secure/viewavatar?size=xxxlarge@2x&avatarId=10597&avatarType=project" alt="BYMAR SALON Logo">
+        BYMAR SALON
+    </div>
     <div class="row">
         <!-- Left Panel: Filter Form -->
-        <div class="col-md-4 bg-light p-4 rounded shadow-sm">
+        <div class="col-md-4 p-4 rounded shadow-sm approval-filters">
             <h4 class="fw-bold mb-4">Approval Filters</h4>
             <form id="filterForm" method="post">
                 <div class="mb-3">
@@ -36,7 +40,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="dateSelect" class="form-label">Select Date</label>
-                    <input type="date" id="dateSelect" class="form-control" asp-for="Filter.Date" />
+                    <input type="date" id="dateSelect" class="form-control" asp-for="Filter.Date"/>
                 </div>
                 <div class="mb-3">
                     <label for="statusSelect" class="form-label">Select Status</label>
@@ -52,7 +56,7 @@
         </div>
 
         <!-- Right Panel: Schedule Table -->
-        <div class="col-md-8">
+        <div class="col-md-8 p-4 rounded shadow-sm appointments">
             <h4 class="fw-bold mb-4">Appointments</h4>
             <div id="scheduleTableContainer">
                 @await Html.PartialAsync("_ScheduleTable", Model.Schedules)
@@ -133,6 +137,7 @@
     document.addEventListener('DOMContentLoaded', initializeEventListeners);
 </script>
 <style>
+    
     .loading-indicator {
         font-size: 18px;
         color: #007bff;
@@ -141,3 +146,53 @@
         margin-top: 20px;
     }
 </style>
+<style>
+        body {
+    background-image: url('https://th.bing.com/th/id/R.e678d47490d0d3147c956aa7049e50cc?rik=YtmOpy2MHGjUOw&pid=ImgRaw&r=0');
+    background-size: cover;
+    background-position: center;
+    }
+        .loading-indicator {
+            font-size: 18px;
+            color: #007bff;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Custom background colors for the panels */
+        .approval-filters {
+            background-color: #f0f8ff; /* Light blue background for Approval Filters */
+            border-radius: 10px; /* Rounded corners */
+            padding: 20px; /* Added padding */
+            border: 2px solid #007bff; /* Added border */
+        }
+
+        .appointments {
+            background-color: #e8f5e9; /* Light green background for Appointments */
+            border-radius: 10px; /* Rounded corners */
+            padding: 20px; /* Added padding */
+            border: 2px solid #28a745; /* Added border */
+        }
+
+        /* Style for the header */
+        .header {
+            background-color: #121212; /* Green background */
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 36px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Style for the logo image */
+        .header img {
+            width: 50px; /* Adjust the image size */
+            margin-right: 15px; /* Space between the image and text */
+        }
+    </style>

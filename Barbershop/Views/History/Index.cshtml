@@ -11,7 +11,7 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Left Side: Query Conditions -->
-        <div class="col-md-3 border-end">
+        <div class="col-md-3 border-end query-conditions">
             <h5>Query Conditions</h5>
             <form id="queryForm" method="post">
                 <div class="mb-3">
@@ -82,7 +82,7 @@
 
         <!-- Right Side: Partial View for Table -->
         <div class="col-md-9">
-            <div id="historyTableContainer">
+            <div id="historyTableContainer" class="history-table-container">
                 @await Html.PartialAsync("_HistoryTable", Model.HistoryList)
             </div>
         </div>
@@ -155,11 +155,45 @@
     });
 </script>
 <style>
+    body{
+        background-color: #bbdaf4;
+    }
     .loading-indicator {
         font-size: 18px;
         color: #007bff;
         font-weight: bold;
         text-align: center;
         margin-top: 20px;
+    }
+
+    /* Left Side: Query Conditions */
+    .query-conditions {
+        background-color: #f0f8ff; /* Light grey background */
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+        .query-conditions h5 {
+            color: #007bff; /* Bootstrap primary color */
+            font-weight: bold;
+        }
+
+    .history-table-container h1 {
+        color: #343a40; /* Dark grey color */
+    }
+
+    /* Table Header */
+    .history-table-container .table thead {
+        background-color: #007bff; /* Bootstrap primary color */
+        color: black; /* Black text for contrast */
+    }
+
+    /* Table Row Hover Effect */
+    .history-table-container .table tbody tr:hover {
+        background-color: #e9ecef; /* Light grey on hover */
+    }
+
+    .history-table-container .table tbody {
+        background-color: #f0f8ff; /* Light grey on hover */
     }
 </style>
