@@ -87,11 +87,16 @@ namespace MobileProject.View
             }
         }
 
+
+        private readonly HttpClient _httpClient = new HttpClient();
+        private const string Url = "http://10.0.2.2:5180/WeatherForecast";
         private async void ApiCallingTest()
         {
             try
             {
+                string response = await _httpClient.GetStringAsync(Url);
 
+                Debug.WriteLine( JsonConvert.DeserializeObject(response));
             }
             catch (Exception ex){
             

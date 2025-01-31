@@ -60,6 +60,9 @@ namespace MobileProject.View
         private void Auth(bool isAdmin)
         {
             btnAdminMenu.IsVisible = isAdmin;
+#if DEBUG
+            btnAdminMenu.IsVisible = true;
+#endif
         }
 
         private async void btnMeals_Clicked(object sender, EventArgs e)
