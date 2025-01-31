@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MobileProject.View.AdminView.ProductMgmtPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModel="clr-namespace:MobileProject.ViewModel;assembly=MobileProject">
+    <ContentPage.BindingContext>
+        <viewModel:ProductMgmtViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <!--  Input Fields and Query Button  -->
+            <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
+                <Entry
+                    x:Name="ConditionEntry"
+                    HorizontalOptions="FillAndExpand"
+                    Placeholder="Enter Product Name"
+                    Text="{Binding ProductName}" />
+                <Button Command="{Binding QueryCommand}" Text="Query" />
+            </StackLayout>
+
+            <!--  Data List with Checkbox  -->
+            <CollectionView
+                Grid.Row="1"
+                ItemsSource="{Binding TableData}"
+                SelectionMode="None">
+                <CollectionView.Header>
+                    <Grid
+                        Padding="10"
+                        BackgroundColor="LightSkyBlue"
+                        ColumnSpacing="10">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <!--  Checkbox  -->
+                            <ColumnDefinition Width="1*" />
+                            <!--  Id  -->
+                            <ColumnDefinition Width="2*" />
+                            <!--  Product Name  -->
+                            <ColumnDefinition Width="2*" />
+                            <!--  Price  -->
+                            <ColumnDefinition Width="4*" />
+                            <!--  Description  -->
+                            <ColumnDefinition Width="2*" />
+                            <!--  Image  -->
+                            <ColumnDefinition Width="2*" />
+                            <!--  Created Date  -->
+                        </Grid.ColumnDefinitions>
+
+                        <!--  Column Headers  -->
+                        <Label
+                            Grid.Column="0"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            Text="Select"
+                            VerticalTextAlignment="Center" />
+                        <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            Text="ID"
+                            VerticalTextAlignment="Center" />
+                        <Label
+                            Grid.Column="2"
+                            FontAttributes="Bold"
+                            Text="Product Name" />
+                        <Label
+                            Grid.Column="3"
+                            FontAttributes="Bold"
+                            Text="Price"
+                            VerticalTextAlignment="Center" />
+                        <Label
+                            Grid.Column="4"
+                            FontAttributes="Bold"
+                            Text="Description"
+                            VerticalTextAlignment="Center" />
+                        <Label
+                            Grid.Column="5"
+                            FontAttributes="Bold"
+                            Text="Image"
+                            VerticalTextAlignment="Center" />
+                        <Label
+                            Grid.Column="6"
+                            FontAttributes="Bold"
+                            Text="Created Date"
+                            VerticalTextAlignment="Center" />
+
+                    </Grid>
+                </CollectionView.Header>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <SwipeView>
+                            <SwipeView.LeftItems>
+                                <SwipeItems>
+                                    <SwipeItem
+                                        BackgroundColor="LightGreen"
+                                        Command="{Binding BindingContext.EditCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                        CommandParameter="{Binding .}"
+                                        IconImageSource="edit.png"
+                                        Text="Edit" />
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
+                            <Grid Padding="10" ColumnSpacing="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <!--  Add column definitions  -->
+                                </Grid.ColumnDefinitions>
+
+                                <!--  Row Content  -->
+                                <CheckBox
+                                    Grid.Column="0"
+                                    HorizontalOptions="Center"
+                                    IsChecked="{Binding IsSelected}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    Text="{Binding Product.Id}"
+                                    VerticalOptions="Center" />
+                                <Entry
+                                    Grid.Column="2"
+                                    IsEnabled="{Binding IsEnabled}"
+                                    Placeholder="Product Name"
+                                    Text="{Binding Product.Name}"
+                                    VerticalOptions="Center" />
+                                <Entry
+                                    Grid.Column="3"
+                                    IsEnabled="{Binding IsEnabled}"
+                                    Keyboard="Numeric"
+                                    Placeholder="Price"
+                                    Text="{Binding Product.Price, StringFormat='${0:F2}'}"
+                                    VerticalOptions="Center" />
+                                <Entry
+                                    Grid.Column="4"
+                                    IsEnabled="{Binding IsEnabled}"
+                                    Text="{Binding Product.Description}"
+                                    VerticalOptions="Center" />
+                                <ImageButton
+                                    Grid.Column="5"
+                                    Margin="2"
+                                    HeightRequest="30"
+                                    IsEnabled="{Binding IsEnabled}"
+                                    Source="{Binding Product.Image}"
+                                    VerticalOptions="Center"
+                                    WidthRequest="30" />
+                                <Label
+                                    Grid.Column="6"
+                                    Text="{Binding Product.Date, StringFormat='{0:yyyy-MM-dd}'}"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentPage.Content>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Name="Add"
+            Command="{Binding AddCommand}"
+            Order="Secondary"
+            Priority="0" />
+        <ToolbarItem
+            Name="Save"
+            Command="{Binding SaveCommand}"
+            Order="Secondary"
+            Priority="1" />
+        <ToolbarItem
+            Name="Remove"
+            Command="{Binding RemoveCommand}"
+            Order="Secondary"
+            Priority="2" />
+        <ToolbarItem
+            Name="Select All"
+            Command="{Binding SelectedAllCommand}"
+            Order="Secondary"
+            Priority="3" />
+    </ContentPage.ToolbarItems>
+</ContentPage>

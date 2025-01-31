@@ -1,0 +1,8 @@
+X1. payment page viewmodel 
+X2. query condition
+X3. admin menu (CRUD) - meal, user
+4. admin report - summary
+5. API
+6. connect to sql server
+7. todo: complete order mgmt, product mgmt
+connect to sqlserver

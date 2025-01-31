@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MobileProject.View.PayNow"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModel="clr-namespace:MobileProject.ViewModel;assembly=MobileProject">
+    <ContentPage.BindingContext>
+        <viewModel:PayNowViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout Padding="20">
+
+            <Entry Placeholder="Customer Name" Text="{Binding CustomerName}" />
+            <Entry Placeholder="Name as in credit card" Text="{Binding CreditCardName}" />
+            <Entry
+                Keyboard="Numeric"
+                Placeholder="Credit card number"
+                Text="{Binding CreditCardNumber}" />
+            <Entry
+                Keyboard="Numeric"
+                Placeholder="CV Code"
+                Text="{Binding CVCode}" />
+            <Button Command="{Binding CompletePaymentCommand}" Text="Complete Payment" />
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

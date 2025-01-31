@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MobileProject.View.HomePage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ContentPage.Content>
+        <RelativeLayout HorizontalOptions="Center" VerticalOptions="Center">
+            <StackLayout
+                x:Name="layout"
+                Padding="20,0,20,0"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+                <Image
+                    RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                           Property=Height}"
+                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                          Property=Width}"
+                    Source="logo.png" />
+                <StackLayout
+                    Padding="0,0,0,20"
+                    HorizontalOptions="Center"
+                    Opacity="0.8"
+                    VerticalOptions="Center">
+                    <Image
+                        RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                               Property=Height}"
+                        RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                                                                              Property=Width}"
+                        Source="wallpaper.jpg" />
+                    <Label
+                        x:Name="lblLoginInfo"
+                        FontAttributes="Italic"
+                        FontFamily="LobsterTwo"
+                        FontSize="20"
+                        HorizontalTextAlignment="Center"
+                        Text="Login Text" />
+                    <Button
+                        x:Name="btnMeal"
+                        BackgroundColor="Transparent"
+                        BorderColor="Maroon"
+                        BorderRadius="50"
+                        BorderWidth="1"
+                        Clicked="btnMeals_Clicked"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        Text="Meals"
+                        TextColor="Maroon"
+                        VerticalOptions="Center"
+                        WidthRequest="200" />
+                    <Button
+                        x:Name="btnHistory"
+                        BackgroundColor="Transparent"
+                        BorderColor="Maroon"
+                        BorderRadius="50"
+                        BorderWidth="1"
+                        Clicked="btnHistory_Clicked"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        Text="History"
+                        TextColor="Maroon"
+                        VerticalOptions="Center"
+                        WidthRequest="200" />
+                    <Button
+                        x:Name="btnCart"
+                        BackgroundColor="Transparent"
+                        BorderColor="Maroon"
+                        BorderRadius="50"
+                        BorderWidth="1"
+                        Clicked="btnCart_Clicked"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        Text="Cart"
+                        TextColor="Maroon"
+                        VerticalOptions="Center"
+                        WidthRequest="200" />
+                    <Button
+                        x:Name="btnAdminMenu"
+                        BackgroundColor="Transparent"
+                        BorderColor="Maroon"
+                        BorderRadius="50"
+                        BorderWidth="1"
+                        Clicked="btnAdmin_Clicked"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        Text="Admin Operation"
+                        TextColor="Maroon"
+                        VerticalOptions="Center"
+                        WidthRequest="200" />
+                    <Button
+                        x:Name="btnLogin"
+                        BackgroundColor="Transparent"
+                        BorderColor="Maroon"
+                        BorderRadius="50"
+                        BorderWidth="1"
+                        Clicked="btnLogin_Clicked"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        IsVisible="True"
+                        Text="Login"
+                        TextColor="Maroon"
+                        VerticalOptions="Center"
+                        WidthRequest="200" />
+                    <Button
+                        x:Name="btnLogout"
+                        BackgroundColor="Transparent"
+                        BorderColor="Maroon"
+                        BorderRadius="50"
+                        BorderWidth="1"
+                        Clicked="btnLogout_Clicked"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        IsVisible="False"
+                        Text="Lougout"
+                        TextColor="Maroon"
+                        VerticalOptions="Center"
+                        WidthRequest="200" />
+                </StackLayout>
+            </StackLayout>
+        </RelativeLayout>
+    </ContentPage.Content>
+</ContentPage>

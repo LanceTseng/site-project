@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage
+    x:Class="MobileProject.View.AdminView.CartPopupPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="http://rotorgames.com">
+    <StackLayout
+        BackgroundColor="Transparent"
+        HorizontalOptions="Center"
+        VerticalOptions="Center">
+
+        <!--  Container for Popup Content  -->
+        <Frame
+            Padding="10"
+            BackgroundColor="White"
+            CornerRadius="10"
+            HasShadow="True"
+            HeightRequest="400"
+            WidthRequest="300">
+            <!--  Set the desired width  -->
+            <StackLayout Padding="10" BackgroundColor="White">
+                <!--  Header  -->
+                <Label
+                    Margin="0,10"
+                    FontSize="Medium"
+                    HorizontalOptions="Center"
+                    Text="{Binding TransactionCode, StringFormat='Cart Details - {0}'}"
+                    TextColor="Black" />
+                <!--  Close and Save Buttons  -->
+                <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                    <Button
+                        Margin="0,0,10,0"
+                        Command="{Binding SaveDetailCommand}"
+                        CommandParameter="{Binding CartRecord.TransactionCode}"
+                        Text="Save" />
+                    <Button Command="{Binding CloseCommand}" Text="Close" />
+                </StackLayout>
+
+                <!--  CollectionView for Cart Items  -->
+                <CollectionView ItemsSource="{Binding CartItems}" SelectionMode="None">
+                    <!--  Add Header  -->
+                    <CollectionView.Header>
+                        <Grid
+                            Padding="10"
+                            BackgroundColor="LightBlue"
+                            ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Column Headers  -->
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                Text="Product Name" />
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                Text="Price" />
+                            <Label
+                                Grid.Column="2"
+                                FontAttributes="Bold"
+                                Text="Qty" />
+                            <Label
+                                Grid.Column="3"
+                                FontAttributes="Bold"
+                                Text="Total" />
+                        </Grid>
+                    </CollectionView.Header>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="10" ColumnSpacing="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                </Grid.ColumnDefinitions>
+                                <Label
+                                    Grid.Column="0"
+                                    IsVisible="False"
+                                    Text="{Binding CartRecord.Id}"
+                                    TextColor="Navy"
+                                    VerticalTextAlignment="Center" />
+                                <!--  Product Name  -->
+                                <Label
+                                    Grid.Column="0"
+                                    Text="{Binding Product.Name}"
+                                    TextColor="Navy"
+                                    VerticalTextAlignment="Center" />
+
+                                <!--  Price  -->
+                                <Label
+                                    Grid.Column="1"
+                                    Text="{Binding CartRecord.Price, StringFormat='${0:F2}'}"
+                                    TextColor="Navy"
+                                    VerticalTextAlignment="Center" />
+                                <!--  Quantity Entry  -->
+                                <Entry
+                                    Grid.Column="2"
+                                    HeightRequest="38"
+                                    Keyboard="Numeric"
+                                    Text="{Binding Qty, Mode=TwoWay}" />
+                                <!--  Total Price  -->
+                                <Label
+                                    Grid.Column="3"
+                                    Text="{Binding Total, StringFormat='${0:F2}'}"
+                                    TextColor="Navy"
+                                    VerticalTextAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </Frame>
+    </StackLayout>
+</pages:PopupPage>

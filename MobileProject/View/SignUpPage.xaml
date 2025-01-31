@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MobileProject.View.SignUpPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:MobileProject.ViewModel">
+    <ContentPage.BindingContext>
+        <local:SignUpPageViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Title>
+        Sign up
+    </ContentPage.Title>
+    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+        <Entry Placeholder="Username" Text="{Binding Username}" />
+        <Entry
+            IsPassword="True"
+            Placeholder="Password"
+            Text="{Binding Password}" />
+        <Entry
+            IsPassword="True"
+            Placeholder="Re type Password"
+            Text="{Binding RetypePassword}" />
+        <Entry Placeholder="Enter Phone XXXXXXXXXX" Text="{Binding Phone}" />
+        <Entry Placeholder="Enter Email example@example.com" Text="{Binding Email}" />
+
+        <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+            <Button
+                Command="{Binding SignUpCommand}"
+                HorizontalOptions="FillAndExpand"
+                IsEnabled="{Binding SignUpCommand}"
+                Text="Signup" />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>
