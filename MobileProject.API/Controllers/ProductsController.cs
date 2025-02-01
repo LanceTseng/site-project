@@ -35,7 +35,7 @@ namespace MobileProject.API.Controllers
         }
 
         [HttpGet("GetProductsByCondition")]
-        public async Task<IActionResult> GetUsersByCondition(string? name, decimal? minPrice, decimal? maxPrice,
+        public async Task<IActionResult> GetProductsByCondition(string? name, decimal? minPrice, decimal? maxPrice,
             DateTime? dateFrom, DateTime? dateTo)
         {
             var products = await _productsRepository.GetProductsByConditionAsync(name, minPrice, maxPrice, dateFrom, dateTo);
@@ -55,7 +55,7 @@ namespace MobileProject.API.Controllers
 
         // GET: api/Users/GetUserById/{id}
         [HttpGet("GetProductById/{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        public async Task<IActionResult> GetProductById(int id)
         {
             var product = await _productsRepository.GetProductByIdAsync(id);
 
@@ -73,7 +73,7 @@ namespace MobileProject.API.Controllers
 
         // POST: api/Users/CreateUser
         [HttpPost("CreateProduct")]
-        public async Task<IActionResult> CreateUser([FromBody] Product product)
+        public async Task<IActionResult> CreateProduct([FromBody] Product product)
         {
             if (product == null)
             {
@@ -90,7 +90,7 @@ namespace MobileProject.API.Controllers
 
         // PUT: api/Users/UpdateUser
         [HttpPut("UpdateProduct")]
-        public async Task<IActionResult> UpdateUser([FromBody] Product product)
+        public async Task<IActionResult> UpdateProduct([FromBody] Product product)
         {
             if (product == null || product.Id <= 0)
             {
@@ -107,7 +107,7 @@ namespace MobileProject.API.Controllers
 
         // DELETE: api/Users/DeleteUser/{id}
         [HttpDelete("DeleteUser/{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeletProduct(int id)
         {
             var response = await _productsRepository.DeleteProductAsync(id);
             return StatusCode(response.StatusCode, response);
