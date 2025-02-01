@@ -1,4 +1,8 @@
 
+using MobileProject.API.Repositories;
+using MobileProject.API.Repositories.Interfaces;
+using static MobileProject.API.Repositories.Interfaces.IUsersRepository;
+
 namespace MobileProject.API
 {
     public class Program
@@ -22,6 +26,8 @@ namespace MobileProject.API
                         .AllowAnyHeader();
                 });
             });
+
+            builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
             var app = builder.Build();
             app.UseCors("AllowAll");

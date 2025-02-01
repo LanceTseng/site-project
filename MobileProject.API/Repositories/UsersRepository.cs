@@ -1,0 +1,81 @@
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
+using MobileProject.API.Models;
+using MobileProject.API.Repositories.Interfaces;
+
+namespace MobileProject.API.Repositories
+{
+    public class UsersRepository : IUsersRepository
+    {
+        private readonly string _connectionString;
+
+        public UsersRepository(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            using var connection = new SqlConnection(_connectionString);
+            return await connection.QueryAsync<User>("SELECT * FROM Users");
+        }
+
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            return await connection.QueryFirstOrDefaultAsync<User>(
+                "SELECT * FROM Users WHERE Id = @Id", new { Id = id });
+        }
+
+        public async Task<IEnumerable<User>> GetUsersByConditionAsync(string? role, DateTime? createdDate,
+            string? userName)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var query = "SELECT * FROM Users WHERE (@Role IS NULL OR Role = @Role) " +
+                        "AND (@CreatedDate IS NULL OR CreatedDate = @CreatedDate) " +
+                        "AND (@UserName IS NULL OR UserName LIKE '%' + @UserName + '%')";
+            return await connection.QueryAsync<User>(query,
+                new { Role = role, CreatedDate = createdDate, UserName = userName });
+        }
+
+        public async Task<Response> CreateUserAsync(User user)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var result = await connection.ExecuteAsync(
+                "INSERT INTO Users (UserName, Role, CreatedDate) VALUES (@UserName, @Role, @CreatedDate)",
+                new { user.UserName, user.Role, user.CreatedDate });
+
+            return new Response
+            {
+                StatusCode = result > 0 ? 200 : 500,
+                StatusMessage = result > 0 ? "User created successfully" : "Failed to create user"
+            };
+        }
+
+        public async Task<Response> UpdateUserAsync(User user)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var result = await connection.ExecuteAsync(
+                "UPDATE Users SET UserName = @UserName, Role = @Role WHERE Id = @Id",
+                new { user.UserName, user.Role, user.Id });
+
+            return new Response
+            {
+                StatusCode = result > 0 ? 200 : 500,
+                StatusMessage = result > 0 ? "User updated successfully" : "Failed to update user"
+            };
+        }
+
+        public async Task<Response> DeleteUserAsync(int id)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var result = await connection.ExecuteAsync("DELETE FROM Users WHERE Id = @Id", new { Id = id });
+
+            return new Response
+            {
+                StatusCode = result > 0 ? 200 : 500,
+                StatusMessage = result > 0 ? "User deleted successfully" : "Failed to delete user"
+            };
+        }
+    }
+}
