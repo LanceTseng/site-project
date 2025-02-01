@@ -16,7 +16,7 @@ namespace MobileProject.API.Controllers
             _cartRecordRepository = cartRecordRepository;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllCartRecords")]
         public async Task<IActionResult> GetAllCartRecords()
         {
             var cartRecords = await _cartRecordRepository.GetAllCartRecordsAsync();
@@ -31,7 +31,7 @@ namespace MobileProject.API.Controllers
             return Ok(cartRecords);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetCartRecordById/{id}")]
         public async Task<IActionResult> GetCartRecordById(int id)
         {
             var cartRecord = await _cartRecordRepository.GetCartRecordByIdAsync(id);
@@ -61,7 +61,7 @@ namespace MobileProject.API.Controllers
             return Ok(cartRecords);
         }
 
-        [HttpPost]
+        [HttpPost("CreateCartRecord")]
         public async Task<IActionResult> CreateCartRecord([FromBody] CartRecord cartRecord)
         {
             if (cartRecord == null)
@@ -77,10 +77,10 @@ namespace MobileProject.API.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCartRecord(int id, [FromBody] CartRecord cartRecord)
+        [HttpPut("UpdateCartRecord")]
+        public async Task<IActionResult> UpdateCartRecord([FromBody] CartRecord cartRecord)
         {
-            if (id != cartRecord.Id)
+            if (cartRecord == null || cartRecord.Id <= 0) 
             {
                 return BadRequest(new Response
                 {
@@ -92,7 +92,7 @@ namespace MobileProject.API.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteCartRecord/{id}")]
         public async Task<IActionResult> DeleteCartRecord(int id)
         {
             var response = await _cartRecordRepository.DeleteCartRecordAsync(id);
