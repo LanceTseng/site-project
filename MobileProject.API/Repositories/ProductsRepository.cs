@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using MobileProject.API.Models;
 using MobileProject.API.Repositories.Interfaces;
-using StatusCodes = MobileProject.API.Models.StatusCodes;
+using StatusCodes = Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace MobileProject.API.Repositories;
 
@@ -66,7 +66,7 @@ public class ProductsRepository : IProductsRepository
 
         return new Response
         {
-            StatusCode = result > 0 ? StatusCodes.Success : StatusCodes.ServerError,
+            StatusCode = result > 0 ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
             StatusMessage = result > 0 ? "Product created successfully" : "Failed to create product"
         };
     }
@@ -87,8 +87,8 @@ public class ProductsRepository : IProductsRepository
 
         return new Response
         {
-            StatusCode = result > 0 ? StatusCodes.Success : StatusCodes.ServerError,
-            StatusMessage = result > 0 ? "Product updated successfully" : "Failed to update product"
+                StatusCode = result > 0 ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
+                StatusMessage = result > 0 ? "Product updated successfully" : "Failed to update product"
         };
     }
 
@@ -102,7 +102,7 @@ public class ProductsRepository : IProductsRepository
 
         return new Response
         {
-            StatusCode = result > 0 ? StatusCodes.Success : StatusCodes.ServerError,
+            StatusCode = result > 0 ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
             StatusMessage = result > 0 ? "Product deleted successfully" : "Failed to delete product"
         };
     }

@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 using MobileProject.API.Models;
 using MobileProject.API.Repositories.Interfaces;
 using System.Data;
-using StatusCodes = MobileProject.API.Models.StatusCodes;
+using StatusCodes = Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace MobileProject.API.Repositories
 {
@@ -62,7 +62,7 @@ namespace MobileProject.API.Repositories
 
             return new Response
             {
-                StatusCode = result > 0 ? StatusCodes.Success : StatusCodes.ServerError,
+                StatusCode = result > 0 ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
                 StatusMessage = result > 0 ? "User created successfully" : "Failed to create user"
             };
         }
@@ -80,7 +80,7 @@ namespace MobileProject.API.Repositories
 
             return new Response
             {
-                StatusCode = result > 0 ? StatusCodes.Success : StatusCodes.ServerError,
+                StatusCode = result > 0 ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
                 StatusMessage = result > 0 ? "User updated successfully" : "Failed to update user"
             };
         }
@@ -95,7 +95,7 @@ namespace MobileProject.API.Repositories
 
             return new Response
             {
-                StatusCode = result > 0 ? StatusCodes.Success : StatusCodes.ServerError,
+                StatusCode = result > 0 ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
                 StatusMessage = result > 0 ? "User deleted successfully" : "Failed to delete user"
             };
         }

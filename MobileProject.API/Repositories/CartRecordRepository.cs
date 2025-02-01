@@ -3,7 +3,7 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using MobileProject.API.Models;
 using MobileProject.API.Repositories.Interfaces;
-using StatusCodes = MobileProject.API.Models.StatusCodes;
+using StatusCodes = Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace MobileProject.API.Repositories;
 
@@ -48,7 +48,7 @@ public class CartRecordRepository : ICartRecordRepository
 
         return new Response
         {
-            StatusCode = result > 0 ? StatusCodes.Success : StatusCodes.ServerError,
+            StatusCode = result > 0 ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
             StatusMessage = result > 0 ? "Cart record created successfully" : "Failed to create cart record"
         };
     }
@@ -69,7 +69,7 @@ public class CartRecordRepository : ICartRecordRepository
 
         return new Response
         {
-            StatusCode = result > 0 ? StatusCodes.Success : StatusCodes.ServerError,
+            StatusCode = result > 0 ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
             StatusMessage = result > 0 ? "Cart record updated successfully" : "Failed to update cart record"
         };
     }
@@ -85,7 +85,7 @@ public class CartRecordRepository : ICartRecordRepository
 
         return new Response
         {
-            StatusCode = result > 0 ? StatusCodes.Success : StatusCodes.ServerError,
+            StatusCode = result > 0 ? StatusCodes.Status200OK : StatusCodes.Status500InternalServerError,
             StatusMessage = result > 0 ? "Cart record deleted successfully" : "Failed to delete cart record"
         };
     }
