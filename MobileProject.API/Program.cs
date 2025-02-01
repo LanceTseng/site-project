@@ -1,4 +1,5 @@
 
+using System.Security.Cryptography;
 using MobileProject.API.Repositories;
 using MobileProject.API.Repositories.Interfaces;
 using static MobileProject.API.Repositories.Interfaces.IUsersRepository;
@@ -28,6 +29,7 @@ namespace MobileProject.API
             });
 
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+            builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 
             var app = builder.Build();
             app.UseCors("AllowAll");
