@@ -40,9 +40,9 @@ namespace MobileProject.API.Controllers
 
         // GET: api/Users/GetUsersByCondition
         [HttpGet("GetUsersByCondition")]
-        public async Task<IActionResult> GetUsersByCondition(string role = null, DateTime? createdDate = null, string userName = null)
+        public async Task<IActionResult> GetUsersByCondition(string role = null, DateTime? dateFrom = null, DateTime? dateTo = null, string userName = null)
         {
-            var users = await _userRepository.GetUsersByConditionAsync(role, createdDate, userName);
+            var users = await _userRepository.GetUsersByConditionAsync(role, dateFrom, dateTo, userName);
 
             if (!users.Any())
             {
