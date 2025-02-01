@@ -31,6 +31,7 @@ namespace MobileProject.API
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
             builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
             builder.Services.AddScoped<ICartRecordRepository, CartRecordRepository>();
+            builder.Services.AddScoped<IOrdersRepository, OrdersRepository>();
 
             var app = builder.Build();
             app.UseCors("AllowAll");
