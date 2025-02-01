@@ -18,20 +18,20 @@ namespace MobileProject.API.Repositories
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            using var connection = new SqlConnection(_connectionString);
+            await using var connection = new SqlConnection(_connectionString);
             return await connection.QueryAsync<User>("SELECT * FROM Users");
         }
 
         public async Task<User?> GetUserByIdAsync(int id)
         {
-            using var connection = new SqlConnection(_connectionString);
+            await using var connection = new SqlConnection(_connectionString);
             return await connection.QueryFirstOrDefaultAsync<User>(
                 "SELECT * FROM Users WHERE Id = @Id", new { Id = id });
         }
 
         public async Task<IEnumerable<User>> GetUsersByConditionAsync(string? role, DateTime? dateFrom, DateTime? dateTo, string? userName)
         {
-            using var connection = new SqlConnection(_connectionString);
+            await using var connection = new SqlConnection(_connectionString);
 
             var query = "SELECT * FROM Users WHERE " +
                         "(@Role IS NULL OR Role = @Role) " +
@@ -51,7 +51,7 @@ namespace MobileProject.API.Repositories
 
         public async Task<Response> CreateUserAsync(User user)
         {
-            using var connection = new SqlConnection(_connectionString);
+            await using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
             parameters.Add("@UserName", user.UserName, DbType.String);
             parameters.Add("@Role", user.Role, DbType.String);
@@ -69,7 +69,7 @@ namespace MobileProject.API.Repositories
 
         public async Task<Response> UpdateUserAsync(User user)
         {
-            using var connection = new SqlConnection(_connectionString);
+            await using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
             parameters.Add("@UserName", user.UserName, DbType.String);
             parameters.Add("@Role", user.Role, DbType.String);
@@ -87,7 +87,7 @@ namespace MobileProject.API.Repositories
 
         public async Task<Response> DeleteUserAsync(int id)
         {
-            using var connection = new SqlConnection(_connectionString);
+            await using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
             parameters.Add("@Id", id, DbType.Int32);
 
