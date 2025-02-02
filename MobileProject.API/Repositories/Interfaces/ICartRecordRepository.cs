@@ -8,7 +8,7 @@ public interface ICartRecordRepository
 
     Task<CartRecord?> GetCartRecordByIdAsync(int id);
 
-    Task<IEnumerable<CartRecord>> GetCartRecordsByConditionAsync(string? userName, string? productName, string? status, int? userId, string? transactionCode);
+    Task<IEnumerable<CartRecord>> GetCartRecordsByConditionAsync(string? userName, string? productName, string? status, int? userId, int? productId, string? transactionCode);
 
     Task<Response> CreateCartRecordAsync(CartRecord cartRecord);
 

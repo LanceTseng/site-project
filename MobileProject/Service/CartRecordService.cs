@@ -23,7 +23,7 @@ namespace MobileProject.Service
             return await _apiService.CallApiAsync<IEnumerable<CartRecord>>($"{BaseUrl}/GetAllCartRecords", HttpMethod.Get);
         }
 
-        public async Task<IEnumerable<CartRecord>> GetCartRecordsByConditionAsync(string userName = null, string productName = null, string status = null, int? userId = null,
+        public async Task<IEnumerable<CartRecord>> GetCartRecordsByConditionAsync(string userName = null, string productName = null, string status = null, int? userId = null, int? productId = null,
             string transactionCode = null)
         {
             // Build the query string dynamically
@@ -33,6 +33,7 @@ namespace MobileProject.Service
             if (!string.IsNullOrEmpty(productName)) query += $"productName={productName}&";
             if (!string.IsNullOrEmpty(status)) query += $"status={status}&";
             if (userId.HasValue) query += $"userId={userId}&";
+            if (productId.HasValue) query += $"productId={productId}&";
             if (!string.IsNullOrEmpty(transactionCode)) query += $"transactionCode={transactionCode}&";
 
             query = query.TrimEnd('&'); // Remove trailing '&'

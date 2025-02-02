@@ -96,6 +96,7 @@ public class CartRecordRepository : ICartRecordRepository
         string? productName = null,
         string? status = null,
         int? userId = null,
+        int? productId = null,
         string? transactionCode = null)
     {
         using var connection = new SqlConnection(_connectionString);
@@ -109,7 +110,8 @@ public class CartRecordRepository : ICartRecordRepository
             AND (@ProductName IS NULL OR p.Name LIKE  '%' + @ProductName + '%')
             AND (@TransactionCode IS NULL OR cr.TransactionCode LIKE  '%' + @TransactionCode + '%')
             AND (@Status IS NULL OR cr.Status = @Status)
-            AND (@UserId = 0 OR cr.UserId = @UserId)");
+            AND (@UserId = 0 OR cr.UserId = @UserId)
+            AND (@ProductId = 0 OR cr.ProductId = @ProductId)");
 
         var parameters = new DynamicParameters();
         parameters.Add("@UserName", userName);
@@ -117,6 +119,7 @@ public class CartRecordRepository : ICartRecordRepository
         parameters.Add("@TransactionCode", transactionCode);
         parameters.Add("@Status", status);
         parameters.Add("@UserId", userId ?? (object)DBNull.Value);
+        parameters.Add("@ProductId", productId ?? (object)DBNull.Value);
 
         return await connection.QueryAsync<CartRecord>(query.ToString(), parameters);
     }

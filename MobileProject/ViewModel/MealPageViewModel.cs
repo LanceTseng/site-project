@@ -10,28 +10,43 @@ using MobileProject.View;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using MobileProject.Service;
+using MobileProject.Service.Interface;
 
 namespace MobileProject.ViewModel
 {
     public class MealPageViewModel : BaseViewModel
     {
-        private readonly ProductRepository _productRepository;
-        private readonly CartRecordRepository _cartRecordRepository;
+        private readonly ApiService _apiService;
+        private readonly IProductService _productService;
+        private readonly ICartRecordService _cartRecordService;
 
-        public ObservableCollection<Meal> MealList { get; set; }
+        private ObservableCollection<Meal> _mealList;
+
+        public ObservableCollection<Meal> MealList
+        {
+            get => _mealList;
+            set => SetProperty(ref _mealList, value);
+        }
         public ICommand AddToCartCommand { get; }
         public ICommand NavigateToCartCommand { get; }
 
-        public MealPageViewModel()
+        public MealPageViewModel(ApiService apiService, IProductService productService, ICartRecordService cartRecordService)
         {
-            _productRepository = new ProductRepository();
-            _cartRecordRepository = new CartRecordRepository();
-
-            var products = _productRepository.GetProductList();
-            MealList = new ObservableCollection<Meal>(products.Select(p => new Meal(p)));
+            _apiService = apiService;
+            _productService = productService;
+            _cartRecordService = cartRecordService;
 
             AddToCartCommand = new Command<Meal>(async product => await AddToCartAsync(product));
             NavigateToCartCommand = new Command(async () => await NavigateToCartAsync());
+
+            _ = LoadData();
+        }
+
+        private async Task LoadData()
+        {
+            var products = await _productService.GetAllProductsAsync();
+            MealList = new ObservableCollection<Meal>(products.Select(p => new Meal(p)));
         }
 
         private async Task AddToCartAsync(Meal selectedItem)
@@ -54,8 +69,6 @@ namespace MobileProject.ViewModel
                 }
 
                 var transactionCode = "";
-                var prodcut =  _productRepository.GetFilteredProducts(productId: selectedItem.Product.Id).FirstOrDefault();
-                
                 var cart = new CartRecord()
                 {
                     Qty = selectedItem.Quantity, // Use the Quantity property
@@ -66,19 +79,26 @@ namespace MobileProject.ViewModel
                     TransactionCode = transactionCode,
                 };
 
-                var itemInCart = _cartRecordRepository.GetFilteredCartRecord(cart.Status, cart.UserId, cart.ProductId).FirstOrDefault();
+                var itemInCart = await _cartRecordService.GetCartRecordsByConditionAsync(
+                    status: cart.Status,
+                    userId: cart.UserId,
+                    productId: cart.ProductId
+                );
+
+
                 if (itemInCart != null)
                 {
-                    itemInCart.Qty += cart.Qty;
-                    itemInCart.Total = itemInCart.Qty * prodcut.Price;
-                    _cartRecordRepository.UpdateCart(itemInCart);
+                    var cartRecord = itemInCart.FirstOrDefault();
+                    cartRecord.Qty += cart.Qty;
+                    cartRecord.Total = cartRecord.Qty * selectedItem.Product.Price; // Correct the typo `prodcut` to `product`
+                    await _cartRecordService.UpdateCartRecordAsync(cartRecord);
                 }
                 else
                 {
-                    _cartRecordRepository.InsertCart(cart);
+                   await _cartRecordService.CreateCartRecordAsync(cart);
                 }
 
-                await Application.Current.MainPage.DisplayAlert("Info", $"[ {prodcut.Name} ] added.", "OK");
+                await Application.Current.MainPage.DisplayAlert("Info", $"[ {selectedItem.Product.Name} ] added.", "OK");
             }
             catch (Exception ex)
             {

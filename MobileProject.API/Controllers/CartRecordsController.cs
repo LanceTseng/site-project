@@ -48,9 +48,9 @@ namespace MobileProject.API.Controllers
 
         [HttpGet("GetCartRecordByCondition")]
         public async Task<IActionResult> GetCartRecordByCondition([FromQuery] string? userName,
-            [FromQuery] string? productName, [FromQuery] string? status, [FromQuery] int userId, [FromQuery] string? transactionCode)
+            [FromQuery] string? productName, [FromQuery] string? status, [FromQuery] int userId, [FromQuery] int productId, [FromQuery] string? transactionCode)
         {
-            var cartRecords = await _cartRecordRepository.GetCartRecordsByConditionAsync(userName, productName, status, userId, transactionCode);
+            var cartRecords = await _cartRecordRepository.GetCartRecordsByConditionAsync(userName, productName, status, userId, productId,transactionCode);
             if (!cartRecords.Any())
             {
                 return NotFound(new Response
