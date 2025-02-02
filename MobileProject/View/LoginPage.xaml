@@ -3,13 +3,8 @@
     x:Class="MobileProject.View.LoginPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:MobileProject.ViewModel">
-    <ContentPage.Title>
-        Login
-    </ContentPage.Title>
-    <ContentPage.BindingContext>
-        <local:LoginPageViewModel />
-    </ContentPage.BindingContext>
+    Title="Login">
+
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
         <Frame
             Padding="0"
@@ -41,6 +36,6 @@
             Text="Login" />
         <!--<Button Clicked="btnLogin_Clicked" Text="Login" />-->
         <Label Text="Not a Member? Click the button and sign up now!" />
-        <Button Clicked="btnSignUp_Clicked" Text="Sign up" />
+        <Button Command="{Binding NavigateToSignUpCommand}" Text="Sign up" />
     </StackLayout>
 </ContentPage>

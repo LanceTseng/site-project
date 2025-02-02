@@ -1,9 +1,11 @@
-﻿using System.ComponentModel;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MobileProject.Helpers;
-using MobileProject.Repository;
+using MobileProject.Model;
+using MobileProject.Service;
+using MobileProject.Service.Interface;
 using MobileProject.View;
 using Xamarin.Forms;
 
@@ -15,15 +17,16 @@ namespace MobileProject.ViewModel
         private string _password;
         private bool _isBusy;
 
-        private UserRepository _userRepository;
+        private readonly ApiService _apiService;
+
+        private readonly IUserService _userService;
 
         public string Username
         {
             get => _username;
             set
             {
-                _username = value;
-                OnPropertyChanged();
+                SetProperty(ref _username, value);
                 UpdateCanExecute();
             }
         }
@@ -33,8 +36,7 @@ namespace MobileProject.ViewModel
             get => _password;
             set
             {
-                _password = value;
-                OnPropertyChanged();
+                SetProperty(ref _password, value);
                 UpdateCanExecute();
             }
         }
@@ -45,42 +47,64 @@ namespace MobileProject.ViewModel
             set
             {
                 _isBusy = value;
-                OnPropertyChanged(nameof(IsBusy));
+                SetProperty(ref _isBusy, value);
             }
         }
 
         public ICommand LoginCommand { get; }
 
-         
-        public LoginPageViewModel()
+        public ICommand NavigateToSignUpCommand { get; }
+
+        public LoginPageViewModel(ApiService apiService, IUserService userService)
         {
+            _apiService = apiService;
+            _userService = userService;
+
             LoginCommand = new Command(async () => await OnLogin(), CanLogin);
+            NavigateToSignUpCommand = new Command(async () => await NavigateToCartAsync());
         }
 
         private async Task OnLogin()
         {
-            IsBusy = true;
-
-            // Simulate a delay (e.g., network request)
-            await Task.Delay(2000);
-
-            IsBusy = false;
-
-            _userRepository = new UserRepository();
-            var user = _userRepository.GetFilterUser(Username, Password).FirstOrDefault();
-
-            if (user != null) // Replace with real authentication logic
+            try
             {
-                await SecureStorageHelper.SetUserSessionAsync("true", user.UserName, user.Role, user.Id.ToString());
+                IsBusy = true;
+                var users = await _userService.GetUsersByConditionAsync(userName: Username, password: Password);
+                var user = users?.FirstOrDefault();
 
-                await Application.Current.MainPage.DisplayAlert("Success", "Login successful", "OK");
-                // Navigate to the main page
-                Application.Current.MainPage = new NavigationPage(new HomePage());
+                if (user == null)
+                {
+                    await DisplayErrorMessage("Invalid username or password");
+                    return;
+                }
+
+                await SetUserSessionAndNavigate(user);
             }
-            else
+            catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Invalid username or password", "OK");
+                await DisplayErrorMessage($"An error occurred: {ex.Message}");
             }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        private async Task SetUserSessionAndNavigate(User user)
+        {
+            await SecureStorageHelper.SetUserSessionAsync("true", user.UserName, user.Role, user.Id.ToString());
+            await Application.Current.MainPage.DisplayAlert("Success", "Login successful", "OK");
+            Application.Current.MainPage = new NavigationPage(new HomePage());
+        }
+
+        private async Task DisplayErrorMessage(string message)
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", message, "OK");
+        }
+
+        private async Task NavigateToCartAsync()
+        {
+            await Application.Current.MainPage.Navigation.PushAsync(new SignUpPage());
         }
 
         private void UpdateCanExecute()

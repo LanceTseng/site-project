@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using MobileProject.Service;
+using MobileProject.Service.Interface;
+using MobileProject.ViewModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,12 +17,9 @@ namespace MobileProject.View
         public LoginPage()
         {
             InitializeComponent();
+            var apiService = App.ServiceProvider.GetService<ApiService>();
+            var userService = App.ServiceProvider.GetService<IUserService>();
+            this.BindingContext = new LoginPageViewModel(apiService, userService);
         }
-
-        private async void btnSignUp_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new SignUpPage());
-        }
-
     }
 }
