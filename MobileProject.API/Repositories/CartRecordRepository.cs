@@ -108,13 +108,15 @@ public class CartRecordRepository : ICartRecordRepository
         WHERE (@UserName IS NULL OR u.UserName LIKE @UserName)
         AND (@ProductName IS NULL OR p.Name LIKE @ProductName)
         AND (@Status IS NULL OR cr.Status = @Status)
+        AND (@UserId = 0 OR cr.UserId = @UserId)
         AND (@DateFrom IS NULL OR cr.CreatedDate >= @DateFrom)
         AND (@DateTo IS NULL OR cr.CreatedDate <= @DateTo)");
 
         var parameters = new DynamicParameters();
-        parameters.Add("@UserName", string.IsNullOrEmpty(userName) ? null : $"%{userName}%");
-        parameters.Add("@ProductName", string.IsNullOrEmpty(productName) ? null : $"%{productName}%");
-        parameters.Add("@Status", string.IsNullOrEmpty(status) ? null : status);
+        parameters.Add("@UserName", userName);
+        parameters.Add("@ProductName", productName);
+        parameters.Add("@Status", status);
+        parameters.Add("@UserId", userId);
         parameters.Add("@DateFrom", dateFrom);
         parameters.Add("@DateTo", dateTo);
 
