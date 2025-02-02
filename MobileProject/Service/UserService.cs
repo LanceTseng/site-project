@@ -11,9 +11,9 @@ namespace MobileProject.Service
         private const string BaseUrl = "api/Users";
         private readonly ApiService _apiService;
 
-        public UserService()
+        public UserService(ApiService apiService)
         {
-            _apiService = new ApiService();
+            _apiService = apiService;
         }
 
         // Get all users
