@@ -42,9 +42,11 @@ namespace MobileProject.API.Controllers
 
         // GET: api/Orders/GetByCondition
         [HttpGet("GetOrdersByCondition")]
-        public async Task<IActionResult> GetOrdersByCondition([FromQuery] string? userName, [FromQuery] string? transactionCode, [FromQuery] string? status)
+        public async Task<IActionResult> GetOrdersByCondition([FromQuery] string? userName,
+            [FromQuery] string? transactionCode, [FromQuery] string? status, [FromQuery] int userId = 0,
+            [FromQuery] DateTime dateFrom = new DateTime(), [FromQuery] DateTime dateTo = new DateTime())
         {
-            var orders = await _ordersRepository.GetOrdersByConditionAsync(userName, transactionCode, status);
+            var orders = await _ordersRepository.GetOrdersByConditionAsync(userName, transactionCode, status, userId, dateFrom, dateTo);
             return orders.Any() ? Ok(orders) : NotFound(new Response
             {
                 StatusCode = StatusCodes.Status404NotFound,
@@ -95,4 +97,3 @@ namespace MobileProject.API.Controllers
         }
     }
 }
-

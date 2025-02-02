@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Text;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using MobileProject.API.Models;
 using MobileProject.API.Repositories.Interfaces;
@@ -29,31 +30,31 @@ public class OrdersRepository : IOrdersRepository
         return await connection.QueryFirstOrDefaultAsync<Order>(query, new { Id = id });
     }
 
-    public async Task<IEnumerable<Order>> GetOrdersByConditionAsync(string? userName, string? transactionCode, string? status)
+    public async Task<IEnumerable<Order>> GetOrdersByConditionAsync(
+        string? userName, string? transactionCode, string? status,
+        int userId = 0, DateTime? dateFrom = null, DateTime? dateTo = null)
     {
         using var connection = new SqlConnection(_connectionString);
         var parameters = new DynamicParameters();
-        var query = "SELECT o.* FROM orders o JOIN users u ON o.UserId = u.Id WHERE 1=1";
 
-        if (!string.IsNullOrEmpty(userName))
-        {
-            query += " AND u.Name LIKE '%' + @UserName + '%'";
-            parameters.Add("@UserName", userName);
-        }
+        var query = new StringBuilder(@"
+        SELECT o.* FROM orders o
+        JOIN users u ON o.UserId = u.Id
+        WHERE (@UserName IS NULL OR u.Name LIKE '%' + @UserName + '%')
+        AND (@TransactionCode IS NULL OR o.TransactionCode = @TransactionCode)
+        AND (@Status IS NULL OR o.Status = @Status)
+        AND (@UserId = 0 OR o.UserId = @UserId)
+        AND (@DateFrom IS NULL OR o.CreatedDate >= @DateFrom)
+        AND (@DateTo IS NULL OR o.CreatedDate <= @DateTo)");
 
-        if (!string.IsNullOrEmpty(transactionCode))
-        {
-            query += " AND o.TransactionCode = @TransactionCode";
-            parameters.Add("@TransactionCode", transactionCode);
-        }
+        parameters.Add("@UserName", userName);
+        parameters.Add("@TransactionCode", transactionCode);
+        parameters.Add("@Status", status);
+        parameters.Add("@UserId", userId);
+        parameters.Add("@DateFrom", dateFrom);
+        parameters.Add("@DateTo", dateTo);
 
-        if (!string.IsNullOrEmpty(status))
-        {
-            query += " AND o.Status = @Status";
-            parameters.Add("@Status", status);
-        }
-
-        return await connection.QueryAsync<Order>(query, parameters);
+        return await connection.QueryAsync<Order>(query.ToString(), parameters);
     }
 
     public async Task<Response> CreateOrderAsync(Order order)
