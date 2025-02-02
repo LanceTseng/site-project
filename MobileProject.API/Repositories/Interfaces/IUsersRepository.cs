@@ -8,7 +8,7 @@ public interface IUsersRepository
 
     Task<User?> GetUserByIdAsync(int id);
 
-    Task<IEnumerable<User>> GetUsersByConditionAsync(string? role, DateTime? dateFrom, DateTime? dateTo, string? userName);
+    Task<IEnumerable<User>> GetUsersByConditionAsync(string? userName, string? password, string? email, string? phone, string? role);
 
     Task<Response> CreateUserAsync(User user);
 

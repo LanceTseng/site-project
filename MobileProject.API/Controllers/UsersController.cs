@@ -26,7 +26,7 @@ namespace MobileProject.API.Controllers
         {
             var users = await _userRepository.GetAllUsersAsync();
 
-            if (!users.Any())  
+            if (!users.Any())
             {
                 return NotFound(new Response
                 {
@@ -40,9 +40,14 @@ namespace MobileProject.API.Controllers
 
         // GET: api/Users/GetUsersByCondition
         [HttpGet("GetUsersByCondition")]
-        public async Task<IActionResult> GetUsersByCondition(string role = null, DateTime? dateFrom = null, DateTime? dateTo = null, string userName = null)
+        public async Task<IActionResult> GetUsersByCondition(
+            [FromQuery] string? userName,
+            [FromQuery] string? password,
+            [FromQuery] string? email,
+            [FromQuery] string? phone,
+            [FromQuery] string? role)
         {
-            var users = await _userRepository.GetUsersByConditionAsync(role, dateFrom, dateTo, userName);
+            var users = await _userRepository.GetUsersByConditionAsync(userName, password, email, phone, role);
 
             if (!users.Any())
             {

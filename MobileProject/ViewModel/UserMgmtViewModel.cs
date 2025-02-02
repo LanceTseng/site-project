@@ -1,80 +1,58 @@
-﻿using MobileProject.Model;
-using MobileProject.Repository;
+﻿using System;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
-using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using MobileProject.Model;
+using MobileProject.Service;
+using MobileProject.Service.Interface;
 using Xamarin.Forms;
 
 namespace MobileProject.ViewModel
 {
     public class UserMgmtViewModel : BaseViewModel
     {
-        private UserRepository _repository;
+        private readonly IUserService _userService;
 
-        private string _userName;//condition
+        private string _userName;
+        private string _phone;
+        private string _email;
+        private string _roleSelected;
+        private string _password;
         public string UserName
         {
             get => _userName;
-            set
-            {
-                _userName = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _userName, value);
         }
 
-        private string _phone;//condition
+        public string Password
+        {
+            get => _password;
+            set => SetProperty(ref _password, value);
+        }
+
         public string Phone
         {
             get => _phone;
-            set
-            {
-                _phone = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _phone, value);
         }
 
-        private string _email;//condition
         public string Email
         {
             get => _email;
-            set
-            {
-                _email = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _email, value);
         }
 
-        private string _roleSelected;
         public string RoleSelected
         {
             get => _roleSelected;
-          
-            set
-            {
-                _roleSelected = value;
-                OnPropertyChanged();    
-            }
+            set => SetProperty(ref _roleSelected, value);
         }
 
-        public ObservableCollection<string> RoleOptions { get; } = new ObservableCollection<string>
-        {
-            "admin",
-            "user"
-        };
+        public ObservableCollection<string> RoleOptions { get; } = new ObservableCollection<string> { "admin", "user" };
+        public ObservableCollection<UserMgmt> TableData { get; private set; } = new ObservableCollection<UserMgmt>();
 
-        private ObservableCollection<UserMgmt> _tableData;
-        public ObservableCollection<UserMgmt> TableData
-        {
-            get => _tableData;
-            set
-            {
-                _tableData = value;
-                OnPropertyChanged();
-            }
-        }
-
-      
         public ICommand SaveCommand { get; }
         public ICommand AddCommand { get; }
         public ICommand RemoveCommand { get; }
@@ -82,59 +60,64 @@ namespace MobileProject.ViewModel
         public ICommand QueryCommand { get; }
         public ICommand SelectedAllCommand { get; }
 
-        public UserMgmtViewModel()
+        public UserMgmtViewModel(IUserService userService)
         {
-            _repository = new UserRepository();
-            SaveCommand = new Command(OnSave);
+            _userService = userService;
+
+            SaveCommand = new Command(async () => await OnSave());
             AddCommand = new Command(OnAdd);
-            RemoveCommand = new Command(OnRemove);
+            RemoveCommand = new Command(async () => await OnRemove());
             EditCommand = new Command<UserMgmt>(OnEdit);
-            QueryCommand = new Command(OnQuery);
-            SelectedAllCommand=new Command(OnSelectedAll);
-            LoadData();
+            QueryCommand = new Command(async () => await OnQuery());
+            SelectedAllCommand = new Command(OnSelectedAll);
+
+            _ = LoadData();
         }
 
-        private async void LoadData()
+        private async Task LoadData()
         {
-            var users = _repository.GetFilterUser().ToList();
-            TableData = new ObservableCollection<UserMgmt>(users.Select(u => new UserMgmt(u)));
+            var users = await _userService.GetAllUsersAsync();
+
+            if (users != null)
+            {
+                TableData = new ObservableCollection<UserMgmt>(users.Select(u => new UserMgmt(u)));
+                OnPropertyChanged(nameof(TableData));
+            }
         }
 
-        private async void OnSave()
+        private async Task OnSave()
         {
             try
             {
-                foreach (var user in TableData)
-                {
-                    if (user.User.Id == -1)
-                    {
-                        await _repository.InsertAsync(new User()
-                        {
-                            UserName = user.User.UserName,
-                            Password = user.User.Password,
-                            Email = user.User.Email,
-                            Phone = user.User.Phone,
-                            Role = user.User.Role,
-                            CreatedDate = DateTime.Now
-                        });
-                    }
-                    else
-                    {
-                        await _repository.UpdateAsync(new User()
-                        {
-                            Id = user.User.Id,
-                            UserName = user.User.UserName,
-                            Password = user.User.Password,
-                            Email = user.User.Email,
-                            Phone = user.User.Phone,
-                            Role = user.User.Role,
-                            CreatedDate = user.User.CreatedDate
-                        });
-                    }
-                }
+                var selectedTableData = TableData.Where(x => x.IsSelected).ToList();
 
+                foreach (var user in selectedTableData)
+                {
+
+                    if (user.User == null)
+                    {
+                        Debug.WriteLine("Error: user.User is null");
+                        continue; // Skip this iteration to prevent crashes
+                    }
+
+                    var userModel = new User()
+                    {
+                        Id = user.User.Id,
+                        UserName = user.User.UserName,
+                        Password = user.User.Password,
+                        Email = user.User.Email,
+                        Phone = user.User.Phone,
+                        Role = user.User.Role,
+                        CreatedDate = user.User.CreatedDate != DateTime.MinValue ? user.User.CreatedDate : DateTime.Now
+                    };
+
+                    if (user.User.Id == -1)
+                        await _userService.CreateUserAsync(userModel);
+                    else
+                        await _userService.UpdateUserAsync(userModel);
+                }
                 await Application.Current.MainPage.DisplayAlert("Info", "Changes saved.", "OK");
-                 LoadData();
+                await LoadData();
             }
             catch (Exception ex)
             {
@@ -144,15 +127,16 @@ namespace MobileProject.ViewModel
 
         private void OnAdd()
         {
-            var newUser = new UserMgmt(new User { Id = -1, CreatedDate = DateTime.Now, Role = "user"});
-            newUser.IsEnabled = true;  // Allow editing for new user
-            newUser.IsSelected = true;
+            var newUser = new UserMgmt(new User { Id = -1, CreatedDate = DateTime.Now, Role = "user" })
+            {
+                IsEnabled = true,
+                IsSelected = true
+            };
             TableData.Add(newUser);
         }
 
         private void OnEdit(UserMgmt user)
         {
-            // Enable editing for the selected user
             if (user != null)
             {
                 user.IsEnabled = true;
@@ -160,24 +144,30 @@ namespace MobileProject.ViewModel
             }
         }
 
-        private async void OnRemove()
+        private async Task OnRemove()
         {
-            var selectedUser = TableData.Where(item => item.IsSelected).ToList();
-            foreach (var user in selectedUser)
+            var selectedUsers = TableData.Where(u => u.IsSelected).ToList();
+            foreach (var user in selectedUsers)
             {
-                await _repository.DeleteAsync(user.User.Id);
+                await _userService.DeleteUserAsync(user.User.Id);
             }
-
             await Application.Current.MainPage.DisplayAlert("Info", "User removed.", "OK");
-            LoadData();
+            await LoadData();
         }
 
-        private void OnQuery()
+        private async Task OnQuery()
         {
-            var users = _repository
-                .GetFilterUserQuery(userName: UserName, role: RoleSelected, email: Email, phone: Phone).ToList();
+            var users = await _userService.GetUsersByConditionAsync(userName: UserName, phone: Phone, email: Email, role: RoleSelected);
+            if (users != null)
+            {
+                TableData = new ObservableCollection<UserMgmt>(users.Select(u => new UserMgmt(u)));
+            }
+            else
+            {
+                TableData.Clear();
                
-            TableData = new ObservableCollection<UserMgmt>(users.Select(u => new UserMgmt(u)));
+            }
+            OnPropertyChanged(nameof(TableData));
         }
 
         private void OnSelectedAll()

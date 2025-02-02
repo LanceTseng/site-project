@@ -1,8 +1,8 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using MobileProject.API.Models;
 using MobileProject.API.Repositories.Interfaces;
-using System.Data;
 using StatusCodes = Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace MobileProject.API.Repositories
@@ -29,36 +29,42 @@ namespace MobileProject.API.Repositories
                 "SELECT * FROM Users WHERE Id = @Id", new { Id = id });
         }
 
-        public async Task<IEnumerable<User>> GetUsersByConditionAsync(string? role, DateTime? dateFrom, DateTime? dateTo, string? userName)
+        public async Task<IEnumerable<User>> GetUsersByConditionAsync(string? userName, string? password, string? email, string? phone, string? role)
         {
             await using var connection = new SqlConnection(_connectionString);
 
-            var query = "SELECT * FROM Users WHERE " +
-                        "(@Role IS NULL OR Role = @Role) " +
-                        "AND (@DateFrom IS NULL OR CreatedDate >= @DateFrom) " +
-                        "AND (@DateTo IS NULL OR CreatedDate <= @DateTo) " +
-                        "AND (@UserName IS NULL OR UserName LIKE '%' + @UserName + '%')";
+            var query = "SELECT * FROM Users WHERE 1=1" +
+                        "AND (@Role IS NULL OR Role = @Role) " +
+                        "AND (@UserName IS NULL OR UserName LIKE '%' + @UserName + '%') " +
+                        "AND (@Email IS NULL OR Email LIKE '%' + @Email + '%') " +
+                        "AND (@Phone IS NULL OR Phone LIKE '%' + @Phone + '%')";
 
-            // Create parameters explicitly using SqlParameter
+            // Create parameters explicitly using DynamicParameters
             var parameters = new DynamicParameters();
-            parameters.Add("@Role", role, DbType.String);
-            parameters.Add("@DateFrom", dateFrom, DbType.DateTime);
-            parameters.Add("@DateTo", dateTo, DbType.DateTime);
             parameters.Add("@UserName", userName, DbType.String);
-
+            parameters.Add("@Password", password, DbType.String);
+            parameters.Add("@Email", email, DbType.String);
+            parameters.Add("@Phone", phone, DbType.String);
+            parameters.Add("@Role", role, DbType.String);
+        
             return await connection.QueryAsync<User>(query, parameters);
         }
 
         public async Task<Response> CreateUserAsync(User user)
         {
             await using var connection = new SqlConnection(_connectionString);
+
             var parameters = new DynamicParameters();
             parameters.Add("@UserName", user.UserName, DbType.String);
+            parameters.Add("@Password", user.Password, DbType.String);
+            parameters.Add("@Phone", user.Phone, DbType.String);
+            parameters.Add("@Email", user.Email, DbType.String);
             parameters.Add("@Role", user.Role, DbType.String);
-            parameters.Add("@CreatedDate", user.CreatedDate, DbType.DateTime);
+            parameters.Add("@CreatedDate", user.CreatedDate != DateTime.MinValue ? user.CreatedDate : DateTime.Now, DbType.DateTime);
 
             var result = await connection.ExecuteAsync(
-                "INSERT INTO Users (UserName, Role, CreatedDate) VALUES (@UserName, @Role, @CreatedDate)", parameters);
+                "INSERT INTO Users (UserName, Password, Phone, Email, Role, CreatedDate) " +
+                "VALUES (@UserName, @Password, @Phone, @Email, @Role, @CreatedDate)", parameters);
 
             return new Response
             {
@@ -70,13 +76,19 @@ namespace MobileProject.API.Repositories
         public async Task<Response> UpdateUserAsync(User user)
         {
             await using var connection = new SqlConnection(_connectionString);
+
             var parameters = new DynamicParameters();
-            parameters.Add("@UserName", user.UserName, DbType.String);
-            parameters.Add("@Role", user.Role, DbType.String);
             parameters.Add("@Id", user.Id, DbType.Int32);
+            parameters.Add("@UserName", user.UserName, DbType.String);
+            parameters.Add("@Password", user.Password, DbType.String);
+            parameters.Add("@Phone", user.Phone, DbType.String);
+            parameters.Add("@Email", user.Email, DbType.String);
+            parameters.Add("@Role", user.Role, DbType.String);
+            parameters.Add("@CreatedDate", user.CreatedDate, DbType.DateTime);
 
             var result = await connection.ExecuteAsync(
-                "UPDATE Users SET UserName = @UserName, Role = @Role WHERE Id = @Id", parameters);
+                "UPDATE Users SET UserName = @UserName, Password = @Password, Phone = @Phone, " +
+                "Email = @Email, Role = @Role, CreatedDate = @CreatedDate WHERE Id = @Id", parameters);
 
             return new Response
             {

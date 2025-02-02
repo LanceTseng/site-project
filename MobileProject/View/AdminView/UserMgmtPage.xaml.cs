@@ -1,4 +1,6 @@
 ﻿
+using MobileProject.Service.Interface;
+using MobileProject.ViewModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,6 +13,7 @@ namespace MobileProject.View.AdminView
         public UserMgmtPage()
         {
             InitializeComponent();
+            this.BindingContext = new UserMgmtViewModel(App.ServiceProvider.GetService<IUserService>());
         }
 
     }
