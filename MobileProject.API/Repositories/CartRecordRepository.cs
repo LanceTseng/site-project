@@ -90,50 +90,34 @@ public class CartRecordRepository : ICartRecordRepository
         };
     }
 
-    public async Task<IEnumerable<CartRecord>> GetCartRecordsByConditionAsync(string? userName, string? productName, string? status, DateTime? dateFrom, DateTime? dateTo)
+    public async Task<IEnumerable<CartRecord>> GetCartRecordsByConditionAsync(
+        string? userName = null,
+        string? productName = null,
+        string? status = null,
+        int userId = 0,
+        DateTime? dateFrom = null,
+        DateTime? dateTo = null)
     {
         using var connection = new SqlConnection(_connectionString);
 
-        // Building the query with conditions based on parameters
-        var query = new StringBuilder("SELECT cr.* FROM cart_record cr ");
-        query.Append("JOIN users u ON cr.UserId = u.Id ");
-        query.Append("JOIN products p ON cr.ProductId = p.Id ");
-        query.Append("WHERE 1=1 "); // Ensuring the WHERE clause starts correctly
+        var query = new StringBuilder(@"
+        SELECT cr.*
+        FROM cart_record cr
+        JOIN users u ON cr.UserId = u.Id
+        JOIN products p ON cr.ProductId = p.Id
+        WHERE (@UserName IS NULL OR u.UserName LIKE @UserName)
+        AND (@ProductName IS NULL OR p.Name LIKE @ProductName)
+        AND (@Status IS NULL OR cr.Status = @Status)
+        AND (@DateFrom IS NULL OR cr.CreatedDate >= @DateFrom)
+        AND (@DateTo IS NULL OR cr.CreatedDate <= @DateTo)");
 
         var parameters = new DynamicParameters();
+        parameters.Add("@UserName", string.IsNullOrEmpty(userName) ? null : $"%{userName}%");
+        parameters.Add("@ProductName", string.IsNullOrEmpty(productName) ? null : $"%{productName}%");
+        parameters.Add("@Status", string.IsNullOrEmpty(status) ? null : status);
+        parameters.Add("@DateFrom", dateFrom);
+        parameters.Add("@DateTo", dateTo);
 
-        // Add conditions to the query based on the provided parameters
-        if (!string.IsNullOrEmpty(userName))
-        {
-            query.Append("AND u.UserName LIKE @UserName ");
-            parameters.Add("@UserName", "%" + userName + "%");
-        }
-
-        if (!string.IsNullOrEmpty(productName))
-        {
-            query.Append("AND p.Name LIKE @ProductName ");
-            parameters.Add("@ProductName", "%" + productName + "%");
-        }
-
-        if (!string.IsNullOrEmpty(status))
-        {
-            query.Append("AND cr.Status = @Status ");
-            parameters.Add("@Status", status);
-        }
-
-        if (dateFrom.HasValue)
-        {
-            query.Append("AND cr.CreatedDate >= @DateFrom ");
-            parameters.Add("@DateFrom", dateFrom.Value);
-        }
-
-        if (dateTo.HasValue)
-        {
-            query.Append("AND cr.CreatedDate <= @DateTo ");
-            parameters.Add("@DateTo", dateTo.Value);
-        }
-
-        // Execute the query and return the results
         return await connection.QueryAsync<CartRecord>(query.ToString(), parameters);
     }
 }

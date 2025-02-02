@@ -47,9 +47,11 @@ namespace MobileProject.API.Controllers
         }
 
         [HttpGet("GetCartRecordByCondition")]
-        public async Task<IActionResult> GetCartRecordsByUserId(string? userName, string? productName, string? status, DateTime? dateFrom, DateTime? dateTo)
+        public async Task<IActionResult> GetCartRecordByCondition([FromQuery] string? userName,
+            [FromQuery] string? productName, [FromQuery] string? status, [FromQuery] int userId, [FromQuery] DateTime? dateFrom,
+            [FromQuery] DateTime? dateTo)
         {
-            var cartRecords = await _cartRecordRepository.GetCartRecordsByConditionAsync(userName, productName, status, dateFrom, dateTo);
+            var cartRecords = await _cartRecordRepository.GetCartRecordsByConditionAsync(userName, productName, status, userId, dateFrom, dateTo);
             if (!cartRecords.Any())
             {
                 return NotFound(new Response
@@ -80,7 +82,7 @@ namespace MobileProject.API.Controllers
         [HttpPut("UpdateCartRecord")]
         public async Task<IActionResult> UpdateCartRecord([FromBody] CartRecord cartRecord)
         {
-            if (cartRecord == null || cartRecord.Id <= 0) 
+            if (cartRecord == null || cartRecord.Id <= 0)
             {
                 return BadRequest(new Response
                 {
