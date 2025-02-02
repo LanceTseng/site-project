@@ -97,22 +97,24 @@ namespace MobileProject.ViewModel
         {
             var orderMgmtList = new List<OrderMgmt>();
 
-            var users =await _userService.GetAllUsersAsync(); // Fetch all users
+            var users = await _userService.GetAllUsersAsync(); // Fetch all users
             var orders = await _orderService.GetAllOrdersAsync();
 
             foreach (var order in orders)
             {
                 var user = users.FirstOrDefault(x => x.Id == order.UserId);
 
-                var cartList = await 
+                var cartRecords = await
                     _cartRecordService.GetCartRecordsByConditionAsync(transactionCode: order.TransactionCode);
 
-                    
                 var cartMgmtList = new List<CartMgmt>();
-                foreach (var cart in cartList)
+                if (cartRecords != null)
                 {
-                    var product = await _productService.GetProductByIdAsync( cart.ProductId);
-                    cartMgmtList.Add(new CartMgmt(product, user, cart));
+                    foreach (var cart in cartRecords)
+                    {
+                        var product = await _productService.GetProductByIdAsync(cart.ProductId);
+                        cartMgmtList.Add(new CartMgmt(product, user, cart));
+                    }
                 }
 
                 var orderMgmt = new OrderMgmt(user, order, cartMgmtList);
@@ -125,7 +127,6 @@ namespace MobileProject.ViewModel
                 orderMgmt.IsEnabled = false;
                 orderMgmtList.Add(orderMgmt);
             }
-
             TableData = new ObservableCollection<OrderMgmt>(orderMgmtList);
         }
 
@@ -133,7 +134,7 @@ namespace MobileProject.ViewModel
         {
             var newOrder = new OrderMgmt();
 
-            var users =await _userService.GetAllUsersAsync(); // Fetch all users
+            var users = await _userService.GetAllUsersAsync(); // Fetch all users
             foreach (var u in users)
             {
                 newOrder.UserOptions.Add(new KeyValuePair<int, string>(u.Id, u.UserName));
@@ -211,7 +212,7 @@ namespace MobileProject.ViewModel
                 }
 
                 await Application.Current.MainPage.DisplayAlert("Info", "Changes saved.", "OK");
-                LoadData();
+                await LoadData();
             }
             catch (Exception ex)
             {
@@ -243,38 +244,42 @@ namespace MobileProject.ViewModel
 
         private async Task OnSearch()
         {
+            TableData.Clear();
+
             var orderMgmtList = new List<OrderMgmt>();
 
-            var orders =await _orderService.GetOrdersByConditionAsync(userName: UserName, transactionCode: TransactionCode,
+            var orders = await _orderService.GetOrdersByConditionAsync(userName: UserName, transactionCode: TransactionCode,
                 dateFrom: DateFrom, dateTo: DateTo);
-
-            foreach (var order in orders)
+            if (orders != null)
             {
-                var user = await _userService.GetUserByIdAsync(order.UserId);
-                var cartList =
-                    await _cartRecordService.GetCartRecordsByConditionAsync(transactionCode: order.TransactionCode);
-                    
-                var cartMgmtList = new List<CartMgmt>();
-                foreach (var cart in cartList)
+                foreach (var order in orders)
                 {
-                    var product =await _productService.GetProductByIdAsync(cart.ProductId);
-                    cartMgmtList.Add(new CartMgmt(product, user, cart));
+                    var user = await _userService.GetUserByIdAsync(order.UserId);
+                    var cartList =
+                        await _cartRecordService.GetCartRecordsByConditionAsync(transactionCode: order.TransactionCode);
+
+                    var cartMgmtList = new List<CartMgmt>();
+                    foreach (var cart in cartList)
+                    {
+                        var product = await _productService.GetProductByIdAsync(cart.ProductId);
+                        cartMgmtList.Add(new CartMgmt(product, user, cart));
+                    }
+
+                    var orderMgmt = new OrderMgmt(user, order, cartMgmtList);
+
+                    var users = await _userService.GetAllUsersAsync();
+                    foreach (var u in users)
+                    {
+                        orderMgmt.UserOptions.Add(new KeyValuePair<int, string>(u.Id, u.UserName));
+                    }
+
+                    orderMgmt.IsEnabled = false;
+                    orderMgmt.SelectedUser = orderMgmt.UserOptions.FirstOrDefault(u => u.Key == user?.Id);
+                    orderMgmtList.Add(orderMgmt);
+
+                    TableData = new ObservableCollection<OrderMgmt>(orderMgmtList);
                 }
-
-                var orderMgmt = new OrderMgmt(user, order, cartMgmtList);
-
-                var users = await _userService.GetAllUsersAsync();
-                foreach (var u in users)
-                {
-                    orderMgmt.UserOptions.Add(new KeyValuePair<int, string>(u.Id, u.UserName));
-                }
-
-                orderMgmt.IsEnabled = false;
-                orderMgmt.SelectedUser = orderMgmt.UserOptions.FirstOrDefault(u => u.Key == user?.Id);
-                orderMgmtList.Add(orderMgmt);
             }
-
-            TableData = new ObservableCollection<OrderMgmt>(orderMgmtList);
         }
 
         private void OnSelectedAll()
@@ -290,12 +295,13 @@ namespace MobileProject.ViewModel
             if (carts == null || !carts.Any())
             {
                 Debug.WriteLine("CartRecord is null or empty.");
+                await Application.Current.MainPage.DisplayAlert("Info", "CartRecord is empty.", "OK");
                 return;
             }
 
             var cartPopupPage = new CartPopupPage
             {
-                BindingContext = new CartPopupViewModel(carts)
+                BindingContext = new CartPopupViewModel(carts, _apiService, _cartRecordService, _orderService)
             };
 
             // Ensure event is not subscribed multiple times

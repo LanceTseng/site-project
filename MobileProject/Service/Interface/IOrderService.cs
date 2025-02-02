@@ -10,7 +10,7 @@ namespace MobileProject.Service.Interface
         Task<IEnumerable<Order>> GetAllOrdersAsync();
 
         Task<IEnumerable<Order>> GetOrdersByConditionAsync(string userName = null, string transactionCode = null,
-            string status = null, int userId = 0, DateTime dateFrom = new DateTime(), DateTime dateTo = new DateTime());
+            string status = null, int? userId = null, DateTime? dateFrom =null, DateTime? dateTo = null);
 
         Task<Order> GetOrderByIdAsync(int id);
 

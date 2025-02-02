@@ -4,17 +4,20 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using MobileProject.Model;
-using MobileProject.Repository;
+using MobileProject.Service;
+using MobileProject.Service.Interface;
 using Xamarin.Forms;
 
 namespace MobileProject.ViewModel
 {
     public class CartPopupViewModel : BaseViewModel
     {
-        private readonly CartRecordRepository _cartRecordRepository;
-        private readonly OrderRepository _orderRepository;
+        private readonly ApiService _apiService;
+        private readonly ICartRecordService _cartRecordService;
+        private readonly IOrderService _orderService;
 
         private ObservableCollection<CartMgmt> _cartItems;
 
@@ -31,6 +34,7 @@ namespace MobileProject.ViewModel
         }
 
         private string _transactionCode;
+
         public string TransactionCode
         {
             get => _transactionCode;
@@ -44,30 +48,30 @@ namespace MobileProject.ViewModel
         public ICommand SaveDetailCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
-        public CartPopupViewModel(List<CartMgmt> carts)
+        public CartPopupViewModel(List<CartMgmt> carts, ApiService apiService, ICartRecordService cartRecordService, IOrderService orderService)
         {
-            _orderRepository = new OrderRepository();
-            _cartRecordRepository = new CartRecordRepository();
+            _apiService = apiService;
+            _orderService = orderService;
+            _cartRecordService = cartRecordService;
 
             CartItems = new ObservableCollection<CartMgmt>(carts);
 
-            CloseCommand = new Command(OnClosePopup);
-            SaveDetailCommand = new Command<string>(OnSaveDetail);
+            CloseCommand = new Command(async () => await OnClosePopup());  // Call OnClosePopup as a method
+            SaveDetailCommand = new Command(async () => await OnSaveDetail());  // Pass the argument correctly
         }
 
-        private async void OnClosePopup()
+        private async Task OnClosePopup()
         {
             await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
         }
 
-
-        private async void OnSaveDetail(string transactionCode)
+        private async Task OnSaveDetail()
         {
             foreach (var cart in CartItems)
             {
                 if (cart.CartRecord != null)
                 {
-                    await _cartRecordRepository.UpdateAsync(cart.CartRecord);
+                    await _cartRecordService.UpdateCartRecordAsync(cart.CartRecord);
                 }
                 else
                 {
@@ -75,12 +79,13 @@ namespace MobileProject.ViewModel
                 }
             }
 
-            var order = _orderRepository.GetFilteredOrder(transactionCode: transactionCode).FirstOrDefault();
-            order.Subtotal = CartItems.Sum(x => x.Total);
-            await _orderRepository.UpdateAsync(order);
-
+            var orders = await _orderService.GetOrdersByConditionAsync(transactionCode: TransactionCode);
+            foreach (var order in orders.ToList())
+            {
+                order.Subtotal = CartItems.Sum(x => x.CartRecord.Total);
+                await _orderService.UpdateOrderAsync(order);
+            }
             await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
         }
-
     }
 }

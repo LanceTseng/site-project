@@ -79,9 +79,9 @@ namespace MobileProject.API.Controllers
 
         // PUT: api/Orders/{id}
         [HttpPut("UpdateOrder")]
-        public async Task<IActionResult> UpdateOrder(int id, [FromBody] Order order)
+        public async Task<IActionResult> UpdateOrder([FromBody] Order order)
         {
-            if (order == null || id != order.Id)
+            if (order == null || order.Id == null)
             {
                 return BadRequest(new Response
                 {

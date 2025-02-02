@@ -12,13 +12,13 @@
         <!--  Container for Popup Content  -->
         <Frame
             Padding="10"
-            BackgroundColor="White"
+            BackgroundColor="DarkBlue"
             CornerRadius="10"
             HasShadow="True"
             HeightRequest="400"
             WidthRequest="300">
             <!--  Set the desired width  -->
-            <StackLayout Padding="10" BackgroundColor="White">
+            <StackLayout Padding="10" BackgroundColor="AliceBlue">
                 <!--  Header  -->
                 <Label
                     Margin="0,10"
@@ -31,7 +31,6 @@
                     <Button
                         Margin="0,0,10,0"
                         Command="{Binding SaveDetailCommand}"
-                        CommandParameter="{Binding CartRecord.TransactionCode}"
                         Text="Save" />
                     <Button Command="{Binding CloseCommand}" Text="Close" />
                 </StackLayout>
@@ -96,7 +95,7 @@
                                 <!--  Price  -->
                                 <Label
                                     Grid.Column="1"
-                                    Text="{Binding CartRecord.Price, StringFormat='${0:F2}'}"
+                                    Text="{Binding Product.Price, StringFormat='${0:F2}'}"
                                     TextColor="Navy"
                                     VerticalTextAlignment="Center" />
                                 <!--  Quantity Entry  -->
@@ -104,7 +103,7 @@
                                     Grid.Column="2"
                                     HeightRequest="38"
                                     Keyboard="Numeric"
-                                    Text="{Binding Qty, Mode=TwoWay}" />
+                                    Text="{Binding Qty, StringFormat='{}{0:0}', Mode=TwoWay}" />
                                 <!--  Total Price  -->
                                 <Label
                                     Grid.Column="3"

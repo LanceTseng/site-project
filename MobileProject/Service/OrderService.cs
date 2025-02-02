@@ -28,11 +28,33 @@ namespace MobileProject.Service
             string userName = null,
             string transactionCode = null,
             string status = null,
-            int userId = 0,
-            DateTime dateFrom = new DateTime(),
-            DateTime dateTo = new DateTime())
+            int? userId = null,
+            DateTime? dateFrom = null,
+            DateTime? dateTo = null)
         {
-            var query = $"?userName={userName}&transactionCode={transactionCode}&status={status}&userId={userId}&dateFrom={dateFrom}&dateTo={dateTo}";
+            var query = "?";
+
+            if (!string.IsNullOrEmpty(userName))
+                query += $"userName={Uri.EscapeDataString(userName)}&";
+
+            if (!string.IsNullOrEmpty(transactionCode))
+                query += $"transactionCode={Uri.EscapeDataString(transactionCode)}&";
+
+            if (!string.IsNullOrEmpty(status))
+                query += $"status={Uri.EscapeDataString(status)}&";
+
+            if (userId.HasValue)
+                query += $"userId={userId.Value}&";
+
+            if (dateFrom.HasValue)
+                query += $"dateFrom={dateFrom.Value:yyyy-MM-dd}&";
+
+            if (dateTo.HasValue)
+                query += $"dateTo={dateTo.Value:yyyy-MM-dd}&";
+
+            // Remove trailing "&" if exists
+            query = query.TrimEnd('&');
+
             return await _apiService.CallApiAsync<IEnumerable<Order>>($"{BaseUrl}/GetOrdersByCondition{query}", HttpMethod.Get);
         }
 
