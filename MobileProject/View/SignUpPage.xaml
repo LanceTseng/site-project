@@ -3,14 +3,8 @@
     x:Class="MobileProject.View.SignUpPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:MobileProject.ViewModel">
-    <ContentPage.BindingContext>
-        <local:SignUpPageViewModel />
-    </ContentPage.BindingContext>
+    Title="Sign Up">
 
-    <ContentPage.Title>
-        Sign up
-    </ContentPage.Title>
     <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
         <Entry Placeholder="Username" Text="{Binding Username}" />
         <Entry

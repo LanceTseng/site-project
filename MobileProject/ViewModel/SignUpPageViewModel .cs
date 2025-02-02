@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using MobileProject.Model;
 using MobileProject.Repository;
+using MobileProject.Service;
+using MobileProject.Service.Interface;
 using Xamarin.Forms;
 
 namespace MobileProject.ViewModel
@@ -22,7 +24,8 @@ namespace MobileProject.ViewModel
         private string _email;
         private bool _isBusy;
 
-        private UserRepository _userRepository;
+        private readonly ApiService _apiService;
+        private readonly IUserService _userService;
 
         public string Username
         {
@@ -30,7 +33,7 @@ namespace MobileProject.ViewModel
             set
             {
                 _username = value;
-                OnPropertyChanged(nameof(Username));
+                SetProperty(ref _username, value);
                 UpdateCanExecute();
             }
         }
@@ -41,7 +44,7 @@ namespace MobileProject.ViewModel
             set
             {
                 _password = value;
-                OnPropertyChanged(nameof(Password));
+                SetProperty(ref _password, value);
                 UpdateCanExecute();
             }
         }
@@ -52,7 +55,7 @@ namespace MobileProject.ViewModel
             set
             {
                 _retypePassword = value;
-                OnPropertyChanged(nameof(RetypePassword));
+                SetProperty(ref _retypePassword, value);
                 UpdateCanExecute();
             }
         }
@@ -63,7 +66,7 @@ namespace MobileProject.ViewModel
             set
             {
                 _phone = value;
-                OnPropertyChanged(nameof(Phone));
+                SetProperty(ref _phone, value);
                 UpdateCanExecute();
             }
         }
@@ -74,7 +77,7 @@ namespace MobileProject.ViewModel
             set
             {
                 _email = value;
-                OnPropertyChanged(nameof(Email));
+                SetProperty(ref _email, value);
                 UpdateCanExecute();
             }
         }
@@ -85,21 +88,24 @@ namespace MobileProject.ViewModel
             set
             {
                 _isBusy = value;
-                OnPropertyChanged(nameof(IsBusy));
+                SetProperty(ref _isBusy, value);
                 UpdateCanExecute();
             }
         }
 
         public ICommand SignUpCommand { get; }
 
-        public SignUpPageViewModel()
+        public SignUpPageViewModel(ApiService apiService, IUserService userService)
         {
-            SignUpCommand = new Command(OnSignUp, CanSignUp);
+            _apiService = apiService;
+            _userService = userService;
+
+            SignUpCommand = new Command(async () => await OnSignUp(), CanSignUp);
         }
 
-        private async void OnSignUp()
+        private async Task OnSignUp()
         {
-            if (IsValidUserName(Username))
+            if (await IsValidUserName(Username))
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "User existed.", "OK");
                 return;
@@ -146,8 +152,8 @@ namespace MobileProject.ViewModel
 
             // Simulate signup delay (e.g., saving to a database)
             await Task.Delay(2000);
-            _userRepository = new UserRepository();
-            _userRepository.InsertUser(new User()
+            
+           await _userService.CreateUserAsync(new User()
             {
                 UserName = Username,
                 Password = Password,
@@ -180,16 +186,14 @@ namespace MobileProject.ViewModel
             if (SignUpCommand is Command command)
             {
                 command.ChangeCanExecute();
-            }
+            }   
         }
 
-
-        private bool IsValidUserName(string userName)
+        private async Task<bool> IsValidUserName(string userName)
         {
-            _userRepository = new UserRepository();
-            var userExisted = _userRepository.GetFilterUser(userName, null);
+            var userExisted = await _userService.GetUsersByConditionAsync(userName:userName);
 
-            return userExisted.Any();
+            return (userExisted != null);
         }
 
         private bool IsValidPassword(string password)
