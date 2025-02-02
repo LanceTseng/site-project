@@ -23,13 +23,21 @@ namespace MobileProject.Service
             return await _apiService.CallApiAsync<IEnumerable<CartRecord>>($"{BaseUrl}/GetAllCartRecords", HttpMethod.Get);
         }
 
-        public async Task<IEnumerable<CartRecord>> GetCartRecordsByConditionAsync(string userName = null, string productName = null, string status = null, int userId = 0,
-            DateTime dateFrom = new DateTime(), DateTime dateTo = new DateTime())
+        public async Task<IEnumerable<CartRecord>> GetCartRecordsByConditionAsync(string userName = null, string productName = null, string status = null, int? userId = null,
+            string transactionCode = null)
         {
             // Build the query string dynamically
-            var query = $"?userName={userName}&productName={productName}&status={status}&dateFrom={dateFrom:yyyy-MM-dd}&dateTo={dateTo:yyyy-MM-dd}";
+            var query = "?";
 
-            return await _apiService.CallApiAsync<IEnumerable<CartRecord>>($"{BaseUrl}/GetCartRecordsByCondition{query}", HttpMethod.Get);
+            if (!string.IsNullOrEmpty(userName)) query += $"userName={userName}&";
+            if (!string.IsNullOrEmpty(productName)) query += $"productName={productName}&";
+            if (!string.IsNullOrEmpty(status)) query += $"status={status}&";
+            if (userId.HasValue) query += $"userId={userId}&";
+            if (!string.IsNullOrEmpty(transactionCode)) query += $"transactionCode={transactionCode}&";
+
+            query = query.TrimEnd('&'); // Remove trailing '&'
+
+            return await _apiService.CallApiAsync<IEnumerable<CartRecord>>($"{BaseUrl}/GetCartRecordByCondition{query}", HttpMethod.Get);
         }
 
         // Get a cart record by its ID

@@ -3,11 +3,7 @@
     x:Class="MobileProject.View.AdminView.OrderMgmtPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:viewModel="clr-namespace:MobileProject.ViewModel;assembly=MobileProject">
-
-    <ContentPage.BindingContext>
-        <viewModel:OrderMgmtViewModel />
-    </ContentPage.BindingContext>
+    Title="Order Management">
 
     <ContentPage.Content>
         <ScrollView>
@@ -18,7 +14,7 @@
                         FontAttributes="Bold"
                         FontSize="Medium"
                         HorizontalOptions="Center"
-                        Text="Order History" />
+                        Text="Order Management" />
                     <Grid ColumnSpacing="5" RowSpacing="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -228,5 +224,4 @@
             Order="Secondary"
             Priority="3" />
     </ContentPage.ToolbarItems>
-
 </ContentPage>

@@ -7,11 +7,11 @@ namespace MobileProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CartRecordController : ControllerBase
+    public class CartRecordsController : ControllerBase
     {
         private readonly ICartRecordRepository _cartRecordRepository;
 
-        public CartRecordController(ICartRecordRepository cartRecordRepository)
+        public CartRecordsController(ICartRecordRepository cartRecordRepository)
         {
             _cartRecordRepository = cartRecordRepository;
         }
@@ -48,10 +48,9 @@ namespace MobileProject.API.Controllers
 
         [HttpGet("GetCartRecordByCondition")]
         public async Task<IActionResult> GetCartRecordByCondition([FromQuery] string? userName,
-            [FromQuery] string? productName, [FromQuery] string? status, [FromQuery] int userId, [FromQuery] DateTime? dateFrom,
-            [FromQuery] DateTime? dateTo)
+            [FromQuery] string? productName, [FromQuery] string? status, [FromQuery] int userId, [FromQuery] string? transactionCode)
         {
-            var cartRecords = await _cartRecordRepository.GetCartRecordsByConditionAsync(userName, productName, status, userId, dateFrom, dateTo);
+            var cartRecords = await _cartRecordRepository.GetCartRecordsByConditionAsync(userName, productName, status, userId, transactionCode);
             if (!cartRecords.Any())
             {
                 return NotFound(new Response

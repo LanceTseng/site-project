@@ -9,8 +9,8 @@ namespace MobileProject.Service.Interface
     {
         Task<IEnumerable<CartRecord>> GetAllCartRecordsAsync();
 
-        Task<IEnumerable<CartRecord>> GetCartRecordsByConditionAsync(string userName = null, string productName = null,
-            string status = null, int userId = 0, DateTime dateFrom = new DateTime(), DateTime dateTo = new DateTime());
+        Task<IEnumerable<CartRecord>> GetCartRecordsByConditionAsync(string userName = null, string productName = null, 
+            string status = null, int? userId = null, string transactionCode = null);
 
         Task<CartRecord> GetCartRecordByIdAsync(int id);
 

@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Transactions;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using MobileProject.API.Models;
@@ -94,31 +95,28 @@ public class CartRecordRepository : ICartRecordRepository
         string? userName = null,
         string? productName = null,
         string? status = null,
-        int userId = 0,
-        DateTime? dateFrom = null,
-        DateTime? dateTo = null)
+        int? userId = null,
+        string? transactionCode = null)
     {
         using var connection = new SqlConnection(_connectionString);
 
         var query = new StringBuilder(@"
-        SELECT cr.*
-        FROM cart_record cr
-        JOIN users u ON cr.UserId = u.Id
-        JOIN products p ON cr.ProductId = p.Id
-        WHERE (@UserName IS NULL OR u.UserName LIKE @UserName)
-        AND (@ProductName IS NULL OR p.Name LIKE @ProductName)
-        AND (@Status IS NULL OR cr.Status = @Status)
-        AND (@UserId = 0 OR cr.UserId = @UserId)
-        AND (@DateFrom IS NULL OR cr.CreatedDate >= @DateFrom)
-        AND (@DateTo IS NULL OR cr.CreatedDate <= @DateTo)");
+            SELECT cr.*
+            FROM cart_record cr
+            LEFT JOIN users u ON cr.UserId = u.Id
+            LEFT JOIN products p ON cr.ProductId = p.Id
+            WHERE (@UserName IS NULL OR u.UserName LIKE '%' + @UserName + '%')
+            AND (@ProductName IS NULL OR p.Name LIKE  '%' + @ProductName + '%')
+            AND (@TransactionCode IS NULL OR cr.TransactionCode LIKE  '%' + @TransactionCode + '%')
+            AND (@Status IS NULL OR cr.Status = @Status)
+            AND (@UserId = 0 OR cr.UserId = @UserId)");
 
         var parameters = new DynamicParameters();
         parameters.Add("@UserName", userName);
         parameters.Add("@ProductName", productName);
+        parameters.Add("@TransactionCode", transactionCode);
         parameters.Add("@Status", status);
-        parameters.Add("@UserId", userId);
-        parameters.Add("@DateFrom", dateFrom);
-        parameters.Add("@DateTo", dateTo);
+        parameters.Add("@UserId", userId ?? (object)DBNull.Value);
 
         return await connection.QueryAsync<CartRecord>(query.ToString(), parameters);
     }
