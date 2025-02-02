@@ -1,18 +1,18 @@
 ﻿using System;
-using MobileProject.Model;
 using System.Collections.ObjectModel;
-using MobileProject.Repository;
-using System.Windows.Input;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using MobileProject.Model;
+using MobileProject.Service;
+using MobileProject.Service.Interface;
 using Xamarin.Forms;
 
 namespace MobileProject.ViewModel
 {
     public class ProductMgmtViewModel : BaseViewModel
     {
-        private ProductRepository _productRepository;
+        private readonly IProductService _productService;
 
         private string _productName;//condition
 
@@ -22,19 +22,19 @@ namespace MobileProject.ViewModel
             set
             {
                 _productName = value;
-                OnPropertyChanged();
+                SetProperty(ref _productName, value);
             }
         }
 
-
         private ObservableCollection<ProductMgmt> _tableData;
+
         public ObservableCollection<ProductMgmt> TableData
         {
             get => _tableData;
             set
             {
                 _tableData = value;
-                OnPropertyChanged();
+                SetProperty(ref _tableData, value);
             }
         }
 
@@ -45,55 +45,61 @@ namespace MobileProject.ViewModel
         public ICommand QueryCommand { get; }
         public ICommand SelectedAllCommand { get; }
 
-        public ProductMgmtViewModel()
+        public ProductMgmtViewModel(IProductService productService)
         {
-            _productRepository = new ProductRepository();
+            _productService = productService;
 
-            SaveCommand = new Command(OnSave);
+            SaveCommand = new Command(async () => await OnSave());
             AddCommand = new Command(OnAdd);
-            RemoveCommand = new Command(OnRemove);
+            RemoveCommand = new Command(async () => await OnRemove());
             EditCommand = new Command<ProductMgmt>(OnEdit);
-            QueryCommand = new Command(OnQuery);
+            QueryCommand = new Command(async () => await OnQuery());
             SelectedAllCommand = new Command(OnSelectedAll);
 
-            TableData = new ObservableCollection<ProductMgmt>();
-
-            LoadData();
+            _ = LoadData();
         }
 
-        private void LoadData()
+        private async Task LoadData()
         {
-            var products = _productRepository.GetFilteredProducts().ToList();
-            TableData = new ObservableCollection<ProductMgmt>(products.Select(u => new ProductMgmt(u)));
-        }
-
-        private void OnQuery()
-        {
-            var products = _productRepository.GetFilteredProducts(name:ProductName).ToList();
-            TableData = new ObservableCollection<ProductMgmt>(products.Select(u => new ProductMgmt(u)));
-        }
-
-        private void OnEdit(ProductMgmt product)
-        {
-            // Enable editing for the selected product
-            if (product != null)
+            var products = await _productService.GetAllProductsAsync();
+            if (products != null)
             {
-                product.IsEnabled = true;
-                product.IsSelected = true;
+                TableData = new ObservableCollection<ProductMgmt>(products.Select(u => new ProductMgmt(u)));
+                OnPropertyChanged(nameof(TableData));
             }
         }
 
-        private async void OnRemove()
+        private async Task OnSave()
         {
-            var selectedProduct = TableData.Where(x => x.IsSelected == true).ToList();
-
-            foreach (var productMgmt in selectedProduct)
+            try
             {
-                await _productRepository.DeleteAsync(productMgmt.Product.Id);
-            }
-            await Application.Current.MainPage.DisplayAlert("Info", "Product removed.", "OK");
-            LoadData();
+                var selectedProduct = TableData.Where(x => x.IsSelected == true).ToList();
 
+                foreach (var product in selectedProduct)
+                {
+                    var productModel = new Product()
+                    {
+                        Id = product.Product.Id,
+                        Name = product.Product.Name,
+                        Description = product.Product.Description,
+                        Image = product.Product.Image,
+                        Price = product.Product.Price,
+                        Date = DateTime.Today
+                    };
+
+                    if (product.Product.Id == -1)
+                        await _productService.CreateProductAsync(productModel);
+                    else
+                        await _productService.UpdateProductAsync(productModel);
+                }
+
+                await Application.Current.MainPage.DisplayAlert("Info", "Changes saved.", "OK");
+                await LoadData();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+            }
         }
 
         private void OnAdd()
@@ -103,59 +109,55 @@ namespace MobileProject.ViewModel
                 Id = -1,
                 Date = DateTime.Now,
                 Image = "default1.png"
-            });
-            newProduct.IsEnabled = true;
-            newProduct.IsSelected = true;
+            })
+            {
+                IsEnabled = true,
+                IsSelected = true
+            };
             TableData.Add(newProduct);
         }
 
-        private async void OnSave()
+        private void OnEdit(ProductMgmt product)
         {
-            try
+            if (product != null)
             {
-                var selectedProduct = TableData.Where(x => x.IsSelected == true).ToList();
-
-                foreach (var productMgmt in selectedProduct)
-                {
-                    if (productMgmt.Product.Id == -1)
-                    {
-                        await _productRepository.InsertAsync(new Product()
-                        {
-                            Name = productMgmt.Product.Name,
-                            Description = productMgmt.Product.Description,
-                            Image = productMgmt.Product.Image,
-                            Price = productMgmt.Product.Price,
-                            Date = DateTime.Today
-                        });
-                    }
-                    else
-                    {
-                        await _productRepository.UpdateAsync(new Product()
-                        {
-                            Id = productMgmt.Product.Id,
-                            Name = productMgmt.Product.Name,
-                            Description = productMgmt.Product.Description,
-                            Image = productMgmt.Product.Image,
-                            Price = productMgmt.Product.Price,
-                            Date = DateTime.Today
-                        });
-                    }
-                }
-
-                await Application.Current.MainPage.DisplayAlert("Info", "Changes saved.", "OK");
-                LoadData();
+                product.IsEnabled = true;
+                product.IsSelected = true;
             }
-            catch (Exception ex)
+        }
+
+        private async Task OnRemove()
+        {
+            var selectedProduct = TableData.Where(x => x.IsSelected).ToList();
+
+            foreach (var product in selectedProduct)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+                await _productService.DeleteProductAsync(product.Product.Id);
             }
+            await Application.Current.MainPage.DisplayAlert("Info", "Product removed.", "OK");
+            await LoadData();
+        }
+
+        private async Task OnQuery()
+        {
+            var products = await _productService.GetProductsByConditionAsync(productName: ProductName);
+            if (products != null)
+            {
+                TableData = new ObservableCollection<ProductMgmt>(products.Select(u => new ProductMgmt(u)));
+            }
+            else
+            {
+                TableData.Clear();
+            }
+
+            OnPropertyChanged(nameof(TableData));
         }
 
         private void OnSelectedAll()
         {
-            foreach (var productMgmt in TableData)
+            foreach (var product in TableData)
             {
-                productMgmt.IsSelected = !productMgmt.IsSelected;
+                product.IsSelected = !product.IsSelected;
             }
         }
     }

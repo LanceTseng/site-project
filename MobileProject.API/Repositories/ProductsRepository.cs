@@ -29,7 +29,7 @@ public class ProductsRepository : IProductsRepository
             "SELECT * FROM Products WHERE Id = @Id", new { Id = id });
     }
 
-    public async Task<IEnumerable<Product>> GetProductsByConditionAsync(string? name, decimal? minPrice, decimal? maxPrice, DateTime? dateFrom, DateTime? dateTo)
+    public async Task<IEnumerable<Product>> GetProductsByConditionAsync(string? name, decimal? minPrice, decimal? maxPrice)
     {
         using var connection = new SqlConnection(_connectionString);
 
@@ -45,8 +45,6 @@ public class ProductsRepository : IProductsRepository
         parameters.Add("@Name", name, DbType.String);
         parameters.Add("@MinPrice", minPrice, DbType.Decimal);
         parameters.Add("@MaxPrice", maxPrice, DbType.Decimal);
-        parameters.Add("@DateFrom", dateFrom, DbType.DateTime);
-        parameters.Add("@DateTo", dateTo, DbType.DateTime);
 
         return await connection.QueryAsync<Product>(query, parameters);
     }

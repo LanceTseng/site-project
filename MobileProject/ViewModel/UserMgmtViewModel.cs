@@ -93,13 +93,6 @@ namespace MobileProject.ViewModel
 
                 foreach (var user in selectedTableData)
                 {
-
-                    if (user.User == null)
-                    {
-                        Debug.WriteLine("Error: user.User is null");
-                        continue; // Skip this iteration to prevent crashes
-                    }
-
                     var userModel = new User()
                     {
                         Id = user.User.Id,

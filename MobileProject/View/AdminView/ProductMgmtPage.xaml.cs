@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
+using MobileProject.Service.Interface;
+using MobileProject.ViewModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,6 +12,7 @@ namespace MobileProject.View.AdminView
         public ProductMgmtPage()
         {
             InitializeComponent();
+            this.BindingContext = new ProductMgmtViewModel(App.ServiceProvider.GetService<IProductService>());
         }
     }
 }

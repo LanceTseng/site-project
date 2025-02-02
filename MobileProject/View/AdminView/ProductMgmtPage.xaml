@@ -3,10 +3,8 @@
     x:Class="MobileProject.View.AdminView.ProductMgmtPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:viewModel="clr-namespace:MobileProject.ViewModel;assembly=MobileProject">
-    <ContentPage.BindingContext>
-        <viewModel:ProductMgmtViewModel />
-    </ContentPage.BindingContext>
+    Title="Product Management">
+
     <ContentPage.Content>
         <StackLayout Padding="10">
             <!--  Input Fields and Query Button  -->
@@ -102,7 +100,12 @@
                             <Grid Padding="10" ColumnSpacing="10">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
-                                    <!--  Add column definitions  -->
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="4*" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="2*" />
                                 </Grid.ColumnDefinitions>
 
                                 <!--  Row Content  -->

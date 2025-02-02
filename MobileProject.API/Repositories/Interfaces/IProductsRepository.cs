@@ -8,8 +8,7 @@ public interface IProductsRepository
 
     Task<Product?> GetProductByIdAsync(int id);
 
-    Task<IEnumerable<Product>> GetProductsByConditionAsync(string? name, decimal? minPrice, decimal? maxPrice,
-        DateTime? dateFrom, DateTime? dateTo);
+    Task<IEnumerable<Product>> GetProductsByConditionAsync(string? name, decimal? minPrice, decimal? maxPrice);
     Task<Response> CreateProductAsync(Product product);
 
     Task<Response> UpdateProductAsync(Product product);

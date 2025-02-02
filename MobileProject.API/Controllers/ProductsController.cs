@@ -17,7 +17,7 @@ namespace MobileProject.API.Controllers
             _productsRepository = productsRepository;
         }
 
-        [HttpGet("GetAllProdcut")]
+        [HttpGet("GetAllProducts")]
         public async Task<IActionResult> GetAllProducts()
         {
             var products = await _productsRepository.GetAllProductsAsync();
@@ -35,10 +35,10 @@ namespace MobileProject.API.Controllers
         }
 
         [HttpGet("GetProductsByCondition")]
-        public async Task<IActionResult> GetProductsByCondition(string? name, decimal? minPrice, decimal? maxPrice,
+        public async Task<IActionResult> GetProductsByCondition([FromQuery] string? name, [FromQuery] decimal? minPrice, [FromQuery] decimal? maxPrice,
             DateTime? dateFrom, DateTime? dateTo)
         {
-            var products = await _productsRepository.GetProductsByConditionAsync(name, minPrice, maxPrice, dateFrom, dateTo);
+            var products = await _productsRepository.GetProductsByConditionAsync(name, minPrice, maxPrice);
 
             if (!products.Any())
             {
@@ -52,8 +52,7 @@ namespace MobileProject.API.Controllers
             return Ok(products);
         }
 
-
-        // GET: api/Users/GetUserById/{id}
+        // GET: api/Products/GetProductById/{id}
         [HttpGet("GetProductById/{id}")]
         public async Task<IActionResult> GetProductById(int id)
         {
@@ -71,7 +70,7 @@ namespace MobileProject.API.Controllers
             return Ok(product);
         }
 
-        // POST: api/Users/CreateUser
+        // POST: api/Products/CreateProduct
         [HttpPost("CreateProduct")]
         public async Task<IActionResult> CreateProduct([FromBody] Product product)
         {
@@ -80,7 +79,7 @@ namespace MobileProject.API.Controllers
                 return BadRequest(new Response
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    StatusMessage = "Invalid user data."
+                    StatusMessage = "Invalid product data."
                 });
             }
 
@@ -88,7 +87,7 @@ namespace MobileProject.API.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        // PUT: api/Users/UpdateUser
+        // PUT: api/Products/UpdateProduct
         [HttpPut("UpdateProduct")]
         public async Task<IActionResult> UpdateProduct([FromBody] Product product)
         {
@@ -105,9 +104,9 @@ namespace MobileProject.API.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        // DELETE: api/Users/DeleteUser/{id}
-        [HttpDelete("DeleteUser/{id}")]
-        public async Task<IActionResult> DeletProduct(int id)
+        // DELETE: api/Products/DeleteProduct/{id}
+        [HttpDelete("DeleteProduct/{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
         {
             var response = await _productsRepository.DeleteProductAsync(id);
             return StatusCode(response.StatusCode, response);
