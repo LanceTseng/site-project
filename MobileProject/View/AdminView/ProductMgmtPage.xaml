@@ -6,154 +6,180 @@
     Title="Product Management">
 
     <ContentPage.Content>
-        <StackLayout Padding="10">
-            <!--  Input Fields and Query Button  -->
-            <StackLayout Margin="0,0,0,10" Orientation="Horizontal">
-                <Entry
-                    x:Name="ConditionEntry"
-                    HorizontalOptions="FillAndExpand"
-                    Placeholder="Enter Product Name"
-                    Text="{Binding ProductName}" />
-                <Button Command="{Binding QueryCommand}" Text="Query" />
-            </StackLayout>
-
-            <!--  Data List with Checkbox  -->
-            <CollectionView
-                Grid.Row="1"
-                ItemsSource="{Binding TableData}"
-                SelectionMode="None">
-                <CollectionView.Header>
-                    <Grid
-                        Padding="10"
-                        BackgroundColor="LightSkyBlue"
-                        ColumnSpacing="10">
-
+        <ScrollView>
+            <StackLayout Padding="10">
+                <!--  Input Fields and Query Button  -->
+                <StackLayout Padding="10" Orientation="Vertical">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        HorizontalOptions="Center"
+                        Text="Product Management" />
+                    <Grid ColumnSpacing="10" RowSpacing="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
-                            <!--  Checkbox  -->
-                            <ColumnDefinition Width="1*" />
-                            <!--  Id  -->
-                            <ColumnDefinition Width="2*" />
-                            <!--  Product Name  -->
-                            <ColumnDefinition Width="2*" />
-                            <!--  Price  -->
-                            <ColumnDefinition Width="4*" />
-                            <!--  Description  -->
-                            <ColumnDefinition Width="2*" />
-                            <!--  Image  -->
-                            <ColumnDefinition Width="2*" />
-                            <!--  Created Date  -->
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <!--  Column Headers  -->
+                        <!--  Username  -->
                         <Label
+                            Grid.Row="0"
                             Grid.Column="0"
-                            FontAttributes="Bold"
-                            HorizontalOptions="Center"
-                            Text="Select"
-                            VerticalTextAlignment="Center" />
-                        <Label
+                            Text="Product Name:"
+                            VerticalOptions="Center" />
+                        <Entry
+                            x:Name="ConditionEntry"
+                            Grid.Row="0"
                             Grid.Column="1"
-                            FontAttributes="Bold"
-                            Text="ID"
-                            VerticalTextAlignment="Center" />
-                        <Label
-                            Grid.Column="2"
-                            FontAttributes="Bold"
-                            Text="Product Name" />
-                        <Label
-                            Grid.Column="3"
-                            FontAttributes="Bold"
-                            Text="Price"
-                            VerticalTextAlignment="Center" />
-                        <Label
-                            Grid.Column="4"
-                            FontAttributes="Bold"
-                            Text="Description"
-                            VerticalTextAlignment="Center" />
-                        <Label
-                            Grid.Column="5"
-                            FontAttributes="Bold"
-                            Text="Image"
-                            VerticalTextAlignment="Center" />
-                        <Label
-                            Grid.Column="6"
-                            FontAttributes="Bold"
-                            Text="Created Date"
-                            VerticalTextAlignment="Center" />
-
+                            HeightRequest="40"
+                            HorizontalOptions="FillAndExpand"
+                            Placeholder="Enter Product Name"
+                            Text="{Binding ProductName}" />
                     </Grid>
-                </CollectionView.Header>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <SwipeView>
-                            <SwipeView.LeftItems>
-                                <SwipeItems>
-                                    <SwipeItem
-                                        BackgroundColor="LightGreen"
-                                        Command="{Binding BindingContext.EditCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                                        CommandParameter="{Binding .}"
-                                        IconImageSource="edit.png"
-                                        Text="Edit" />
-                                </SwipeItems>
-                            </SwipeView.LeftItems>
-                            <Grid Padding="10" ColumnSpacing="10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="4*" />
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="2*" />
-                                </Grid.ColumnDefinitions>
+                    <Button Command="{Binding QueryCommand}" Text="Query" />
+                </StackLayout>
 
-                                <!--  Row Content  -->
-                                <CheckBox
-                                    Grid.Column="0"
-                                    HorizontalOptions="Center"
-                                    IsChecked="{Binding IsSelected}"
-                                    VerticalOptions="Center" />
-                                <Label
-                                    Grid.Column="1"
-                                    Text="{Binding Product.Id}"
-                                    VerticalOptions="Center" />
-                                <Entry
-                                    Grid.Column="2"
-                                    IsEnabled="{Binding IsEnabled}"
-                                    Placeholder="Product Name"
-                                    Text="{Binding Product.Name}"
-                                    VerticalOptions="Center" />
-                                <Entry
-                                    Grid.Column="3"
-                                    IsEnabled="{Binding IsEnabled}"
-                                    Keyboard="Numeric"
-                                    Placeholder="Price"
-                                    Text="{Binding Product.Price, StringFormat='${0:F2}'}"
-                                    VerticalOptions="Center" />
-                                <Entry
-                                    Grid.Column="4"
-                                    IsEnabled="{Binding IsEnabled}"
-                                    Text="{Binding Product.Description}"
-                                    VerticalOptions="Center" />
-                                <ImageButton
-                                    Grid.Column="5"
-                                    Margin="2"
-                                    HeightRequest="30"
-                                    IsEnabled="{Binding IsEnabled}"
-                                    Source="{Binding Product.Image}"
-                                    VerticalOptions="Center"
-                                    WidthRequest="30" />
-                                <Label
-                                    Grid.Column="6"
-                                    Text="{Binding Product.Date, StringFormat='{0:yyyy-MM-dd}'}"
-                                    VerticalOptions="Center" />
-                            </Grid>
-                        </SwipeView>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </StackLayout>
+                <!--  Data List with Checkbox  -->
+                <CollectionView
+                    Grid.Row="1"
+                    ItemsSource="{Binding TableData}"
+                    SelectionMode="None">
+                    <CollectionView.Header>
+                        <Grid
+                            Padding="10"
+                            BackgroundColor="LightSkyBlue"
+                            ColumnSpacing="10">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <!--  Checkbox  -->
+                                <ColumnDefinition Width="1*" />
+                                <!--  Id  -->
+                                <ColumnDefinition Width="2*" />
+                                <!--  Product Name  -->
+                                <ColumnDefinition Width="2*" />
+                                <!--  Price  -->
+                                <ColumnDefinition Width="4*" />
+                                <!--  Description  -->
+                                <ColumnDefinition Width="2*" />
+                                <!--  Image  -->
+                                <ColumnDefinition Width="2*" />
+                                <!--  Created Date  -->
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Column Headers  -->
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Center"
+                                Text="Select"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                Text="ID"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="2"
+                                FontAttributes="Bold"
+                                Text="Product Name" />
+                            <Label
+                                Grid.Column="3"
+                                FontAttributes="Bold"
+                                Text="Price"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="4"
+                                FontAttributes="Bold"
+                                Text="Description"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="5"
+                                FontAttributes="Bold"
+                                Text="Image"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="6"
+                                FontAttributes="Bold"
+                                Text="Created Date"
+                                VerticalTextAlignment="Center" />
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <SwipeView>
+                                <SwipeView.LeftItems>
+                                    <SwipeItems>
+                                        <SwipeItem
+                                            BackgroundColor="LightGreen"
+                                            Command="{Binding BindingContext.EditCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                            CommandParameter="{Binding .}"
+                                            IconImageSource="edit.png"
+                                            Text="Edit" />
+                                    </SwipeItems>
+                                </SwipeView.LeftItems>
+                                <Grid Padding="10" ColumnSpacing="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="4*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!--  Row Content  -->
+                                    <CheckBox
+                                        Grid.Column="0"
+                                        HorizontalOptions="Center"
+                                        IsChecked="{Binding IsSelected}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding Product.Id}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="2"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        Placeholder="Product Name"
+                                        Text="{Binding Product.Name}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="3"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        Keyboard="Numeric"
+                                        Placeholder="Price"
+                                        Text="{Binding Product.Price, StringFormat='${0:F2}'}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="4"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        Text="{Binding Product.Description}"
+                                        VerticalOptions="Center" />
+                                    <ImageButton
+                                        Grid.Column="5"
+                                        Margin="2"
+                                        HeightRequest="30"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        Source="{Binding Product.Image}"
+                                        VerticalOptions="Center"
+                                        WidthRequest="30" />
+                                    <Label
+                                        Grid.Column="6"
+                                        Text="{Binding Product.Date, StringFormat='{0:yyyy-MM-dd}'}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
     <ContentPage.ToolbarItems>
         <ToolbarItem

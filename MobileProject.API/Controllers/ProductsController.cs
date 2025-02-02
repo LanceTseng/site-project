@@ -35,10 +35,10 @@ namespace MobileProject.API.Controllers
         }
 
         [HttpGet("GetProductsByCondition")]
-        public async Task<IActionResult> GetProductsByCondition([FromQuery] string? name, [FromQuery] decimal? minPrice, [FromQuery] decimal? maxPrice,
+        public async Task<IActionResult> GetProductsByCondition([FromQuery] string? productName, [FromQuery] decimal? minPrice, [FromQuery] decimal? maxPrice,
             DateTime? dateFrom, DateTime? dateTo)
         {
-            var products = await _productsRepository.GetProductsByConditionAsync(name, minPrice, maxPrice);
+            var products = await _productsRepository.GetProductsByConditionAsync(productName, minPrice, maxPrice);
 
             if (!products.Any())
             {

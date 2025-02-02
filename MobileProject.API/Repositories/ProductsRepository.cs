@@ -29,20 +29,18 @@ public class ProductsRepository : IProductsRepository
             "SELECT * FROM Products WHERE Id = @Id", new { Id = id });
     }
 
-    public async Task<IEnumerable<Product>> GetProductsByConditionAsync(string? name, decimal? minPrice, decimal? maxPrice)
+    public async Task<IEnumerable<Product>> GetProductsByConditionAsync(string? productName, decimal? minPrice, decimal? maxPrice)
     {
         using var connection = new SqlConnection(_connectionString);
 
-        var query = "SELECT * FROM Products WHERE " +
-                    "(@Name IS NULL OR Name LIKE '%' + @Name + '%') " +
+        var query = "SELECT * FROM Products WHERE 1=1" +
+                    "AND (@Name IS NULL OR Name LIKE '%' + @Name + '%') " +
                     "AND (@MinPrice IS NULL OR Price >= @MinPrice) " +
-                    "AND (@MaxPrice IS NULL OR Price <= @MaxPrice) " +
-                    "AND (@DateFrom IS NULL OR Date >= @DateFrom) " +
-                    "AND (@DateTo IS NULL OR Date <= @DateTo)";
+                    "AND (@MaxPrice IS NULL OR Price <= @MaxPrice) " ;
 
         // Create parameters explicitly using SqlParameter
         var parameters = new DynamicParameters();
-        parameters.Add("@Name", name, DbType.String);
+        parameters.Add("@Name", productName, DbType.String);
         parameters.Add("@MinPrice", minPrice, DbType.Decimal);
         parameters.Add("@MaxPrice", maxPrice, DbType.Decimal);
 
