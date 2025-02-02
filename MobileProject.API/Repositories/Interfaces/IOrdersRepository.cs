@@ -10,7 +10,7 @@ public interface IOrdersRepository
 
     Task<IEnumerable<Order>> GetOrdersByConditionAsync(
         string? userName, string? transactionCode, string? status,
-        int userId = 0, DateTime? dateFrom = null, DateTime? dateTo = null);
+        int? userId, DateTime? dateFrom, DateTime? dateTo);
 
     Task<Response> CreateOrderAsync(Order order);
 

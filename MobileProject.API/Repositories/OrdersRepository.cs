@@ -31,29 +31,44 @@ public class OrdersRepository : IOrdersRepository
     }
 
     public async Task<IEnumerable<Order>> GetOrdersByConditionAsync(
-        string? userName, string? transactionCode, string? status,
-        int userId = 0, DateTime? dateFrom = null, DateTime? dateTo = null)
+        string? userName, 
+        string? transactionCode,
+        string? status,
+        int? userId,
+        DateTime? dateFrom = null,
+        DateTime? dateTo = null)
     {
         using var connection = new SqlConnection(_connectionString);
         var parameters = new DynamicParameters();
 
         var query = new StringBuilder(@"
         SELECT o.* FROM orders o
-        JOIN users u ON o.UserId = u.Id
-        WHERE (@UserName IS NULL OR u.Name LIKE '%' + @UserName + '%')
-        AND (@TransactionCode IS NULL OR o.TransactionCode = @TransactionCode)
+        LEFT JOIN users u ON o.UserId = u.Id
+        WHERE (@UserName IS NULL OR u.UserName LIKE '%' + @UserName + '%')
+        AND (@TransactionCode IS NULL OR o.TransactionCode LIKE '%' + @TransactionCode + '%')
         AND (@Status IS NULL OR o.Status = @Status)
-        AND (@UserId = 0 OR o.UserId = @UserId)
-        AND (@DateFrom IS NULL OR o.CreatedDate >= @DateFrom)
-        AND (@DateTo IS NULL OR o.CreatedDate <= @DateTo)");
+        AND (@UserId = 0 OR o.UserId = @UserId)");
+
+        // Add date conditions dynamically to avoid passing invalid NULL values
+        // Add date filters dynamically only if they are not null
+        if (dateFrom.HasValue && dateFrom.Value >= new DateTime(1753, 1, 1))
+        {
+            query.Append(" AND CAST(o.Date AS DATE) >= @DateFrom");
+            parameters.Add("@DateFrom", dateFrom.Value.Date);
+        }
+
+        if (dateTo.HasValue && dateTo.Value >= new DateTime(1753, 1, 1))
+        {
+            query.Append(" AND CAST(o.Date AS DATE) <= @DateTo");
+            parameters.Add("@DateTo", dateTo.Value.Date);
+        }
 
         parameters.Add("@UserName", userName);
         parameters.Add("@TransactionCode", transactionCode);
         parameters.Add("@Status", status);
-        parameters.Add("@UserId", userId);
-        parameters.Add("@DateFrom", dateFrom);
-        parameters.Add("@DateTo", dateTo);
+        parameters.Add("@UserId", userId ?? (object)DBNull.Value);
 
+         
         return await connection.QueryAsync<Order>(query.ToString(), parameters);
     }
 
