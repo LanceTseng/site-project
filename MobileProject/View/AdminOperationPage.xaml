@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <ContentPage.Content>
         <StackLayout Padding="10">
+            <Entry x:Name="txtUrl" Text="http://10.0.2.2:5180/api/" />
             <Button
                 ClassId="updateorder"
                 Clicked="btnDelete_All"

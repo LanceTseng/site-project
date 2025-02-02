@@ -77,7 +77,8 @@ namespace MobileProject.View
                     //    break;
 
                     case "updateorder":
-                        ApiCallingTest();
+                        var url = txtUrl.Text;
+                        ApiCallingTest(url);
                         break;
 
                     default:
@@ -89,14 +90,14 @@ namespace MobileProject.View
 
 
         private readonly HttpClient _httpClient = new HttpClient();
-        private const string Url = "http://10.0.2.2:5180/WeatherForecast";
-        private async void ApiCallingTest()
+ 
+        private async void ApiCallingTest(string apiUrl)
         {
             try
             {
-                string response = await _httpClient.GetStringAsync(Url);
-
-                Debug.WriteLine( JsonConvert.DeserializeObject(response));
+                string response = await _httpClient.GetStringAsync(apiUrl);
+                var users = JsonConvert.DeserializeObject<IEnumerable<User>>(response);
+                Debug.WriteLine(users);
             }
             catch (Exception ex){
             
