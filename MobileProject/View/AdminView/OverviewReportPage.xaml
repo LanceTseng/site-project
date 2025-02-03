@@ -4,13 +4,8 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:forms="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
-    xmlns:local="clr-namespace:MobileProject.ViewModel">
-    <ContentPage.Title>
-        Overview Report
-    </ContentPage.Title>
-    <ContentPage.BindingContext>
-        <local:OverviewReportPageViewModel />
-    </ContentPage.BindingContext>
+    Title="Overview Report">
+
     <ContentPage.Content>
         <ScrollView>
             <StackLayout

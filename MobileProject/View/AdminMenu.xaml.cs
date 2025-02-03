@@ -23,7 +23,7 @@ namespace MobileProject.View
                 new MenuItem { Name = "Product", TargetPage = typeof(ProductMgmtPage) },
                 new MenuItem { Name = "Order", TargetPage = typeof(OrderMgmtPage) },
                 new MenuItem { Name = "Report", TargetPage = typeof(OverviewReportPage) },
-                new MenuItem { Name = "Admin Operation", TargetPage = typeof(AdminOperationPage) }
+                //new MenuItem { Name = "Admin Operation", TargetPage = typeof(AdminOperationPage) }
 
             };
 

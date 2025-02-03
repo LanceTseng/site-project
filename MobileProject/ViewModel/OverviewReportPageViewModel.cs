@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Microcharts;
 using MobileProject.Model;
 using MobileProject.Repository;
+using MobileProject.Service;
+using MobileProject.Service.Interface;
 using SkiaSharp;
 using Xamarin.Forms;
 
@@ -14,7 +17,9 @@ namespace MobileProject.ViewModel
 {
     public class OverviewReportPageViewModel : BaseViewModel
     {
-        private ReportRepository _reportRepository;
+        private readonly ApiService _apiService;
+        private readonly IOverviewReportService _overviewReportService;
+
         private string _username;
         private string _role;
         private string _productName;
@@ -65,30 +70,17 @@ namespace MobileProject.ViewModel
             set => SetProperty(ref _reports, value);
         }
 
-        //private ObservableCollection<ProductSalesData> _productsSalesData;
-
-        //public ObservableCollection<ProductSalesData> ProductSales
-        //{
-        //    get => _productsSalesData;
-        //    set => SetProperty(ref _productsSalesData, value);
-        //}
-
-        //private ObservableCollection<UserSalesData> _userSales;
-
-        //public ObservableCollection<UserSalesData> UserSales
-        //{
-        //    get => _userSales;
-        //    set => SetProperty(ref _userSales, value);
-        //}
-
         public ICommand ProcessReportCommand { get; }
 
-        public OverviewReportPageViewModel()
+        public OverviewReportPageViewModel(ApiService apiService, IOverviewReportService overviewReportService)
         {
-            Reports = new ObservableCollection<Overview>();
-            ProcessReportCommand = new Command(ProcessReport);
+            _apiService = apiService;
+            _overviewReportService = overviewReportService;
 
-            _reportRepository = new ReportRepository();
+            Reports = new ObservableCollection<Overview>();
+            ProcessReportCommand = new Command(async () => await ProcessReport());
+
+            _ = LoadData();
         }
 
         private BarChart _productSalesChart;
@@ -106,49 +98,49 @@ namespace MobileProject.ViewModel
             set => SetProperty(ref _productSummary, value);
         }
 
-        private void ProcessReport()
+        private async Task LoadData()
+        {
+            var allReports = await _overviewReportService.GetAllOverviewAsync();
+            if (allReports != null && allReports.Any())
+            {
+                Reports = new ObservableCollection<Overview>(allReports);
+
+                GenerateBarChartProductSales(allReports.ToList());
+                GeneratePieChartProductSummary(allReports.ToList());
+            }
+            else
+            {
+                // Handle the case when reports are empty or null
+                Debug.WriteLine("No reports found.");
+                Reports.Clear();
+            }
+        }
+
+        private async Task ProcessReport()
         {
             try
             {
-                // Fetch all reports
-                var allReports = _reportRepository.GetOverviewReports()?.ToList();
+                // Fetch reports based on the provided conditions
+                var allReports = await _overviewReportService.GetOverviewByConditionAsync(
+                    userName: Username, role: Role, productName: ProductName, dateFrom: FromDate, dateTo: ToDate);
 
-                if (allReports == null || !allReports.Any())
+                if (allReports == null)
                 {
-                    Console.WriteLine("No reports found.");
-                    Reports.Clear(); // Clear the collection if no results
+                    Debug.WriteLine("No reports found.");
+                    Reports.Clear();
                     return;
                 }
 
-                // Apply filters with null checks
-                if (!string.IsNullOrEmpty(Username))
-                    allReports = allReports.Where(r => !string.IsNullOrEmpty(r.UserName) &&
-                                                       r.UserName.ToLower().Contains(Username.ToLower())).ToList();
+                // Example filtering (if needed)
+                var filteredReports = allReports.ToList();
 
-                if (!string.IsNullOrEmpty(Role))
-                    allReports = allReports.Where(r => !string.IsNullOrEmpty(r.Role) &&
-                                                       r.Role.Contains(Role)).ToList();
 
-                if (!string.IsNullOrEmpty(ProductName))
-                    allReports = allReports.Where(r => !string.IsNullOrEmpty(r.ProductName) &&
-                                                       r.ProductName.ToLower().Contains(ProductName.ToLower()))
-                        .ToList();
+                // Update the ObservableCollection efficiently
+                Reports = new ObservableCollection<Overview>(filteredReports);
 
-                if (FromDate.HasValue)
-                    allReports = allReports.Where(r => r.OrderDate.Date >= FromDate.Value.Date).ToList();
-
-                if (ToDate.HasValue)
-                    allReports = allReports.Where(r => r.OrderDate.Date <= ToDate.Value.Date).ToList();
-
-                // Update the ObservableCollection
-                foreach (var report in allReports)
-                {
-                    _reports.Add(report);
-                }
-
-                // Generate ProductSalesData
-                GenerateBarChartProductSales(allReports);
-                GeneratePieChartProductSummary(allReports);
+                // Generate Charts
+                GenerateBarChartProductSales(filteredReports);
+                GeneratePieChartProductSummary(filteredReports);
             }
             catch (Exception ex)
             {
@@ -205,7 +197,7 @@ namespace MobileProject.ViewModel
                 .Select(g =>
                 {
                     float totalQuantity = g.Sum(r => (float?)r.Quantity ?? 0); // Total quantity of the product
- 
+
                     return new ChartEntry(totalQuantity) // Pie charts need absolute values, not percentages
                     {
                         Label = g.Key,

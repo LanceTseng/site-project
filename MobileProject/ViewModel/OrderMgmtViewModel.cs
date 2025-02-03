@@ -4,11 +4,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MobileProject.Model;
-using MobileProject.Repository;
 using MobileProject.Service;
 using MobileProject.Service.Interface;
 using MobileProject.View.AdminView;
@@ -227,12 +225,14 @@ namespace MobileProject.ViewModel
             foreach (var orderMgmt in selectedOrder)
             {
                 var carts = await _cartRecordService.GetCartRecordsByConditionAsync(transactionCode: orderMgmt.Order.TransactionCode);
-
-                foreach (var cart in carts)
+                if (carts != null)
                 {
-                    cart.TransactionCode = "";
-                    cart.Status = "pending";
-                    await _cartRecordService.UpdateCartRecordAsync(cart);
+                    foreach (var cart in carts)
+                    {
+                        cart.TransactionCode = "";
+                        cart.Status = "pending";
+                        await _cartRecordService.UpdateCartRecordAsync(cart);
+                    }
                 }
 
                 await _orderService.DeleteOrderAsync(orderMgmt.Order.Id);

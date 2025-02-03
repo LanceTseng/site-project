@@ -28,6 +28,7 @@ namespace MobileProject
                 services.AddSingleton<IProductService, ProductService>(); // Ensure correct registration
                 services.AddSingleton<ICartRecordService, CartRecordService>(); // Ensure correct registration
                 services.AddSingleton<IOrderService, OrderService>(); // Ensure correct registration
+                services.AddSingleton<IOverviewReportService, OverviewReportService>();
                 ServiceProvider = services.BuildServiceProvider();
 
                 InitializeComponent();

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MobileProject.Model
+﻿namespace MobileProject.API.Models
 {
     public class Report
     {
@@ -26,11 +22,18 @@ namespace MobileProject.Model
         public decimal Quantity { get; set; }
         public decimal TotalPrice { get; set; }
         public string ProductImage { get; set; }
-
-        public Overview()
-        {
-            
-        }
     }
 
+    //public class ProductSalesData
+    //{
+    //    public string ProductName { get; set; }
+    //    public float TotalPrice { get; set; }
+    //    public decimal Quantity { get; set; }
+    //}
+
+    //public class UserSalesData
+    //{
+    //    public string UserName { get; set; }
+    //    public decimal TotalPrice { get; set; }
+    //}
 }

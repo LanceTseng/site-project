@@ -74,7 +74,7 @@
                         VerticalOptions="Center"
                         WidthRequest="200" />
                     <Button
-                        x:Name="btnAdminMenu"
+                        x:Name="btnAdmin"
                         BackgroundColor="Transparent"
                         BorderColor="Maroon"
                         BorderRadius="50"
@@ -82,6 +82,7 @@
                         Clicked="btnAdmin_Clicked"
                         FontSize="12"
                         HorizontalOptions="Center"
+                        IsVisible="False"
                         Text="Admin Operation"
                         TextColor="Maroon"
                         VerticalOptions="Center"
