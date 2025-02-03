@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using MobileProject.Helpers;
-using MobileProject.Model;
-using MobileProject.Repository;
+﻿using MobileProject.Service;
+using MobileProject.Service.Interface;
+using MobileProject.ViewModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -18,7 +12,10 @@ namespace MobileProject.View
         public PayNow()
         {
             InitializeComponent();
-            this.Title = "Pay Now";
+            var apiService = App.ServiceProvider.GetService<ApiService>();
+            var orderService = App.ServiceProvider.GetService<IOrderService>();
+            var cartRecordService = App.ServiceProvider.GetService<ICartRecordService>();
+            this.BindingContext = new PayNowViewModel(apiService, orderService, cartRecordService);
         }
     }
 }

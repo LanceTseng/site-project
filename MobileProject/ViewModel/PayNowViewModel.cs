@@ -8,6 +8,8 @@ using System.Windows.Input;
 using MobileProject.Helpers;
 using MobileProject.Model;
 using MobileProject.Repository;
+using MobileProject.Service.Interface;
+using MobileProject.Service;
 using MobileProject.View;
 using Xamarin.Forms;
 
@@ -15,8 +17,9 @@ namespace MobileProject.ViewModel
 {
     public class PayNowViewModel : BaseViewModel
     {
-        private readonly CartRecordRepository _cartRecordRepository;
-        private readonly OrderRepository _orderRepository;
+        private readonly ApiService _apiService;
+        private readonly IOrderService _orderService;
+        private readonly ICartRecordService _cartRecordService;
 
         private string _customerName;
         private string _creditCardName;
@@ -81,10 +84,12 @@ namespace MobileProject.ViewModel
 
         public ICommand CompletePaymentCommand { get; }
 
-        public PayNowViewModel()
+        public PayNowViewModel(ApiService apiService, IOrderService orderService, ICartRecordService cartRecordService)
         {
-            _cartRecordRepository = new CartRecordRepository();
-            _orderRepository = new OrderRepository();
+            _apiService = apiService;
+            _cartRecordService = cartRecordService;
+            _orderService = orderService;
+
             CompletePaymentCommand = new Command(async () => await CompletePaymentAsync(), CanProcess);
         }
 
@@ -101,7 +106,7 @@ namespace MobileProject.ViewModel
 
                 if (!IsValidCreditCard(CreditCardNumber))
                 {
-                   await Application.Current.MainPage.DisplayAlert("Invalid Input", "Please enter a valid credit card number.", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Invalid Input", "Please enter a valid credit card number.", "OK");
                     return;
                 }
 
@@ -111,11 +116,11 @@ namespace MobileProject.ViewModel
                     await Application.Current.MainPage.DisplayAlert("Invalid Input", "Please enter a valid CVV code.", "OK");
                     return;
                 }
-                 
+
                 var transactionCode = GenerateSecureRandomString(6);
 
                 // Update cart records
-                var cart = _cartRecordRepository.GetFilteredCartRecord("pending", userId);
+                var cart = await _cartRecordService.GetCartRecordsByConditionAsync(status: "pending", userId: userId);
                 if (!cart.Any())
                 {
                     await Application.Current.MainPage.DisplayAlert("Info", "No items in the cart.", "OK");
@@ -126,11 +131,11 @@ namespace MobileProject.ViewModel
                 {
                     cartRecord.Status = "paid";
                     cartRecord.TransactionCode = transactionCode;
-                    _cartRecordRepository.UpdateCart(cartRecord);
+                    await _cartRecordService.UpdateCartRecordAsync(cartRecord);
                 }
 
                 // Insert a new order
-                _orderRepository.InsertOrder(new Order
+                await _orderService.CreateOrderAsync(new Order
                 {
                     Date = DateTime.Now,
                     Subtotal = cart.Sum(x => x.Total),
@@ -189,7 +194,7 @@ namespace MobileProject.ViewModel
 
         private string GenerateSecureRandomString(int length)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; 
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var result = new StringBuilder(length);
             using (var rng = RandomNumberGenerator.Create())
             {
