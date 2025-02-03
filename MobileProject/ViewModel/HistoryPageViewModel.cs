@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MobileProject.Helpers;
 using MobileProject.Model;
-using MobileProject.Repository;
+using MobileProject.Service;
+using MobileProject.Service.Interface;
 using Xamarin.Forms;
 
 namespace MobileProject.ViewModel
 {
     public class HistoryPageViewModel : BaseViewModel
     {
-        private readonly OrderRepository _orderRepository;
-        private readonly CartRecordRepository _cartRecordRepository;
-        private readonly ProductRepository _productRepository;
+        private readonly ApiService _apiService;
+        private readonly IOrderService _orderService;
+        private readonly IProductService _productService;
+        private readonly ICartRecordService _cartRecordService;
 
         private ObservableCollection<Order> _orders;
         private ObservableCollection<Cart> _selectedOrderDetails;
@@ -66,21 +67,22 @@ namespace MobileProject.ViewModel
 
         public ICommand SearchCommand { get; }
 
-        public HistoryPageViewModel()
+        public HistoryPageViewModel(ApiService apiService, IProductService productService, ICartRecordService cartRecordService, IOrderService orderService)
         {
-            _orderRepository = new OrderRepository();
-            _cartRecordRepository = new CartRecordRepository();
-            _productRepository = new ProductRepository();
+            _apiService = apiService;
+            _productService = productService;
+            _cartRecordService = cartRecordService;
+            _orderService = orderService;
 
             Orders = new ObservableCollection<Order>();
             SelectedOrderDetails = new ObservableCollection<Cart>();
 
-            SearchCommand = new Command(async () => await LoadOrdersAsync());
+            SearchCommand = new Command(async () => await OnSearch());
 
-            _ = LoadOrdersAsync();
+            _ = LoadData();
         }
 
-        private async Task LoadOrdersAsync()
+        private async Task LoadData()
         {
             var userIdString = await SecureStorageHelper.GetUserIdAsync();
 
@@ -90,37 +92,44 @@ namespace MobileProject.ViewModel
                 return;
             }
 
-            var transactionCodes = _cartRecordRepository
-                .GetFilteredCartRecord(status: "paid", userId: userId)
-                .Select(x => x.TransactionCode)
-                .Distinct()
-                .ToList();
-
-            if (!transactionCodes.Any())
+            var orders = await _orderService.GetOrdersByConditionAsync(userId: userId);
+            if (orders != null)
             {
-                await Application.Current.MainPage.DisplayAlert("Info", "No orders found for this user.", "OK");
+                Orders = new ObservableCollection<Order>(orders);
+            }
+        }
+
+        private async Task OnSearch()
+        {
+            Orders = new ObservableCollection<Order>();
+
+            var userIdString = await SecureStorageHelper.GetUserIdAsync();
+
+            if (!int.TryParse(userIdString, out int userId))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Failed to retrieve user ID.", "OK");
                 return;
             }
 
-            var orders = _orderRepository.GetFilteredOrders(transactionCodes, TransactionCode, DateFrom, DateTo);
-            Orders = new ObservableCollection<Order>(orders);
+            var orders = await _orderService.GetOrdersByConditionAsync(userId: userId, transactionCode: TransactionCode,
+                dateFrom: DateFrom, dateTo: DateTo);
+
+            if (orders != null) Orders = new ObservableCollection<Order>(orders);
+         
         }
 
         private async void LoadOrderDetails()
         {
             if (SelectedOrder == null) return;
 
-            var cartRecords = _cartRecordRepository
-                .GetFilteredCartRecord(status: "paid", transactionCode: SelectedOrder.TransactionCode)
-                .ToList();
+            var cartRecords = await _cartRecordService.GetCartRecordsByConditionAsync(status: "paid",
+                transactionCode: SelectedOrder.TransactionCode);
 
-            SelectedOrderDetails.Clear();
+            SelectedOrderDetails = new ObservableCollection<Cart>();
 
             foreach (var cartRecord in cartRecords)
             {
-                var products = await _productRepository.GetFilteredProductsAsync(productId: cartRecord.ProductId);
-                var product = products.FirstOrDefault();
-
+                var product = await _productService.GetProductByIdAsync(cartRecord.ProductId);
                 if (product != null)
                 {
                     SelectedOrderDetails.Add(new Cart(cartRecord, product));
