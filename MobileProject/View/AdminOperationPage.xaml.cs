@@ -96,7 +96,7 @@ namespace MobileProject.View
             try
             {
                 string response = await _httpClient.GetStringAsync(apiUrl);
-                var users = JsonConvert.DeserializeObject<IEnumerable<User>>(response);
+                var users = JsonConvert.DeserializeObject(response);
                 Debug.WriteLine(users);
             }
             catch (Exception ex){

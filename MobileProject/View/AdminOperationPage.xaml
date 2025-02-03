@@ -10,6 +10,12 @@
                 ClassId="updateorder"
                 Clicked="btnDelete_All"
                 Text="Update Order" />
+            <Label
+                x:Name="lblResponse"
+                HorizontalOptions="FillAndExpand"
+                LineBreakMode="WordWrap"
+                MaxLines="3"
+                VerticalOptions="Start" />
             <Grid ColumnSpacing="10" RowSpacing="10">
                 <!--  Define columns  -->
                 <Grid.ColumnDefinitions>
