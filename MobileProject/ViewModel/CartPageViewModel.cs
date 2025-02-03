@@ -6,6 +6,8 @@ using System.Windows.Input;
 using MobileProject.Helpers;
 using MobileProject.Model;
 using MobileProject.Repository;
+using MobileProject.Service.Interface;
+using MobileProject.Service;
 using MobileProject.View;
 using Xamarin.Forms;
 
@@ -13,14 +15,16 @@ namespace MobileProject.ViewModel
 {
     public class CartPageViewModel : BaseViewModel
     {
-        private readonly CartRecordRepository _cartRecordRepository;
-        private readonly ProductRepository _productRepository;
+        private readonly ApiService _apiService;
+        private readonly IProductService _productService;
+        private readonly ICartRecordService _cartRecordService;
 
-        public CartPageViewModel()
+        public CartPageViewModel(ApiService apiService, IProductService productService, ICartRecordService cartRecordService )
         {
-            _cartRecordRepository = new CartRecordRepository();
-            _productRepository = new ProductRepository();
-
+            _apiService = apiService;
+            _productService = productService;
+            _cartRecordService = cartRecordService;
+             
             CartItems = new ObservableCollection<Cart>();
 
             DeleteItemCommand = new Command<Cart>(async item => await DeleteItem(item));
@@ -61,14 +65,12 @@ namespace MobileProject.ViewModel
                 return;
             }
 
-            var cartRecords = _cartRecordRepository.GetFilteredCartRecord("pending", userId);
+            var cartRecords =await _cartRecordService.GetCartRecordsByConditionAsync(status:"pending", userId:userId);
             CartItems.Clear();
 
             foreach (var record in cartRecords)
             {
-                var products = await _productRepository.GetFilteredProductsAsync(productId: record.ProductId);
-                var product = products.FirstOrDefault();
-
+                var product = await _productService.GetProductByIdAsync(record.ProductId);
                 if (product != null)
                 {
                     CartItems.Add(new Cart(record, product));
@@ -81,9 +83,7 @@ namespace MobileProject.ViewModel
 
         private async Task DeleteItem(Cart item)
         {
-            var products = await _productRepository.GetFilteredProductsAsync(productId: item.CartRecord.ProductId);
-            var product = products.FirstOrDefault();
-
+            var product = await _productService.GetProductByIdAsync(item.CartRecord.ProductId);
             if (product == null)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Product not found.", "OK");
@@ -98,16 +98,14 @@ namespace MobileProject.ViewModel
 
             if (answer)
             {
-                _cartRecordRepository.DeleteCart(item.CartRecord.Id);
+                await _cartRecordService.DeleteCartRecordAsync(item.CartRecord.Id);
                 await LoadCart();
             }
         }
 
         private async Task EditItem(Cart item)
         {
-            var products = await _productRepository.GetFilteredProductsAsync(productId: item.CartRecord.ProductId);
-            var product = products.FirstOrDefault();
-
+            var product = await _productService.GetProductByIdAsync(item.CartRecord.ProductId);
             if (product == null)
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Product not found.", "OK");
@@ -117,7 +115,7 @@ namespace MobileProject.ViewModel
             string result = await Application.Current.MainPage.DisplayPromptAsync(
                 "Edit Quantity",
                 $"Update quantity for: {product.Name}",
-                initialValue: item.CartRecord.Qty.ToString(),
+                initialValue: item.CartRecord.Qty.ToString("F0"),
                 maxLength: 4,
                 keyboard: Keyboard.Numeric);
 
@@ -126,7 +124,7 @@ namespace MobileProject.ViewModel
                 item.CartRecord.Qty = newQuantity;
                 item.CartRecord.Total = product.Price * newQuantity;
 
-                _cartRecordRepository.UpdateCart(item.CartRecord);
+                await _cartRecordService.UpdateCartRecordAsync(item.CartRecord);
                 await LoadCart();
             }
             else

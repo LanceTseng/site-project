@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using MobileProject.Helpers;
 using MobileProject.Model;
 using MobileProject.Repository;
+using MobileProject.Service.Interface;
+using MobileProject.Service;
 using MobileProject.ViewModel;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
@@ -19,7 +21,10 @@ namespace MobileProject.View
         public CartPage()
         {
             InitializeComponent();
-            this.Title = "Cart";
+            var apiService = App.ServiceProvider.GetService<ApiService>();
+            var productService = App.ServiceProvider.GetService<IProductService>();
+            var cartRecordService = App.ServiceProvider.GetService<ICartRecordService>();
+            this.BindingContext = new CartPageViewModel(apiService, productService, cartRecordService);
         }
     }
 }
