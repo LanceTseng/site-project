@@ -206,7 +206,7 @@
                         FontAttributes="Bold"
                         FontSize="20"
                         HorizontalOptions="Center"
-                        Text="Sales by Product"
+                        Text="Product Summary"
                         VerticalOptions="Start" />
 
 
