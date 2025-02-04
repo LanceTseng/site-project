@@ -1,1 +1,11 @@
-test unrelate git branch
+how to create empty unrelate branch
+
+
+1. click on master branch
+2. open git cli => git checkout --orphan {newbranch}
+3. input => git rm -rf .
+4. create a file in master folder
+5. input => git add .
+6. input => git commit -m 'Initial commit'
+7. push to origin (remote)
+8. clone from remote in new folder
