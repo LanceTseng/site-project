@@ -20,10 +20,9 @@ namespace MobileProject.View
         public MealPage()
         {
             InitializeComponent();
-            var apiService = App.ServiceProvider.GetService<ApiService>();
             var productService = App.ServiceProvider.GetService<IProductService>();
             var cartRecordService = App.ServiceProvider.GetService<ICartRecordService>();
-            this.BindingContext = new MealPageViewModel(apiService, productService, cartRecordService);
+            this.BindingContext = new MealPageViewModel( productService, cartRecordService);
         }
 
     }

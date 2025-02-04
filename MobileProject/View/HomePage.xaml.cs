@@ -41,7 +41,7 @@ namespace MobileProject.View
                 var existingPages = Application.Current.MainPage.Navigation.NavigationStack.ToList();
                 foreach (var page in existingPages)
                 {
-                    if (page is LoginPage)
+                    if (page is LoginPage || page is PayResultPage)
                     {
                         Application.Current.MainPage.Navigation.RemovePage(page);
                     }

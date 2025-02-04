@@ -17,7 +17,6 @@ namespace MobileProject.ViewModel
 {
     public class MealPageViewModel : BaseViewModel
     {
-        private readonly ApiService _apiService;
         private readonly IProductService _productService;
         private readonly ICartRecordService _cartRecordService;
 
@@ -31,9 +30,8 @@ namespace MobileProject.ViewModel
         public ICommand AddToCartCommand { get; }
         public ICommand NavigateToCartCommand { get; }
 
-        public MealPageViewModel(ApiService apiService, IProductService productService, ICartRecordService cartRecordService)
+        public MealPageViewModel( IProductService productService, ICartRecordService cartRecordService)
         {
-            _apiService = apiService;
             _productService = productService;
             _cartRecordService = cartRecordService;
 

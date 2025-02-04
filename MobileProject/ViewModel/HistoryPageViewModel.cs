@@ -12,7 +12,6 @@ namespace MobileProject.ViewModel
 {
     public class HistoryPageViewModel : BaseViewModel
     {
-        private readonly ApiService _apiService;
         private readonly IOrderService _orderService;
         private readonly IProductService _productService;
         private readonly ICartRecordService _cartRecordService;
@@ -67,9 +66,8 @@ namespace MobileProject.ViewModel
 
         public ICommand SearchCommand { get; }
 
-        public HistoryPageViewModel(ApiService apiService, IProductService productService, ICartRecordService cartRecordService, IOrderService orderService)
+        public HistoryPageViewModel( IProductService productService, ICartRecordService cartRecordService, IOrderService orderService)
         {
-            _apiService = apiService;
             _productService = productService;
             _cartRecordService = cartRecordService;
             _orderService = orderService;

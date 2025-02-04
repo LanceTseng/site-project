@@ -12,10 +12,9 @@ namespace MobileProject.View
         public PayNow()
         {
             InitializeComponent();
-            var apiService = App.ServiceProvider.GetService<ApiService>();
             var orderService = App.ServiceProvider.GetService<IOrderService>();
             var cartRecordService = App.ServiceProvider.GetService<ICartRecordService>();
-            this.BindingContext = new PayNowViewModel(apiService, orderService, cartRecordService);
+            this.BindingContext = new PayNowViewModel( orderService, cartRecordService);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace MobileProject.ViewModel
             set => SetProperty(ref _roleSelected, value);
         }
 
-        public ObservableCollection<string> RoleOptions { get; } = new ObservableCollection<string> { "admin", "user" };
+        public ObservableCollection<string> RoleOptions { get; } = new ObservableCollection<string> { "","admin", "user" };
         public ObservableCollection<UserMgmt> TableData { get; private set; } = new ObservableCollection<UserMgmt>();
 
         public ICommand SaveCommand { get; }

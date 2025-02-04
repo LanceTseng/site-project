@@ -20,12 +20,11 @@ namespace MobileProject.View
         {
             InitializeComponent();
 
-            var apiService = App.ServiceProvider.GetService<ApiService>();
             var productService = App.ServiceProvider.GetService<IProductService>();
             var orderService = App.ServiceProvider.GetService<IOrderService>();
             var cartRecordService = App.ServiceProvider.GetService<ICartRecordService>();
 
-            this.BindingContext = new HistoryPageViewModel(apiService, productService, cartRecordService, orderService);
+            this.BindingContext = new HistoryPageViewModel( productService, cartRecordService, orderService);
         }
     }
 }

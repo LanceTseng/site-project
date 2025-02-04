@@ -17,9 +17,8 @@ namespace MobileProject.View
         public SignUpPage()
         {
             InitializeComponent();
-            var apiService = App.ServiceProvider.GetService<ApiService>();
             var userService = App.ServiceProvider.GetService<IUserService>();
-            this.BindingContext = new SignUpPageViewModel(apiService, userService);
+            this.BindingContext = new SignUpPageViewModel(userService);
         }
     }
 }

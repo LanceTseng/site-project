@@ -15,7 +15,6 @@ namespace MobileProject.ViewModel
 {
     public class CartPopupViewModel : BaseViewModel
     {
-        private readonly ApiService _apiService;
         private readonly ICartRecordService _cartRecordService;
         private readonly IOrderService _orderService;
 
@@ -48,9 +47,8 @@ namespace MobileProject.ViewModel
         public ICommand SaveDetailCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
-        public CartPopupViewModel(List<CartMgmt> carts, ApiService apiService, ICartRecordService cartRecordService, IOrderService orderService)
+        public CartPopupViewModel(List<CartMgmt> carts,ICartRecordService cartRecordService, IOrderService orderService)
         {
-            _apiService = apiService;
             _orderService = orderService;
             _cartRecordService = cartRecordService;
 

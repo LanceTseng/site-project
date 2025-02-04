@@ -15,16 +15,14 @@ namespace MobileProject.ViewModel
 {
     public class CartPageViewModel : BaseViewModel
     {
-        private readonly ApiService _apiService;
         private readonly IProductService _productService;
         private readonly ICartRecordService _cartRecordService;
 
-        public CartPageViewModel(ApiService apiService, IProductService productService, ICartRecordService cartRecordService )
+        public CartPageViewModel(IProductService productService, ICartRecordService cartRecordService)
         {
-            _apiService = apiService;
             _productService = productService;
             _cartRecordService = cartRecordService;
-             
+
             CartItems = new ObservableCollection<Cart>();
 
             DeleteItemCommand = new Command<Cart>(async item => await DeleteItem(item));
@@ -32,12 +30,13 @@ namespace MobileProject.ViewModel
             LoadCartCommand = new Command(async () => await LoadCart());
             PayNowCommand = new Command(OnPayNow);
 
-           _ = LoadCart();
+            _ = LoadCart();
         }
 
         public ObservableCollection<Cart> CartItems { get; set; }
 
         private decimal _itemTotal;
+
         public decimal ItemTotal
         {
             get => _itemTotal;
@@ -45,6 +44,7 @@ namespace MobileProject.ViewModel
         }
 
         private decimal _subtotal;
+
         public decimal Subtotal
         {
             get => _subtotal;
@@ -65,20 +65,24 @@ namespace MobileProject.ViewModel
                 return;
             }
 
-            var cartRecords =await _cartRecordService.GetCartRecordsByConditionAsync(status:"pending", userId:userId);
+            var cartRecords =
+                await _cartRecordService.GetCartRecordsByConditionAsync(status: "pending", userId: userId);
             CartItems.Clear();
-
-            foreach (var record in cartRecords)
+            if (cartRecords != null)
             {
-                var product = await _productService.GetProductByIdAsync(record.ProductId);
-                if (product != null)
+                foreach (var record in cartRecords)
                 {
-                    CartItems.Add(new Cart(record, product));
+                    var product = await _productService.GetProductByIdAsync(record.ProductId);
+                    if (product != null)
+                    {
+                        CartItems.Add(new Cart(record, product));
+                    }
                 }
+               
             }
 
-            ItemTotal = CartItems.Sum(x => x.CartRecord.Qty);
-            Subtotal = CartItems.Sum(x => x.CartRecord.Total);
+            ItemTotal = CartItems?.Sum(x => x.CartRecord.Qty) ?? 0;
+            Subtotal = CartItems?.Sum(x => x.CartRecord.Total) ?? 0;
         }
 
         private async Task DeleteItem(Cart item)

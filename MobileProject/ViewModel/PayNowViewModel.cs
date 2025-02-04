@@ -17,7 +17,6 @@ namespace MobileProject.ViewModel
 {
     public class PayNowViewModel : BaseViewModel
     {
-        private readonly ApiService _apiService;
         private readonly IOrderService _orderService;
         private readonly ICartRecordService _cartRecordService;
 
@@ -84,13 +83,20 @@ namespace MobileProject.ViewModel
 
         public ICommand CompletePaymentCommand { get; }
 
-        public PayNowViewModel(ApiService apiService, IOrderService orderService, ICartRecordService cartRecordService)
+        public PayNowViewModel( IOrderService orderService, ICartRecordService cartRecordService)
         {
-            _apiService = apiService;
             _cartRecordService = cartRecordService;
             _orderService = orderService;
 
             CompletePaymentCommand = new Command(async () => await CompletePaymentAsync(), CanProcess);
+
+            _ = LoadTask();
+        }
+
+        private async Task LoadTask()
+        {
+            var userName = await SecureStorageHelper.GetUsernameAsync();
+            SetProperty(ref _customerName, userName);
         }
 
         private async Task CompletePaymentAsync()
@@ -103,6 +109,7 @@ namespace MobileProject.ViewModel
                     await Application.Current.MainPage.DisplayAlert("Error", "User ID not found.", "OK");
                     return;
                 }
+
 
                 if (!IsValidCreditCard(CreditCardNumber))
                 {

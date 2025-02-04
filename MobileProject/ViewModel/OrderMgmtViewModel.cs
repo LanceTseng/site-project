@@ -17,7 +17,6 @@ namespace MobileProject.ViewModel
 {
     public class OrderMgmtViewModel : BaseViewModel
     {
-        private readonly ApiService _apiService;
         private readonly IOrderService _orderService;
         private readonly IUserService _userService;
         private readonly IProductService _productService;
@@ -71,9 +70,8 @@ namespace MobileProject.ViewModel
         public ICommand SelectedAllCommand { get; }
         public ICommand ShowDetailCommand { get; set; }
 
-        public OrderMgmtViewModel(ApiService apiService, IUserService userService, IProductService productService, ICartRecordService cartRecordService, IOrderService orderService)
+        public OrderMgmtViewModel( IUserService userService, IProductService productService, ICartRecordService cartRecordService, IOrderService orderService)
         {
-            _apiService = apiService;
             _userService = userService;
             _productService = productService;
             _cartRecordService = cartRecordService;
@@ -301,7 +299,7 @@ namespace MobileProject.ViewModel
 
             var cartPopupPage = new CartPopupPage
             {
-                BindingContext = new CartPopupViewModel(carts, _apiService, _cartRecordService, _orderService)
+                BindingContext = new CartPopupViewModel(carts, _cartRecordService, _orderService)
             };
 
             // Ensure event is not subscribed multiple times

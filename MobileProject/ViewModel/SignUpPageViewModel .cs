@@ -24,7 +24,6 @@ namespace MobileProject.ViewModel
         private string _email;
         private bool _isBusy;
 
-        private readonly ApiService _apiService;
         private readonly IUserService _userService;
 
         public string Username
@@ -95,9 +94,8 @@ namespace MobileProject.ViewModel
 
         public ICommand SignUpCommand { get; }
 
-        public SignUpPageViewModel(ApiService apiService, IUserService userService)
+        public SignUpPageViewModel( IUserService userService)
         {
-            _apiService = apiService;
             _userService = userService;
 
             SignUpCommand = new Command(async () => await OnSignUp(), CanSignUp);

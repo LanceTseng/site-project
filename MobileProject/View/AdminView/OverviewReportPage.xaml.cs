@@ -14,11 +14,10 @@ namespace MobileProject.View.AdminView
         {
             InitializeComponent();
             // Ensure the service is properly resolved from the ServiceProvider
-            var apiService = App.ServiceProvider.GetService<ApiService>();
             var overviewReportService = App.ServiceProvider.GetService<IOverviewReportService>();
 
             // Set the BindingContext with the view model
-            this.BindingContext = new OverviewReportPageViewModel(apiService, overviewReportService);
+            this.BindingContext = new OverviewReportPageViewModel( overviewReportService);
 
         }
     }

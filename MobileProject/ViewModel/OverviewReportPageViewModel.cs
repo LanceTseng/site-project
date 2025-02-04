@@ -17,7 +17,6 @@ namespace MobileProject.ViewModel
 {
     public class OverviewReportPageViewModel : BaseViewModel
     {
-        private readonly ApiService _apiService;
         private readonly IOverviewReportService _overviewReportService;
 
         private string _username;
@@ -72,9 +71,8 @@ namespace MobileProject.ViewModel
 
         public ICommand ProcessReportCommand { get; }
 
-        public OverviewReportPageViewModel(ApiService apiService, IOverviewReportService overviewReportService)
+        public OverviewReportPageViewModel( IOverviewReportService overviewReportService)
         {
-            _apiService = apiService;
             _overviewReportService = overviewReportService;
 
             Reports = new ObservableCollection<Overview>();

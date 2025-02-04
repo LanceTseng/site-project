@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using MobileProject.Helpers;
 using MobileProject.Model;
-using MobileProject.Service;
 using MobileProject.Service.Interface;
 using MobileProject.View;
 using Xamarin.Forms;
@@ -16,8 +15,6 @@ namespace MobileProject.ViewModel
         private string _username;
         private string _password;
         private bool _isBusy;
-
-        private readonly ApiService _apiService;
 
         private readonly IUserService _userService;
 
@@ -55,9 +52,8 @@ namespace MobileProject.ViewModel
 
         public ICommand NavigateToSignUpCommand { get; }
 
-        public LoginPageViewModel(ApiService apiService, IUserService userService)
+        public LoginPageViewModel(IUserService userService)
         {
-            _apiService = apiService;
             _userService = userService;
 
             LoginCommand = new Command(async () => await OnLogin(), CanLogin);
