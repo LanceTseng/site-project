@@ -1,0 +1,125 @@
+{
+  "employees": [
+    {
+      "id": 1,
+      "first_name": "John",
+      "last_name": "Doe",
+      "department": "Engineering",
+      "status": "Active",
+      "phone": "123-456-7890",
+      "address": "123 Main St, Cityville",
+      "created_date": "2023-01-15T10:30:00Z",
+      "last_updated_date": "2023-01-20T15:45:00Z",
+      "user_id": 101
+    },
+    {
+      "id": 2,
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "department": "HR",
+      "status": "Inactive",
+      "phone": "987-654-3210",
+      "address": "456 Elm St, Townsville",
+      "created_date": "2023-02-01T08:00:00Z",
+      "last_updated_date": "2023-02-10T12:00:00Z",
+      "user_id": 102
+    }
+  ],
+  "tasks": [
+    {
+      "id": 1,
+      "task_name": "Task 1",
+      "task_description": "Description of Task 1",
+      "task_group": "Group A",
+      "auto_start": true,
+      "task_day": 1,
+      "task_assign_role": "Manager",
+      "created_date": "2023-01-15T10:30:00Z",
+      "last_updated_date": "2023-01-20T15:45:00Z"
+    },
+    {
+      "id": 2,
+      "task_name": "Task 2",
+      "task_description": "Description of Task 2",
+      "task_group": "Group B",
+      "auto_start": false,
+      "task_day": 3,
+      "task_assign_role": "Employee",
+      "created_date": "2023-02-01T08:00:00Z",
+      "last_updated_date": "2023-02-10T12:00:00Z"
+    }
+  ],
+  "subtasks": [
+    {
+      "id": 1,
+      "task_id": 1,
+      "subtask_name": "Subtask 1",
+      "subtask_description": "Review project requirements and outline key tasks.",
+      "document_id": 201,
+      "device_id": 1,
+      "training_module_id": 0,
+      "interview_id":0,
+      "servey_id":0,
+      "created_date": "2025-01-01T10:00:00Z",
+      "last_updated_date": "2025-01-10T14:30:00Z",
+      "enable": true
+    },
+    {
+      "id": 2,
+      "task_id": 1,
+      "subtask_name": "Subtask 1",
+      "subtask_description": "Review project requirements and outline key tasks.",
+      "document_id": 201,
+      "device_id": 1,
+      "training_module_id": 0,
+      "interview_id":0,
+      "servey_id":0,
+      "created_date": "2025-01-01T10:00:00Z",
+      "last_updated_date": "2025-01-10T14:30:00Z",
+      "enable": true
+    },
+    {
+      "id": 3,
+      "task_id": 1,
+      "subtask_name": "Subtask 1",
+      "subtask_description": "Review project requirements and outline key tasks.",
+      "document_id": 201,
+      "device_id": 1,
+      "training_module_id": 0,
+      "interview_id":0,
+      "servey_id":0,
+      "created_date": "2025-01-01T10:00:00Z",
+      "last_updated_date": "2025-01-10T14:30:00Z",
+      "enable": true
+    }
+  ],
+  "documents": [
+    {
+      "id": 1,
+      "document_name": "Employee Handbook",
+      "document_path": "/documents/employee-handbook.pdf",
+      "create_date": "2025-01-01T10:00:00Z",
+      "last_updated_date": "2025-01-10T12:00:00Z",
+      "enabled": true,
+      "documentscol": "Internal Use"
+    },
+    {
+      "id": 2,
+      "document_name": "Code of Conduct",
+      "document_path": "/documents/code-of-conduct.pdf",
+      "create_date": "2025-01-05T10:00:00Z",
+      "last_updated_date": "2025-01-15T12:00:00Z",
+      "enabled": true,
+      "documentscol": "External Use"
+    },
+    {
+      "id": 3,
+      "document_name": "HR Policies",
+      "document_path": "/documents/hr-policies.pdf",
+      "create_date": "2025-01-10T10:00:00Z",
+      "last_updated_date": "2025-01-20T12:00:00Z",
+      "enabled": false,
+      "documentscol": "Internal Use"
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maintenance Menu</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card" data-link="/report-user-task">
+            <div class="card-body">
+              <h5 class="card-title">User Task</h5>
+              <a href="/report-user-task" class="btn btn-primary"
+                >Go to User Task</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card" data-link="equipment.html">
+            <div class="card-body">
+              <h5 class="card-title">Equipment</h5>
+              <a href="#" class="btn btn-primary">Go to Equipment</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card" data-link="user.html">
+            <div class="card-body">
+              <h5 class="card-title">User</h5>
+              <a href="#" class="btn btn-primary">Go to User</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card" data-link="document.html">
+            <div class="card-body">
+              <h5 class="card-title">Document</h5>
+              <a href="#" class="btn btn-primary">Go to Document</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card" data-link="employee.html">
+            <div class="card-body">
+              <h5 class="card-title">Employee</h5>
+              <a href="#" class="btn btn-primary">Go to Employee</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card" data-link="training.html">
+            <div class="card-body">
+              <h5 class="card-title">Training Module</h5>
+              <a href="#" class="btn btn-primary">Go to Training Module</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card" data-link="/report-goal">
+            <div class="card-body">
+              <h5 class="card-title">Goal</h5>
+              <a href="/report-goal" class="btn btn-primary">Go to Goal</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/footer-simple') %>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

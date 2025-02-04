@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Goal</title>
+    <style>
+      body {
+        border-top-style: solid;
+        border-bottom-style: solid;
+      }
+
+      .container-fluid {
+        margin-top: 2rem;
+      }
+
+      .goal-container {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+      }
+
+      .goal-container h2 {
+        text-align: center;
+        color: #4c7faf;
+      }
+
+      .goal-container .form-control:focus {
+        border-color: #4c7faf;
+        box-shadow: 0 0 5px #4c7faf;
+      }
+
+      .saved-goals {
+        background-color: #eef6ee;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .saved-goals h4 {
+        text-align: center;
+        color: #4c8baf;
+        margin-bottom: 1rem;
+      }
+
+      .goal-item {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background-color: #fff;
+        border: 1px solid #4c8baf;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-primary {
+        background-color: #4c8baf;
+        border-color: #4c8baf;
+      }
+
+      .btn-primary:hover {
+        background-color: #4c8baf;
+        border-color: #4c8baf;
+      }
+    </style>
+      <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <%- include('../partials/navbar') %>
+
+    <!-- Main Content -->
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Goal Setting Form -->
+        <div class="col-md-6">
+          <div class="goal-container">
+            <h2>Set Your Goals</h2>
+            <form id="goalForm">
+              <div class="mb-3">
+                <label for="goal-title" class="form-label">Goal Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="goal-title"
+                  placeholder="Enter your goal title"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="goal-description" class="form-label"
+                  >Description</label
+                >
+                <textarea
+                  class="form-control"
+                  id="goal-description"
+                  rows="4"
+                  placeholder="Describe your goal"
+                  required
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="goal-deadline" class="form-label">Deadline</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="goal-deadline"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="goal-priority" class="form-label">Priority</label>
+                <select class="form-select" id="goal-priority">
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">
+                Save Goal
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Saved Goals -->
+        <div class="col-md-6">
+          <div class="saved-goals">
+            <h4>Saved Goals</h4>
+            <div id="goalList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/footer-simple') %>
+    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      const form = document.getElementById("goalForm");
+      const goalList = document.getElementById("goalList");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById("goal-title").value;
+        const description = document.getElementById("goal-description").value;
+        const deadline = document.getElementById("goal-deadline").value;
+        const priority = document.getElementById("goal-priority").value;
+
+        const goalItem = document.createElement("div");
+        goalItem.classList.add("goal-item");
+        goalItem.innerHTML = `
+                <h5>${title}</h5>
+                <p><strong>Description:</strong> ${description}</p>
+                <p><strong>Deadline:</strong> ${deadline}</p>
+                <p><strong>Priority:</strong> ${priority}</p>
+            `;
+
+        goalList.appendChild(goalItem);
+
+        // Clear form
+        form.reset();
+      });
+    </script>
+  </body>
+</html>

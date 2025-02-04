@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subtask Management</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %> <%- include('./mgmt-task-nav') %>
+
+    <!-- Content -->
+    <div class="container mt-4">
+      <h3>
+        Subtask List -
+        <span id="taskName"></span>
+      </h3>
+
+      <!-- Add Subtask Button -->
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#addSubtaskModal"
+      >
+        Add Subtask
+      </button>
+
+      <!-- Subtask Table -->
+      <table class="table table-bordered mt-4" id="subtaskTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Subtask Name</th>
+            <th>Description</th>
+            <th>Document</th>
+            <th>Documnet Upload</th>
+            <th>Device</th>
+            <th>Training Module ID</th>
+            <th>Interview ID</th>
+            <th>Survey ID</th>
+            <th>Created Date</th>
+            <th>Last Updated Date</th>
+            <th>Enable</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Add Subtask Modal -->
+    <div
+      class="modal fade"
+      id="addSubtaskModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="addSubtaskModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addSubtaskModalLabel">Add Subtask</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="addSubtaskForm">
+              <!-- Fields -->
+              <div class="form-group" hidden>
+                <label for="subtaskId">Subtask Id</label>
+                <input type="text" class="form-control" id="subtaskId" />
+              </div>
+              <div class="form-group">
+                <label for="subtaskName">Subtask Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="subtaskName"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="subtaskDescription">Description</label>
+                <textarea
+                  class="form-control"
+                  id="subtaskDescription"
+                  rows="3"
+                  required
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="fileRequirement">File Requirement</label>
+                <select class="form-control" id="fileRequirement">
+                  <option value="ture">Yes</option>
+                  <option value="false">No</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="documentId">Document</label>
+                <select class="form-control" id="documentId" required>
+                  <option value="" disabled selected>Select a document</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="deviceId">Device Type</label>
+                <select class="form-control" id="deviceId" required>
+                  <option value="" disabled selected>
+                    Select a device type
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="trainingModuleId">Training Module</label>
+                <select class="form-control" id="trainingModuleId">
+                  <option value="" disabled selected>
+                    Select a training module
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="interviewId">Interview</label>
+                <select class="form-control" id="interviewId">
+                  <option value="" disabled selected>
+                    Select an interview
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="surveyId">Survey</label>
+                <select class="form-control" id="surveyId">
+                  <option value="" disabled selected>Select a survey</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="enable">Enable</label>
+                <select class="form-control" id="enable">
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-dismiss="modal">
+              Close
+            </button>
+            <button class="btn btn-primary" id="saveSubtask">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('../partials/footer-simple') %>
+
+    <!-- JS -->
+    <script type="module" src="/js/mgmt-subtask.js"></script>
+  </body>
+</html>
