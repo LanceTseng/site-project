@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MobileProject.View.MealPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Cousins Menu">
+
+    <StackLayout>
+        <ListView
+            x:Name="listview"
+            ItemsSource="{Binding MealList}"
+            RowHeight="80">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="5" Orientation="Vertical">
+                            <StackLayout BackgroundColor="LemonChiffon" Orientation="Horizontal">
+                                <Image
+                                    HeightRequest="80"
+                                    Source="{Binding Product.Image}"
+                                    WidthRequest="80" />
+                                <StackLayout Orientation="Vertical">
+                                    <Label FontSize="Small" Text="{Binding Product.Name}" />
+                                    <Label FontSize="Micro" Text="{Binding Product.Description}" />
+                                    <Label
+                                        FontSize="Micro"
+                                        IsVisible="False"
+                                        Text="{Binding Product.Id}" />
+                                </StackLayout>
+                                <Entry
+                                    x:Name="Quantity"
+                                    BackgroundColor="WhiteSmoke"
+                                    FontSize="Small"
+                                    HeightRequest="30"
+                                    Keyboard="Numeric"
+                                    Text="{Binding Quantity}"
+                                    TextColor="Black"
+                                    WidthRequest="40" />
+                                <Label
+                                    FontSize="13"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="End"
+                                    Text="{Binding Product.Price, StringFormat='{}{0:C}'}"
+                                    VerticalOptions="CenterAndExpand"
+                                    WidthRequest="60" />
+                                <ImageButton
+                                    BackgroundColor="Transparent"
+                                    Command="{Binding BindingContext.AddToCartCommand, Source={x:Reference listview}}"
+                                    CommandParameter="{Binding .}"
+                                    HeightRequest="30"
+                                    Source="shoppingcart.png"
+                                    WidthRequest="30" />
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button
+            Command="{Binding NavigateToCartCommand}"
+            Text="Cart"
+            VerticalOptions="End" />
+    </StackLayout>
+    <!--  Cart button to view cart or perform related actions  -->
+
+</ContentPage>

@@ -1,0 +1,17 @@
+﻿using MobileProject.API.Models;
+
+namespace MobileProject.API.Repositories.Interfaces;
+
+public interface IProductsRepository
+{
+    Task<IEnumerable<Product>> GetAllProductsAsync();
+
+    Task<Product?> GetProductByIdAsync(int id);
+
+    Task<IEnumerable<Product>> GetProductsByConditionAsync(string? productName, decimal? minPrice, decimal? maxPrice);
+    Task<Response> CreateProductAsync(Product product);
+
+    Task<Response> UpdateProductAsync(Product product);
+
+    Task<Response> DeleteProductAsync(int id);
+}

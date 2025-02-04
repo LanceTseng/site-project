@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MobileProject.View.CartPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Cart">
+
+    <StackLayout>
+        <ListView
+            x:Name="cart"
+            ItemsSource="{Binding CartItems}"
+            RowHeight="80"
+            SeparatorVisibility="Default">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <SwipeView>
+                            <SwipeView.LeftItems>
+                                <SwipeItems>
+                                    <SwipeItem
+                                        BackgroundColor="LightPink"
+                                        Command="{Binding BindingContext.DeleteItemCommand, Source={x:Reference cart}}"
+                                        CommandParameter="{Binding .}"
+                                        IconImageSource="delete.png"
+                                        Text="Delete" />
+                                    <SwipeItem
+                                        BackgroundColor="LightGreen"
+                                        Command="{Binding BindingContext.EditItemCommand, Source={x:Reference cart}}"
+                                        CommandParameter="{Binding .}"
+                                        IconImageSource="edit.png"
+                                        Text="Edit" />
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
+                            <Grid Padding="10" BackgroundColor="LightBlue">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Image
+                                    Grid.Column="0"
+                                    HeightRequest="60"
+                                    Source="{Binding Product.Image}"
+                                    VerticalOptions="Center"
+                                    WidthRequest="60" />
+                                <StackLayout
+                                    Grid.Column="1"
+                                    Padding="10"
+                                    Orientation="Horizontal">
+                                    <Label
+                                        FontSize="Small"
+                                        Text="{Binding Product.Name}"
+                                        TextColor="Black" />
+                                    <Label
+                                        FontSize="Small"
+                                        HorizontalOptions="End"
+                                        Text="{Binding Product.Price, StringFormat='${0:F2}'}"
+                                        TextColor="MidnightBlue"
+                                        VerticalOptions="Center"
+                                        WidthRequest="80" />
+                                    <Label
+                                        Padding="5,0"
+                                        FontSize="Small"
+                                        HorizontalOptions="End"
+                                        Text="{Binding CartRecord.Qty, StringFormat='@ {0}'}"
+                                        TextColor="MidnightBlue"
+                                        VerticalOptions="Center"
+                                        WidthRequest="80" />
+                                </StackLayout>
+                                <Label
+                                    Grid.Column="2"
+                                    FontSize="Medium"
+                                    HorizontalOptions="End"
+                                    Text="{Binding CartRecord.Total}"
+                                    TextColor="Black"
+                                    VerticalOptions="Center"
+                                    WidthRequest="80" />
+                            </Grid>
+                        </SwipeView>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackLayout
+            Padding="10"
+            HorizontalOptions="End"
+            Orientation="Horizontal"
+            VerticalOptions="Center">
+            <Label
+                FontAttributes="Bold"
+                FontSize="Small"
+                Text="Items(s):"
+                TextColor="MidnightBlue" />
+            <Label
+                FontSize="Small"
+                Text="{Binding ItemTotal}"
+                TextColor="Black" />
+            <Label
+                FontAttributes="Bold"
+                FontSize="Small"
+                Text="Subtotal:"
+                TextColor="MidnightBlue" />
+            <Label
+                FontSize="Small"
+                Text="{Binding Subtotal, StringFormat='${0:F2}'}"
+                TextColor="Black" />
+        </StackLayout>
+        <Button Command="{Binding PayNowCommand}" Text="Place Order" />
+    </StackLayout>
+</ContentPage>

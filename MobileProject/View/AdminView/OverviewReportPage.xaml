@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MobileProject.View.AdminView.OverviewReportPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:forms="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
+    Title="Overview Report">
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout
+                Padding="10"
+                Orientation="Vertical"
+                Spacing="10">
+                <!--  Filter Section  -->
+                <StackLayout
+                    Orientation="Vertical"
+                    Spacing="10"
+                    WidthRequest="300">
+
+                    <!--  Title  -->
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        Text="Overview Report" />
+
+                    <!--  Username Filter  -->
+                    <Grid ColumnSpacing="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label
+                            Grid.Column="0"
+                            Text="Username:"
+                            VerticalOptions="Center" />
+                        <Entry
+                            Grid.Column="1"
+                            Placeholder="Enter Username"
+                            Text="{Binding Username}" />
+                    </Grid>
+
+                    <!--  Role Filter  -->
+                    <Grid ColumnSpacing="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label
+                            Grid.Column="0"
+                            Text="Role:"
+                            VerticalOptions="Center" />
+                        <Picker
+                            Grid.Column="1"
+                            ItemsSource="{Binding RoleOptions}"
+                            SelectedItem="{Binding Role}" />
+                    </Grid>
+
+                    <!--  Product Filter  -->
+                    <Grid ColumnSpacing="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label
+                            Grid.Column="0"
+                            Text="Product Name:"
+                            VerticalOptions="Center" />
+                        <Entry
+                            Grid.Column="1"
+                            Placeholder="Enter Product Name"
+                            Text="{Binding ProductName}" />
+                    </Grid>
+
+                    <!--  From Date Filter  -->
+                    <Grid ColumnSpacing="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label
+                            Grid.Column="0"
+                            Text="Date:"
+                            VerticalOptions="Center" />
+                        <DatePicker Grid.Column="1" Date="{Binding FromDate}" />
+                        <Label
+                            Grid.Column="2"
+                            Text="-"
+                            VerticalTextAlignment="Center" />
+                        <DatePicker Grid.Column="3" Date="{Binding ToDate}" />
+                        <Button
+                            Grid.Column="4"
+                            Command="{Binding ProcessReportCommand}"
+                            HorizontalOptions="Center"
+                            Text="Search" />
+                    </Grid>
+                </StackLayout>
+                <!--  Divider  -->
+                <BoxView
+                    Margin="10,5"
+                    BackgroundColor="Gray"
+                    HeightRequest="1" />
+
+                <!--  Report Section  -->
+                <CollectionView
+                    HorizontalOptions="FillAndExpand"
+                    ItemsSource="{Binding Reports}"
+                    VerticalOptions="FillAndExpand">
+
+                    <!--  Header  -->
+                    <CollectionView.Header>
+                        <Grid
+                            Padding="5"
+                            BackgroundColor="LightBlue"
+                            ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                Text="User Name"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                Text="Order Date"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="2"
+                                FontAttributes="Bold"
+                                Text="Product Name"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="3"
+                                FontAttributes="Bold"
+                                Text="Quantity"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="4"
+                                FontAttributes="Bold"
+                                Text="Total Price"
+                                VerticalOptions="Center" />
+                        </Grid>
+                    </CollectionView.Header>
+
+                    <!--  Items  -->
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid
+                                Padding="5"
+                                ColumnSpacing="10"
+                                RowSpacing="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label
+                                    Grid.Column="0"
+                                    FontAttributes="Bold"
+                                    Text="{Binding UserName}" />
+                                <Label Grid.Column="1" Text="{Binding OrderDate}" />
+                                <Label Grid.Column="2" Text="{Binding ProductName}" />
+                                <Label Grid.Column="3" Text="{Binding Quantity}" />
+                                <Label Grid.Column="4" Text="{Binding TotalPrice}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!--  Divider  -->
+                <BoxView
+                    Margin="10,5"
+                    BackgroundColor="Gray"
+                    HeightRequest="1" />
+
+                <StackLayout Padding="10" Spacing="20">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        Text="Sales by Product" />
+
+                    <forms:ChartView
+                        Chart="{Binding ProductSalesChart}"
+                        HeightRequest="500"
+                        WidthRequest="350" />
+                </StackLayout>
+
+                <!--  Divider  -->
+                <BoxView
+                    Margin="10,5"
+                    BackgroundColor="Gray"
+                    HeightRequest="1" />
+
+                <StackLayout Padding="10" Spacing="20">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalOptions="Center"
+                        Text="Product Summary"
+                        VerticalOptions="Start" />
+
+
+                    <forms:ChartView
+                        BackgroundColor="White"
+                        Chart="{Binding ProductSummaryChart}"
+                        HeightRequest="500"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        WidthRequest="500" />
+                </StackLayout>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

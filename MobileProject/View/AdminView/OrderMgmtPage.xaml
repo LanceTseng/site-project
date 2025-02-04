@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MobileProject.View.AdminView.OrderMgmtPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Order Management">
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="10">
+                <!--  Input Fields and Query Button  -->
+                <StackLayout Padding="10" Orientation="Vertical">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        HorizontalOptions="Center"
+                        Text="Order Management" />
+                    <Grid ColumnSpacing="5" RowSpacing="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  Date Pickers  -->
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Text="Date From:"
+                            TextColor="Black"
+                            VerticalOptions="Center" />
+                        <DatePicker
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Date="{Binding DateFrom, Mode=TwoWay}" />
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Text="Date To:"
+                            TextColor="Black"
+                            VerticalOptions="Center" />
+                        <DatePicker
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Date="{Binding DateTo, Mode=TwoWay}" />
+
+                        <!--  Transaction Code Entry  -->
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Text="Transaction Code:"
+                            TextColor="Black"
+                            VerticalOptions="Center" />
+                        <Entry
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Placeholder="Enter code"
+                            Text="{Binding TransactionCode}" />
+
+                        <!--  User Name Entry  -->
+                        <Label
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Text="User Name:"
+                            TextColor="Black"
+                            VerticalOptions="Center" />
+                        <Entry
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Placeholder="Enter username"
+                            Text="{Binding UserName}" />
+                    </Grid>
+
+                    <!--  Query Button  -->
+                    <Button
+                        Margin="0,10,0,0"
+                        Command="{Binding SearchCommand}"
+                        Text="Search" />
+                </StackLayout>
+
+                <!--  Data List with Checkbox  -->
+                <CollectionView ItemsSource="{Binding TableData}" SelectionMode="None">
+                    <CollectionView.Header>
+                        <Grid
+                            Padding="10"
+                            BackgroundColor="LightSkyBlue"
+                            ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Column Headers  -->
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Center"
+                                Text="Select" />
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                Text="ID" />
+                            <Label
+                                Grid.Column="2"
+                                FontAttributes="Bold"
+                                Text="T-Code" />
+                            <Label
+                                Grid.Column="3"
+                                FontAttributes="Bold"
+                                Text="Subtotal" />
+                            <Label
+                                Grid.Column="4"
+                                FontAttributes="Bold"
+                                Text="User" />
+                            <Label
+                                Grid.Column="5"
+                                FontAttributes="Bold"
+                                Text="Status" />
+                            <Label
+                                Grid.Column="6"
+                                FontAttributes="Bold"
+                                Text="Created Date" />
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <SwipeView>
+                                <SwipeView.LeftItems>
+                                    <SwipeItems>
+                                        <SwipeItem
+                                            BackgroundColor="LightGreen"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditCommand}"
+                                            CommandParameter="{Binding .}"
+                                            IconImageSource="edit.png"
+                                            Text="Edit" />
+                                    </SwipeItems>
+                                </SwipeView.LeftItems>
+                                <Grid Padding="10" ColumnSpacing="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="2*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!--  Row Content  -->
+                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="{Binding Order.Id}"
+                                        TextColor="Black"
+                                        VerticalTextAlignment="Center" />
+                                    <Button
+                                        Grid.Column="2"
+                                        BackgroundColor="LightGreen"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShowDetailCommand}"
+                                        CommandParameter="{Binding CartMgmts}"
+                                        CornerRadius="20"
+                                        Text="{Binding Order.TransactionCode}"
+                                        TextColor="Black" />
+                                    <Label
+                                        Grid.Column="3"
+                                        Text="{Binding Order.Subtotal, StringFormat='${0:F2}'}"
+                                        TextColor="Black"
+                                        VerticalTextAlignment="Center" />
+                                    <Picker
+                                        Grid.Column="4"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        ItemDisplayBinding="{Binding Value}"
+                                        ItemsSource="{Binding UserOptions}"
+                                        SelectedItem="{Binding SelectedUser}"
+                                        TextColor="Black" />
+                                    <Picker
+                                        Grid.Column="5"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        ItemsSource="{Binding StatusOptions}"
+                                        SelectedItem="{Binding Status}"
+                                        TextColor="Black" />
+                                    <Label
+                                        Grid.Column="6"
+                                        Text="{Binding Order.Date}"
+                                        TextColor="Black" />
+                                </Grid>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Name="Add"
+            Command="{Binding AddCommand}"
+            Order="Secondary"
+            Priority="0" />
+        <ToolbarItem
+            Name="Save"
+            Command="{Binding SaveCommand}"
+            Order="Secondary"
+            Priority="1" />
+        <ToolbarItem
+            Name="Remove"
+            Command="{Binding RemoveCommand}"
+            Order="Secondary"
+            Priority="2" />
+        <ToolbarItem
+            Name="Select All"
+            Command="{Binding SelectedAllCommand}"
+            Order="Secondary"
+            Priority="3" />
+    </ContentPage.ToolbarItems>
+</ContentPage>

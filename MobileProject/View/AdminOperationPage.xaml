@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MobileProject.View.AdminOperationPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <Entry x:Name="txtUrl" Text="http://10.0.2.2:5180/api/" />
+            <Button
+                ClassId="updateorder"
+                Clicked="btnDelete_All"
+                Text="Update Order" />
+            <Label
+                x:Name="lblResponse"
+                HorizontalOptions="FillAndExpand"
+                LineBreakMode="WordWrap"
+                MaxLines="3"
+                VerticalOptions="Start" />
+            <Grid ColumnSpacing="10" RowSpacing="10">
+                <!--  Define columns  -->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Define rows  -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  Header  -->
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Table Name" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    FontAttributes="Bold"
+                    Text="Action" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    FontAttributes="Bold"
+                    Text="Current Record" />
+
+                <!--  Cart Row  -->
+                <Label
+                    x:Name="cartRowCount"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Text="Cart" />
+                <Button
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    ClassId="Cart"
+                    Clicked="btnDelete_All"
+                    Text="Delete All" />
+                <Label
+                    x:Name="cartCurrentRecord"
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Text="X" />
+
+                <!--  Order Row  -->
+                <Label
+                    x:Name="orderRowCount"
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Text="Order" />
+                <Button
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    ClassId="Order"
+                    Clicked="btnDelete_All"
+                    Text="Delete All" />
+                <Label
+                    x:Name="orderCurrentRecord"
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Text="X" />
+                <!--  User Row  -->
+                <Label
+                    x:Name="userRowCount"
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Text="User" />
+                <Button
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    ClassId="User"
+                    Clicked="btnDelete_All"
+                    Text="Delete All" />
+                <Label
+                    x:Name="userCurrentRecord"
+                    Grid.Row="3"
+                    Grid.Column="2"
+                    Text="X" />
+
+                <!--  Product Row  -->
+                <Label
+                    x:Name="productRowCount"
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    Text="Product" />
+                <Button
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    ClassId="Product"
+                    Clicked="btnDelete_All"
+                    Text="Delete All" />
+                <Label
+                    x:Name="productCurrentRecord"
+                    Grid.Row="4"
+                    Grid.Column="2"
+                    Text="X" />
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

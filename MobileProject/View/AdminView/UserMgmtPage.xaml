@@ -1,0 +1,266 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MobileProject.View.AdminView.UserMgmtPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="User Management">
+    <!--  Define Global Styles in Resources  -->
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="10">
+                <!--  Input Fields and Query Button  -->
+                <StackLayout Padding="10" Orientation="Vertical">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="Medium"
+                        HorizontalOptions="Center"
+                        Text="User Management" />
+                    <!--  Grid Layout  -->
+                    <Grid ColumnSpacing="10" RowSpacing="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  Username  -->
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Text="User Name:"
+                            VerticalOptions="Center" />
+                        <Entry
+                            x:Name="UserName"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            HeightRequest="40"
+                            HorizontalOptions="FillAndExpand"
+                            Placeholder="Enter Username"
+                            Text="{Binding UserName}" />
+
+                        <!--  Role Picker  -->
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Text="Role:"
+                            VerticalOptions="Center" />
+                        <Picker
+                            x:Name="RolePicker"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            HeightRequest="40"
+                            HorizontalOptions="FillAndExpand"
+                            ItemsSource="{Binding RoleOptions}"
+                            SelectedItem="{Binding RoleSelected}" />
+
+                        <!--  Phone  -->
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Text="Phone:"
+                            VerticalOptions="Center" />
+                        <Entry
+                            x:Name="Phone"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            HeightRequest="40"
+                            HorizontalOptions="FillAndExpand"
+                            Placeholder="Enter Phone"
+                            Text="{Binding Phone}" />
+
+                        <!--  Email  -->
+                        <Label
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Text="Email:"
+                            VerticalOptions="Center" />
+                        <Entry
+                            x:Name="Email"
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            HeightRequest="40"
+                            HorizontalOptions="FillAndExpand"
+                            Placeholder="Enter Email"
+                            Text="{Binding Email}" />
+                    </Grid>
+
+
+                    <!--  Query Button  -->
+                    <Button Command="{Binding QueryCommand}" Text="Search" />
+                </StackLayout>
+                <!--  Data List with Checkbox  -->
+                <CollectionView
+                    Grid.Row="1"
+                    ItemsSource="{Binding TableData}"
+                    SelectionMode="None">
+                    <CollectionView.Header>
+                        <Grid
+                            Padding="10"
+                            BackgroundColor="LightSkyBlue"
+                            ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="0.5*" />
+                                <ColumnDefinition Width="1.5*" />
+                                <ColumnDefinition Width="2.5*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="5*" />
+                                <ColumnDefinition Width="1.5*" />
+                                <ColumnDefinition Width="3*" />
+
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Column Headers  -->
+
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Center"
+                                Text="Select"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                Text="ID"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="2"
+                                FontAttributes="Bold"
+                                Text="User Name"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="3"
+                                FontAttributes="Bold"
+                                Text="Password"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="4"
+                                FontAttributes="Bold"
+                                Text="Phone"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="5"
+                                FontAttributes="Bold"
+                                Text="Email"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="6"
+                                FontAttributes="Bold"
+                                Text="Role"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="7"
+                                FontAttributes="Bold"
+                                Text="Created Date"
+                                VerticalTextAlignment="Center" />
+
+                        </Grid>
+
+                    </CollectionView.Header>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <SwipeView>
+                                <SwipeView.LeftItems>
+                                    <SwipeItems>
+                                        <SwipeItem
+                                            BackgroundColor="LightGreen"
+                                            Command="{Binding BindingContext.EditCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                            CommandParameter="{Binding .}"
+                                            IconImageSource="edit.png"
+                                            Text="Edit" />
+                                    </SwipeItems>
+                                </SwipeView.LeftItems>
+                                <Grid Padding="10" ColumnSpacing="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="0.5*" />
+                                        <ColumnDefinition Width="1.5*" />
+                                        <ColumnDefinition Width="2.5*" />
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="5*" />
+                                        <ColumnDefinition Width="1.5*" />
+                                        <ColumnDefinition Width="3*" />
+                                        <!--  Add column definitions  -->
+                                    </Grid.ColumnDefinitions>
+
+                                    <!--  Row Content  -->
+                                    <CheckBox
+                                        Grid.Column="0"
+                                        HorizontalOptions="Center"
+                                        IsChecked="{Binding IsSelected}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        Grid.Column="1"
+                                        IsVisible="True"
+                                        Text="{Binding User.Id}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="2"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        Text="{Binding User.UserName}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="3"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        IsPassword="True"
+                                        Text="{Binding User.Password}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="4"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        Text="{Binding User.Phone}"
+                                        VerticalOptions="Center" />
+                                    <Entry
+                                        Grid.Column="5"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        Text="{Binding User.Email}"
+                                        VerticalOptions="Center" />
+                                    <Picker
+                                        Grid.Column="6"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        ItemsSource="{Binding RoleOptions}"
+                                        SelectedItem="{Binding Role}"
+                                        VerticalOptions="Center" />
+                                    <Label
+                                        Grid.Column="7"
+                                        Text="{Binding User.CreatedDate, StringFormat='{0:yyyy-MM-dd}'}"
+                                        VerticalOptions="Center" />
+
+                                </Grid>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Name="Add"
+            Command="{Binding AddCommand}"
+            Order="Secondary"
+            Priority="0" />
+        <ToolbarItem
+            Name="Save"
+            Command="{Binding SaveCommand}"
+            Order="Secondary"
+            Priority="1" />
+        <ToolbarItem
+            Name="Remove"
+            Command="{Binding RemoveCommand}"
+            Order="Secondary"
+            Priority="2" />
+        <ToolbarItem
+            Name="Select All"
+            Command="{Binding SelectedAllCommand}"
+            Order="Secondary"
+            Priority="3" />
+    </ContentPage.ToolbarItems>
+</ContentPage>
