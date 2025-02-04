@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: rgb(119, 188, 209);;
+            margin: 0;
+        }
+
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            background: rgb(111, 176, 196);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.678);
+            text-align: center;
+        }
+
+        .login-image {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <!-- Top Image -->
+        <img src="/image/logo.jpg" alt="Login Logo" class="login-image">
+
+        <h4 class="mb-4">Login</h4>
+
+        <!-- Login Form -->
+        <form>
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">User Name</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter your username" required>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+            </div>
+
+            <!-- Remember Me -->
+            <!-- <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="remember-me">
+                <label class="form-check-label" for="remember-me">Remember Me</label>
+            </div> -->
+
+            <!-- Login Button -->
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+
+            <!-- Sign Up Link -->
+            <!-- <div class="mt-3">
+                <p>Don't have an account? <a href="#!">Sign Up</a></p>
+            </div> -->
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

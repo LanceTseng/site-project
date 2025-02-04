@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maintenance Menu</title>
+
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card" data-link="/mgmt-task">
+            <div class="card-body">
+              <h5 class="card-title">Task</h5>
+              <p class="card-text">Manage tasks for maintenance activities.</p>
+              <a href="/mgmt-task" class="btn btn-primary">Go to Task</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card" data-link="/mgmt-equiptment">
+            <div class="card-body">
+              <h5 class="card-title">Equipment</h5>
+              <p class="card-text">View and manage maintenance equipment.</p>
+              <a href="/mgmt-equiptment" class="btn btn-primary"
+                >Go to Equipment</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card" data-link="user.html">
+            <div class="card-body">
+              <h5 class="card-title">User</h5>
+              <p class="card-text">
+                Manage users involved in maintenance activities.
+              </p>
+              <a href="#" class="btn btn-primary">Go to User</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card" data-link="document.html">
+            <div class="card-body">
+              <h5 class="card-title">Document</h5>
+              <p class="card-text">View and manage maintenance documents.</p>
+              <a href="#" class="btn btn-primary">Go to Document</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card" data-link="employee.html">
+            <div class="card-body">
+              <h5 class="card-title">Employee</h5>
+              <p class="card-text">Manage employee information.</p>
+              <a href="#" class="btn btn-primary">Go to Employee</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card" data-link="training.html">
+            <div class="card-body">
+              <h5 class="card-title">Training Module</h5>
+              <p class="card-text">Access and manage training modules.</p>
+              <a href="#" class="btn btn-primary">Go to Training Module</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/footer-simple') %>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="/js/maintenance.js"></script>
+  </body>
+</html>

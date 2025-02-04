@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offboarding Employee</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+
+    <!-- Report Section -->
+    <div class="container mt-5">
+      <!-- Condition Field Area -->
+      <div class="mb-4">
+        <h3>Task Filter</h3>
+        <div class="form-group">
+          <label for="taskFilter">Filter by Task Name</label>
+          <input type="text" id="taskFilter" class="form-control" placeholder="Enter Task Name" />
+        </div>
+        <button id="processQuery" class="btn btn-primary">Process Query</button>
+      </div>
+
+      <div id="userTaskHeader" class="mb-4">
+        <h4>User Task Header</h4>
+        <div class="row">
+          <div class="col-12">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Task Name</th>
+                  <th>Task Description</th>
+                  <th>Status</th>
+                  <th>Process Rate</th>
+                  <th>Start Date</th>
+                  <th>Create Date</th>
+                  <th>Last Updated</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="userTaskHeaderList"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- User Task Detail Section -->
+      <div id="userTaskDetail" class="mb-4">
+        <h4>User Task Detail</h4>
+        <div class="row">
+          <div class="col-12">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Subtask Name</th>
+                  <th>Subtask Description</th>
+                  <th>Subtask Status</th>
+                  <th>Document</th>
+                  <th>Device Type</th>
+                  <th>Training Module</th>
+                  <th>Interview</th>
+                  <th>Survey</th>
+                  <th>Start Date</th>
+                  <th>Create Date</th>
+                  <th>Last Updated</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="userTaskDetailList"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    <!-- Footer -->
+    <%- include('../partials/footer-simple') %>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="/js/report-user-task.js" type="module"></script>
+  </body>
+</html>
