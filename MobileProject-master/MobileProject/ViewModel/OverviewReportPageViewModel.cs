@@ -71,7 +71,7 @@ namespace MobileProject.ViewModel
 
         public ICommand ProcessReportCommand { get; }
 
-        public OverviewReportPageViewModel( IOverviewReportService overviewReportService)
+        public OverviewReportPageViewModel(IOverviewReportService overviewReportService)
         {
             _overviewReportService = overviewReportService;
 
@@ -108,6 +108,9 @@ namespace MobileProject.ViewModel
             }
             else
             {
+                ProductSalesChart = null;
+                ProductSummaryChart = null;
+
                 // Handle the case when reports are empty or null
                 Debug.WriteLine("No reports found.");
                 Reports.Clear();
@@ -124,6 +127,8 @@ namespace MobileProject.ViewModel
 
                 if (allReports == null)
                 {
+                    ProductSalesChart = null;
+                    ProductSummaryChart = null;
                     Debug.WriteLine("No reports found.");
                     Reports.Clear();
                     return;
@@ -131,7 +136,6 @@ namespace MobileProject.ViewModel
 
                 // Example filtering (if needed)
                 var filteredReports = allReports.ToList();
-
 
                 // Update the ObservableCollection efficiently
                 Reports = new ObservableCollection<Overview>(filteredReports);
@@ -204,7 +208,6 @@ namespace MobileProject.ViewModel
                         TextColor = SKColor.Parse("#333333"),
                         // Improve visibility
                     };
-
                 })
                 .ToList();
 
