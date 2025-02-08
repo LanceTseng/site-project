@@ -18,6 +18,13 @@ class EmployeeRepository {
     });
   }
 
+  // Get employee by UserId
+  async getByUserId(id) {
+    return await Employee.findOne({
+      where: { link_user_id: id },
+    });
+  }
+
   // Create a new employee
   async create(employeeData) {
     return await Employee.create(employeeData);
