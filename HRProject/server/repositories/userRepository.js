@@ -10,6 +10,7 @@ class UserRepository {
   }
 
   async getByName(name) {
+    console.log(name);
     return await User.findOne({ where: { userName: name } });
   }
 

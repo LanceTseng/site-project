@@ -28,7 +28,7 @@ export const getTasks = async () => {
 // Function to get a specific task by ID
 export const getTaskById = async (taskId) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/${taskId}`);
+    const response = await axiosInstance.get(`${baseURL}${taskId}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching task with ID ${taskId}:`, error);
@@ -40,7 +40,7 @@ export const getTaskById = async (taskId) => {
 export const updateTask = async (taskId, updatedData) => {
   try {
     const response = await axiosInstance.put(
-      `${baseURL}/employees/${taskId}`,
+      `${baseURL}${taskId}`,
       updatedData
     );
     return response.data;
@@ -54,7 +54,7 @@ export const updateTask = async (taskId, updatedData) => {
 export const deleteTask = async (taskId) => {
   try {
     const response = await axiosInstance.delete(
-      `${baseURL}/employees/${taskId}`
+      `${baseURL}${taskId}`
     );
     return response.data;
   } catch (error) {
@@ -62,10 +62,3 @@ export const deleteTask = async (taskId) => {
     throw error;
   }
 };
-// module.exports = {
-//   createTask,
-//   getTasks,
-//   getTaskById,
-//   updateTask,
-//   deleteTask,
-// };

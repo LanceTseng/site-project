@@ -22,6 +22,7 @@ class UserController {
 
   async getByName(req, res) {
     try {
+      console.log(req.params.name);
       const user = await UserRepository.getByName(req.params.name);
       if (!user) return res.status(404).json({ error: 'User not found' });
       res.json(user);
@@ -33,6 +34,7 @@ class UserController {
   async create(req, res) {
     try {
       const newUser = await UserRepository.create(req.body);
+      console.log(newUser);
       res.status(201).json(newUser);
     } catch (error) {
       res.status(500).json({ error: 'Server error' });
