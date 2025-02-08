@@ -1,4 +1,5 @@
-const ChildTask = require('../models/ChildTask');
+const { where } = require("sequelize");
+const ChildTask = require("../models/ChildTask");
 
 class ChildTaskRepository {
   // Get all child tasks
@@ -11,6 +12,11 @@ class ChildTaskRepository {
     return await ChildTask.findByPk(id);
   }
 
+  // Get child task by ID
+  async getByParentTaskId(id) {
+    return await ChildTask.findAll({ where: { parent_task_id: id } });
+  }
+
   // Create new child task
   async create(taskData) {
     return await ChildTask.create(taskData);
@@ -19,7 +25,7 @@ class ChildTaskRepository {
   // Update child task by ID
   async update(id, taskData) {
     await ChildTask.update(taskData, { where: { child_task_id: id } });
-    return this.getById(id);  // Return updated record
+    return this.getById(id); // Return updated record
   }
 
   // Delete child task by ID

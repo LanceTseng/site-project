@@ -22,6 +22,17 @@ class ChildTaskController {
     }
   }
 
+    // Get child task by ID
+    async getByParentTaskId(req, res) {
+      try {
+        const task = await childTaskRepo.getByParentTaskId(req.params.id);
+        if (!task) return res.status(404).json({ error: 'Task not found' });
+        res.json(task);
+      } catch (error) {
+        res.status(500).json({ error: 'Server error' });
+      }
+    }
+
   // Create new child task
   async create(req, res) {
     try {

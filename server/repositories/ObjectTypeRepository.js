@@ -10,7 +10,7 @@ class ObjectTypeRepository {
   }
 
   async getByName(name) {
-    return await ObjectType.findOne({ where: { object_type_name: name } });
+    return await ObjectType.findAll({ where: { object_type_name: name } });
   }
 
   async create(data) {

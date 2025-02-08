@@ -38,15 +38,7 @@ const Employee = sequelize.define(
       allowNull: true,
       defaultValue: 1,
     },
-    created_date: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    last_updated_date: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
+    
     link_user_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -54,8 +46,10 @@ const Employee = sequelize.define(
   },
   {
     tableName: "b_employees",
-    timestamps: false, // Since we handle timestamps manually
-  }
+    timestamps: true, // Since we handle timestamps manually
+    createdAt: 'created_date',
+    updatedAt:'last_updated_date'
+  } 
 );
 
 module.exports = Employee;
