@@ -16,7 +16,8 @@ app.set("views", path.join(__dirname, "views"));
 
 // Middleware
 app.use(express.json());
-app.use(express.static("public"));
+// app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public"))); // ✅ Serves files inside `public/`
 app.use(express.urlencoded({ extended: false }));
 app.use(coookie());
 
@@ -35,6 +36,7 @@ const parentTaskRoutes = require('./routes/parentTaskRoutes');
 const trainingModuleRoutes = require('./routes/trainingModuleRoutes');
 const userModuleRoutes = require('./routes/userRoutes');
 const relUserParentTaskRoutes = require('./routes/relUserParentTaskRoutes');
+const relUserChildTaskRoutes = require('./routes/relUserChildTaskRoutes');
 
 
 app.use("/api", employeeRoutes);
@@ -47,12 +49,13 @@ app.use('/api', parentTaskRoutes);
 app.use('/api', trainingModuleRoutes);
 app.use('/api', userModuleRoutes);
 app.use('/api', relUserParentTaskRoutes);
+app.use('/api', relUserChildTaskRoutes);
 
 //view
-// app.get("/", (req, res) => {
-//   console.log("get")
-//   res.sendFile(path.join(__dirname, "views", "home.html"));
-// });
+app.get("/", (req, res) => {
+  console.log("get")
+  res.sendFile(path.join(__dirname, "views", "home.html"));
+});
 
 db.authenticate()
   .then(() => console.log("✅ MySQL Connected"))
