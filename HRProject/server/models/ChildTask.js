@@ -25,7 +25,7 @@ const ChildTask = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    trainning_module_id: {
+    training_module_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
@@ -41,7 +41,7 @@ const ChildTask = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    survey: {
+    survey_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },

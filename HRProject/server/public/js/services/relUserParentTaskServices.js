@@ -32,7 +32,7 @@ export const getTasks = async () => {
 export const getTaskById = async (taskId) => {
   try {
     const response = await axiosInstance.get(
-      `${baseURL}/${taskId}`
+      `${baseURL}${taskId}`
     );
     return response.data;
   } catch (error) {
@@ -45,7 +45,7 @@ export const getTaskById = async (taskId) => {
 export const updateTask = async (taskId, updatedData) => {
   try {
     const response = await axiosInstance.put(
-      `${baseURL}/${taskId}`,
+      `${baseURL}${taskId}`,
       updatedData
     );
     return response.data;
@@ -59,7 +59,7 @@ export const updateTask = async (taskId, updatedData) => {
 export const deleteTask = async (taskId) => {
   try {
     const response = await axiosInstance.delete(
-      `${baseURL}/${taskId}`
+      `${baseURL}${taskId}`
     );
     return response.data;
   } catch (error) {

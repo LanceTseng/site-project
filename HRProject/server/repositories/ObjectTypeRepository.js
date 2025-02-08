@@ -1,4 +1,4 @@
-const ObjectType = require('../models/ObjectType');
+const ObjectType = require("../models/ObjectType");
 
 class ObjectTypeRepository {
   async getAll() {
