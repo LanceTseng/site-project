@@ -11,7 +11,7 @@ const RelUserChildTask = sequelize.define('RelUserChildTask', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  user_childtask_id: {
+  child_task_id: {
     type: DataTypes.INTEGER,
     allowNull: false
   },

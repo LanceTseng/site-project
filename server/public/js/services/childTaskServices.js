@@ -1,13 +1,13 @@
 // services/taskApi.js
 
 import axiosInstance from "/js/utils/axiosInstance.js"; // Absolute path for browser
-const baseURL = "api/";
+const baseURL = "api/child-tasks/";
 
 // Function to create a new task
 export const createTask = async (taskData) => {
   try {
     const response = await axiosInstance.post(
-      `${baseURL}/child-tasks`,
+      `${baseURL}`,
       taskData
     );
     return response.data;
@@ -20,7 +20,7 @@ export const createTask = async (taskData) => {
 // Function to get all tasks
 export const getTasks = async () => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/child-tasks`);
+    const response = await axiosInstance.get(`${baseURL}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching tasks:", error);
@@ -32,7 +32,7 @@ export const getTasks = async () => {
 export const getTaskById = async (taskId) => {
   try {
     const response = await axiosInstance.get(
-      `${baseURL}/child-tasks/${taskId}`
+      `${baseURL}${taskId}`
     );
     return response.data;
   } catch (error) {
@@ -45,7 +45,7 @@ export const getTaskById = async (taskId) => {
 export const getTaskByParentTaskId = async (taskId) => {
   try {
     const response = await axiosInstance.get(
-      `${baseURL}/child-tasks/parent-task-id/${taskId}`
+      `${baseURL}parent-task-id/${taskId}`
     );
     return response.data;
   } catch (error) {
@@ -58,7 +58,7 @@ export const getTaskByParentTaskId = async (taskId) => {
 export const updateTask = async (taskId, updatedData) => {
   try {
     const response = await axiosInstance.put(
-      `${baseURL}/child-tasks/${taskId}`,
+      `${baseURL}${taskId}`,
       updatedData
     );
     return response.data;
@@ -72,7 +72,7 @@ export const updateTask = async (taskId, updatedData) => {
 export const deleteTask = async (taskId) => {
   try {
     const response = await axiosInstance.delete(
-      `${baseURL}/child-tasks/${taskId}`
+      `${baseURL}${taskId}`
     );
     return response.data;
   } catch (error) {

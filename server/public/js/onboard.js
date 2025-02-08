@@ -5,6 +5,7 @@ import * as ChildTaskApi from "./services/childTaskServices.js";
 import * as UserApi from "./services/userServices.js";
 import * as UserParentTaskApi from "./services/relUserParentTaskServices.js";
 import * as UserChildTaskApi from "./services/relUserChildTaskServices.js";
+import { isEqualIgnoreCase } from "./utils/stringUtils.js";
 
 $(document).ready(async function () {
   // Populate the department dropdown
@@ -52,15 +53,15 @@ $(document).ready(async function () {
                 <td>${emp.last_name}</td>
                 <td>${department}</td>
                 <td>${status}</td>
-                <td hidden>${emp.user_id}</td>
+                <td hidden>${emp.link_user_id}</td>
                 <td>
                   <button class="btn btn-sm btn-primary edit-btn" data-id="${emp.employee_id}">Edit</button>
-                  <button class="btn btn-sm btn-danger delete-btn" data-id="${emp.employee_id}">Delete</button>
+                  <button class="btn btn-sm btn-success start-onboarding-btn" data-id="${emp.link_user_id}">Start Onboarding</button>
                 </td>
               </tr>
             `;
         })
-        .join("");
+        .join(""); //to_do: check if status = pending show the start onboarding btn
 
       $("#employee-table-body").html(rows);
     } catch (error) {
@@ -75,37 +76,41 @@ $(document).ready(async function () {
     const userId = $(this).data("id");
 
     try {
-      const taskGroup = (await ObjectTypeApi.getTaskByName("task_group")).find(
-        (o) => o.task_group_id == "1"
-      );
-
-      if (!taskGroup) {
+      const taskGroupId =
+        (await ObjectTypeApi.getTaskByName("task_group")).find(
+          (o) => o.object_type_item_value.toLowerCase() == "onboard"
+        ).object_type_item_key || [];
+      if (!taskGroupId) {
         console.error("TaskGroup 'Onboard' not found.");
         return;
       }
 
-      const parentTask = (await ParentTaskApi.getTasks()).filter(
-        (t) => t.task_group_id === taskGroup.id
-      );
-
-      const childTask = (await ChildTaskApi.getTaskByParentTaskId()).filter(
-        (ct) => parentTask.some((pt) => ct.parent_task_id === pt.task_id)
-      );
+      const parentTask = await ParentTaskApi.getTaskByGroupId(taskGroupId);
+      if (!parentTask) {
+        console.error("Parent tasks not found.");
+        return;
+      }
 
       for (const t of parentTask) {
+        //get child task
+        const childTask = await ChildTaskApi.getTaskByParentTaskId(t.task_id);
+
+        const countChildTasks = Array.isArray(childTask)
+          ? childTask.length
+          : Object.keys(childTask).length; // Count object keys if it's an object
+
         const userParentTask = {
           user_id: userId,
           parent_task_id: t.task_id,
           status: 0,
-          count_child_tasks: childTask.length,
-          start_date: null,
+          count_child_tasks: countChildTasks,
         };
-        await UserParentTaskApi.createTask(userParentTask);
+        const response = await UserParentTaskApi.createTask(userParentTask);
 
         for (const s of childTask) {
           const userChildTask = {
-            user_parenttask_id: -1,
-            user_childtask_id: s.id,
+            user_parenttask_id: response.id || -1,
+            child_task_id: s.child_task_id,
             status: 0,
             document_id: s.document_id || null,
             document_path: "",
@@ -114,9 +119,10 @@ $(document).ready(async function () {
             training_module_id: s.training_module_id || null,
             access_provisioning_id: s.access_provisioning_id || null,
             interview_id: s.interview_id || null,
-            server_id: s.server_id || null,
+            servery_id: s.server_id || null,
             hand_over_id: s.hand_over_id || null,
             start_date: null,
+            end_date: null,
           };
 
           await UserChildTaskApi.createTask(userChildTask);
@@ -205,7 +211,7 @@ $(document).ready(async function () {
     $("#edit-last-name").val(employee.last_name);
     $("#edit-status").html(
       `<option value="" disabled selected>Select a Status</option>` +
-      statusOptions
+        statusOptions
     );
     $("#edit-phone").val(employee.phone);
     $("#edit-address").val(employee.address);
@@ -221,7 +227,7 @@ $(document).ready(async function () {
     try {
       const id = $("#edit-employee-id").val();
       const employee = await EmployeeApi.getTaskById(id);
-       
+
       if (!employee) {
         console.error("Employee not found.");
         return;
@@ -234,8 +240,7 @@ $(document).ready(async function () {
       employee.phone = $("#edit-phone").val();
       employee.address = $("#edit-address").val();
 
-      const response = await EmployeeApi.updateTask(id,employee);
-     
+      const response = await EmployeeApi.updateTask(id, employee);
 
       await loadEmployees();
       $("#editModal").modal("hide");
