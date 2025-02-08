@@ -32,19 +32,13 @@ const RelUserParentTask = sequelize.define(
     end_date: {
       type: DataTypes.DATE,
       allowNull: true,
-    },
-    create_date: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
-    last_updated_date: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
+    }
   },
   {
     tableName: "rel_user_parenttask",
-    timestamps: false, // Disable timestamps since we are using custom create_date and last_updated_date
+    timestamps: true,
+    createdAt:'created_date',
+    updatedAt:'last_updated_date' // Disable timestamps since we are using custom create_date and last_updated_date
   }
 );
 

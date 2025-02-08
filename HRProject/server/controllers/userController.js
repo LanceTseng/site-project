@@ -20,6 +20,16 @@ class UserController {
     }
   }
 
+  async getByName(req, res) {
+    try {
+      const user = await UserRepository.getByName(req.params.name);
+      if (!user) return res.status(404).json({ error: 'User not found' });
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: 'Server error' });
+    }
+  }
+
   async create(req, res) {
     try {
       const newUser = await UserRepository.create(req.body);

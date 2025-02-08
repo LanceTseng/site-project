@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require("../models/User");
 
 class UserRepository {
   async getAll() {
@@ -7,6 +7,10 @@ class UserRepository {
 
   async getById(id) {
     return await User.findByPk(id);
+  }
+
+  async getByName(name) {
+    return await User.findOne({ where: { userName: name } });
   }
 
   async create(userData) {

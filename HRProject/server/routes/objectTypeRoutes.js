@@ -1,13 +1,13 @@
 const express = require('express');
-const objectTypeController = require('../controllers/objectTypeController');
+const BObjectTypeController = require('../controllers/objectTypeController');
 
 const router = express.Router();
 
-router.get('/object-types', objectTypeController.getAll);
-router.get('/object-types/:id', objectTypeController.getById);
-router.get('/object-types/name/:name', objectTypeController.getByName);
-router.post('/object-types', objectTypeController.create);
-router.put('/object-types/:id', objectTypeController.update);
-router.delete('/object-types/:id', objectTypeController.delete);
+router.get('/object-types', BObjectTypeController.getAll);
+router.get('/object-types/:id', BObjectTypeController.getById);
+router.get('/object-types/name/:name', BObjectTypeController.getByName);
+router.post('/object-types', BObjectTypeController.create);
+router.put('/object-types/:id', BObjectTypeController.update);
+router.delete('/object-types/:id', BObjectTypeController.delete);
 
 module.exports = router;
