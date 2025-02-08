@@ -20,7 +20,7 @@ export const createTask = async (taskData) => {
 // Function to get all tasks
 export const getTasks = async () => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/object-types`);
+    const response = await axiosInstance.get(`${baseURL}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching tasks:", error);
@@ -45,7 +45,7 @@ export const getTaskById = async (taskId) => {
 export const getTaskByName = async (taskName) => {
   try {
     const response = await axiosInstance.get(
-      `${baseURL}/name/${taskName}`
+      `${baseURL}name/${taskName}`
     );
     return response.data;
   } catch (error) {

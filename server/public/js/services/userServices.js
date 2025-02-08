@@ -28,7 +28,7 @@ export const getTasks = async () => {
 // Function to get a specific task by ID
 export const getTaskById = async (taskId) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/${taskId}`);
+    const response = await axiosInstance.get(`${baseURL}${taskId}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching task with ID ${taskId}:`, error);
@@ -37,12 +37,12 @@ export const getTaskById = async (taskId) => {
 };
 
 // Function to get a specific task by ID
-export const getTaskByNameId = async (taskName) => {
+export const getTaskByName = async (taskName) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}/name/${taskName}`);
+    const response = await axiosInstance.get(`${baseURL}name/${taskName}`);
     return response.data;
   } catch (error) {
-    console.error(`Error fetching task with ID ${taskId}:`, error);
+    console.error(`Error fetching task with ID ${taskName}:`, error);
     throw error;
   }
 };
@@ -64,7 +64,7 @@ export const updateTask = async (taskId, updatedData) => {
 // Function to delete a task
 export const deleteTask = async (taskId) => {
   try {
-    const response = await axiosInstance.delete(`${baseURL}/${taskId}`);
+    const response = await axiosInstance.delete(`${baseURL}${taskId}`);
     return response.data;
   } catch (error) {
     console.error(`Error deleting task with ID ${taskId}:`, error);
