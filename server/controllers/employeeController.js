@@ -22,6 +22,17 @@ class EmployeeController {
     }
   }
 
+    // Get employee by user ID
+    async getByUserId(req, res) {
+      try {
+        const employee = await EmployeeRepository.getByUserId(req.params.id);
+        if (!employee) return res.status(404).json({ error: 'Employee not found' });
+        res.json(employee);
+      } catch (error) {
+        res.status(500).json({ error: 'Server error' });
+      }
+    }
+
   // Get employee by name
   async getByName(req, res) {
     try {
