@@ -1,20 +1,25 @@
-import {
-  employees,
-  object_type,
-  user_task_head,
-  users,
-  user_task_detail,
-  tasks,
-  subtasks,
-} from "./mockdata.js";
+// const employeeApi = await import("./services/employeeServices.js");
+// const objectTypeApi = await import("./services/objectTypeServices.js");
+// const parentTaskApi = await import("./services/parentTaskServices.js");
+// const childTaskApi = await import("./services/childTaskServices.js");
+// const userApi = await import("./services/userServices.js");
+// const userParentTaskApi = await import("./services/relUserParentTaskServices.js");
+// const userChildTaskApi = await import("./services/relUserChildTaskServices.js");
 
-$(document).ready(function () {
+import * as EmployeeApi from "./services/employeeServices.js";
+import * as ObjectTypeApi from "./services/objectTypeServices.js";
+import * as ParentTaskApi from "./services/parentTaskServices.js";
+import * as ChildTaskApi from "./services/childTaskServices.js";
+import * as UserApi from "./services/userServices.js";
+import * as UserParentTaskApi from "./services/relUserParentTaskServices.js";
+import * as UserChildTaskApi from "./services/relUserChildTaskServices.js";
+
+$(document).ready(async function () {
+   
   // Populate the department dropdown
   function populateDepartmentOptions() {
-    const departmentOptions = object_type
-      .filter((item) => item.object === "Department")
-      .map((dept) => `<option value="${dept.id}">${dept.object_type}</option>`)
-      .join("");
+    const departments = objectTypeApi.getTaskByName('department') || [];
+    const departmentOptions = departments.map(dept => `<option value="${dept.object_type_item_key}">${dept.object_type_item_value}</option>`).join("");
     // Populate both main form and edit modal
     $("#department, #edit-department").html(departmentOptions);
   }
@@ -24,43 +29,54 @@ $(document).ready(function () {
 
   // Load existing employees into the table
   function loadEmployees() {
-    const rows = employees
-      .map((emp) => {
-        // Find the department name by matching the department_id
-        const department =
-          object_type.find((dept) => dept.id == emp.department_id)
-            ?.object_type || "Unknown";
+    employeeApi.getTasks
+      .then((employees) => {
+        let rows = employees
+          .map((emp) => {
+            const department =
+              objectTypeApi
+                .getTaskByName("department")
+                .find((dept) => dept.object_type_item_key == emp.department_id)
+                ?.object_type_item_value || "Unknown";
 
-        return `
-          <tr>
-            <td>${emp.id}</td>
-            <td>${emp.first_name}</td>
-            <td>${emp.last_name}</td>
-            <td>${department}</td>  
-            <td>${emp.status}</td>
-            <td hidden>${emp.user_id}</td>
-            <td>
-              <button class="btn btn-sm btn-primary edit-btn" data-id="${emp.id}">Edit</button>
-              <button class="btn btn-sm btn-info start-onboarding-btn" data-id="${emp.user_id}">Start Onboarding</button>
-            </td>
-          </tr>
-        `;
+            const status =
+              objectTypeApi
+                .getTaskByName("employee_status")
+                .find((s) => s.object_type_item_key == emp.status)
+                ?.object_type_item_value || "Unknown";
+
+            return `
+            <tr>
+              <td>${emp.id}</td>
+              <td>${emp.first_name}</td>
+              <td>${emp.last_name}</td>
+              <td>${department}</td>
+              <td>${status}</td>
+              <td hidden>${emp.user_id}</td>
+              <td>
+                <button class="btn btn-sm btn-primary edit-btn" data-id="${emp.id}">Edit</button>
+                <button class="btn btn-sm btn-danger delete-btn" data-id="${emp.id}">Delete</button>
+              </td>
+            </tr>
+          `;
+          })
+          .join("");
+
+        $("#employee-table-body").html(rows);
       })
-      .join("");
-
-    $("#employee-table-body").html(rows);
+      .catch((error) => {
+        console.error("Error loading employees:", error);
+      });
   }
-
   loadEmployees();
 
   // Attach event directly to existing buttons
   $(".start-onboarding-btn").on("click", function () {
-
     const userId = $(this).data("id");
     // Find the task group for onboarding
-    const taskGroup = object_type.find(
-      (o) => o.object == "TaskGroup" && o.object_type == "Onboard"
-    );
+    const taskGroup = objectTypeApi
+      .getTaskByName("task_group")
+      .find((o) => o.task_group_id == "1");
 
     if (!taskGroup) {
       console.error("TaskGroup 'Onboard' not found.");
@@ -68,54 +84,49 @@ $(document).ready(function () {
     }
 
     // Filter tasks for the found task group
-    const topTasks = tasks.filter((t) => t.task_group_id === taskGroup.id);
+    const parentTask = parentTaskApi
+      .getTasks()
+      .filter((t) => t.task_group_id === taskGroup.id);
 
-    topTasks.forEach((t) => {
+    const childTask = childTaskApi
+      .getTaskByParentTaskId()
+      .filter((ct) =>
+        parentTask.some((pt) => ct.parent_task_id === pt.task_id)
+      );
+
+    parentTask.forEach((t) => {
       // Create user-task-head
-      const userTaskHead = {
-        id: user_task_head.length + 1,
+      const userParentTask = {
         user_id: userId,
-        task_id: t.id, // `task_id` should be the `id` from `tasks`
-        task_status: "Pending",
-        process_rate: 0,
+        parent_task_id: t.task_id, // `task_id` should be the `id` from `tasks`
+        status: 0,
+        count_child_tasks: childTask.length,
         start_date: null,
-        create_date: new Date().toISOString(),
-        last_updated_date: new Date().toISOString(),
       };
+      userParentTaskApi.createTask(userParentTask);
+      //insert table
 
-      user_task_head.push(userTaskHead);
-
-      // Filter subtasks for the current task
-      const relatedSubtasks = subtasks.filter((s) => s.task_id === t.id);
-
-      relatedSubtasks.forEach((s) => {
+      //child task
+      childTask.forEach((s) => {
         // Create user-task-detail
-        const userTaskDetail = {
-          id: user_task_detail.length + 1,
-          head_id: userTaskHead.id,
-          subtask_id: s.id,
-          task_status: "Pending",
+        const userChildTask = {
+          user_parenttask_id: -1,
+          user_childtask_id: s.id,
+          status: 0,
           document_id: s.document_id || null,
-          doucment_upload_path: "",
-          device_type_id: s.device_type_id || null,
-          device_id: null,
-          training_module_id: s.training_module_id || null,
-          training_by: "",
+          document_path: "",
+          equipment_type_id: s.equipment_type_id || null,
+          equipment_id: null,
+          trainning_module_id: s.training_module_id || null,
+          acess_provisioning_id: s.acess_provisioning_id || null,
           interview_id: s.interview_id || null,
-          interview_by: "",
-          survey_id: s.survey_id || null,
+          server_id: s.server_id || null,
+          hand_over_id: s.hand_over_id || null,
           start_date: null,
-          create_date: new Date().toISOString(),
-          last_updated_date: new Date().toISOString(),
         };
 
-        user_task_detail.push(userTaskDetail);
+        userChildTaskApi.createTask(userChildTask);
       });
-    });
-
-    console.log("Onboarding tasks and details created:", {
-      user_task_head,
-      user_task_detail,
     });
   });
 
@@ -124,18 +135,16 @@ $(document).ready(function () {
     e.preventDefault();
 
     const newUser = {
-      id: users.length + 1,
       username: `${$("#first-name").val()}_${$(
         "#last-name"
       ).val()}`.toLowerCase(),
       password: `${$("#first-name").val()}_${$(
         "#last-name"
       ).val()}`.toLowerCase(),
-      role: "user",
-      created_date: new Date().toISOString(),
-      last_updated_date: new Date().toISOString(),
+      role: "user", //get from combo box
     };
-    users.push(users);
+    userApi.createTask(newUser);
+    const user = userApi.getTaskByName(newUser.username);
 
     const newEmployee = {
       id: employees.length + 1,
@@ -145,12 +154,10 @@ $(document).ready(function () {
       status: $("#status").val(),
       phone: $("#phone").val(),
       address: $("#address").val(),
-      created_date: new Date().toISOString(),
-      last_updated_date: new Date().toISOString(),
-      user_id: newUser.id, // Example user ID, adjust as necessary
+      user_id: user.userId, // Example user ID, adjust as necessary
     };
 
-    employees.push(newEmployee);
+    employeeApi.createTask(newEmployee);
     loadEmployees();
     this.reset();
   });
