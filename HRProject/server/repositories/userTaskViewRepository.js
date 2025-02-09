@@ -20,12 +20,24 @@ class UserTaskViewRepository {
   async getUserTaskByUserId(userId) {
     try {
       const [rows] = await db.query(
-        "SELECT * FROM v_user_task WHERE user_id = ?",
-        [userId]
+        `SELECT * FROM v_user_task WHERE user_id = ${userId}`
       );
       return rows.length > 0 ? rows[0] : null; // Return first row or null if not found
     } catch (error) {
       console.error(`Error fetching user task for user ID ${userId}:`, error);
+      throw error;
+    }
+  }
+
+  async getUserTaskById(id) {
+    try {
+      const [rows] = await db.query(
+        `SELECT * FROM v_user_task WHERE head_id = ${id}`
+      );
+
+      return rows.length > 0 ? rows[0] : null; // Return first row or null if not found
+    } catch (error) {
+      console.error(`Error fetching user task for user ID ${id}:`, error);
       throw error;
     }
   }

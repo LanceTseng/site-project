@@ -32,6 +32,18 @@ export const getUserTaskByUserId = async (id) => {
   }
 };
 
+// Function to get a specific user task by ID
+export const getUserTaskById = async (id) => {
+  try {
+    const response = await axiosInstance.get(`${baseURL}${view.userTask}/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching user task with ID ${id}:`, error);
+    throw error;
+  }
+};
+
+
 // Function to get all parent tasks
 export const getAllUserParentTasks = async () => {
   try {
