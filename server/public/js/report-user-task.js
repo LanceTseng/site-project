@@ -1,4 +1,7 @@
 import * as UserTaskViewApi from "./services/userTaskViewServices.js";
+import * as UserParentTaskApi from "./services/relUserParentTaskServices.js";
+import * as UserChildTaskApi from "./services/relUserChildTaskServices.js";
+
 import { isEqualIgnoreCase } from "./utils/stringUtils.js";
 // Wait for the DOM to be fully loaded before processing
 $(document).ready(async function () {
@@ -8,7 +11,6 @@ $(document).ready(async function () {
   // Attach click event using event delegation to handle clicks on dynamically generated rows
   $("#userTaskHeaderList").on("click", ".task-row", function () {
     const taskHeadId = $(this).data("task-head-id"); // Corrected data attribute
-    console.log("Clicked Task Head ID:", taskHeadId); // Log the taskHeadId
     displayUserTaskDetail(taskHeadId);
   });
 });
@@ -16,7 +18,7 @@ $(document).ready(async function () {
 async function displayUserTaskHeader() {
   try {
     // Fetch user parent tasks
-    const userParentTasks = await UserTaskViewApi.getAllUserTasks();
+    const userParentTasks = await UserTaskViewApi.getAllUserParentTasks();
 
     // Map each task to an HTML row
     const taskRows = await Promise.all(
@@ -34,7 +36,6 @@ async function displayUserTaskHeader() {
           task.count_child_tasks > 0
             ? (completeChildTasks / task.count_child_tasks) * 100
             : 0;
-
         return `
           <tr class="task-row" data-task-head-id="${task.head_id}">
             <td>${task.user_name}</td>
@@ -48,9 +49,9 @@ async function displayUserTaskHeader() {
             <td>
               ${
                 isEqualIgnoreCase(task.p_status_name, "Pending")
-                  ? `<button class="btn btn-primary btn-sm start-task">Start</button>`
+                  ? `<button class="btn btn-primary btn-sm start-parent-task" data-id="${task.head_id}">Start</button>`
                   : isEqualIgnoreCase(task.p_status_name, "Processing")
-                  ? `<button class="btn btn-success btn-sm complete-task">Complete</button>`
+                  ? `<button class="btn btn-success btn-sm complete-parent-task" data-id="${task.head_id}">Complete</button>`
                   : ""
               }
             </td> 
@@ -65,6 +66,35 @@ async function displayUserTaskHeader() {
     console.error("Error displaying user tasks:", error);
   }
 }
+
+$("#userTaskHeaderList").on(
+  "click",
+  ".start-parent-task",
+  "data",
+  async function () {
+    const user_task_head_id = $(this).data("id");
+    const head_task = await UserTaskViewApi.getUserTaskById(user_task_head_id);
+    
+    // Show confirmation dialog
+    Swal.fire({
+      title: "Start All Subtasks?",
+      text: `Are you sure you want to start all subtasks under [${head_task.pt_name}]?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Start",
+      cancelButtonText: "No, Cancel",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // If user confirms, start the subtasks
+        startSubTasks(head_id);
+      } else {
+        // If user cancels, show a message
+        Swal.fire("Cancelled", "Only parent task was started.", "info");
+      }
+    });
+  }
+);
 
 // Function to display user task details when a task is clicked
 async function displayUserTaskDetail(taskHeadId) {
@@ -87,6 +117,7 @@ async function displayUserTaskDetail(taskHeadId) {
         (detail) => `
           <tr>
             <td>${detail.ct_task_name || "N/A"}</td>
+            <td>${detail.ct_desc || "N/A"}</td>
             <td>${detail.ct_status_name || "N/A"}</td>
             <td>${
               detail.document_id
@@ -97,17 +128,22 @@ async function displayUserTaskDetail(taskHeadId) {
             <td>${detail.trainning_module_id || "N/A"}</td>
             <td>${detail.interview_id || "N/A"}</td>
             <td>${detail.survey_id || "N/A"}</td>
-            <td>${new Date(detail.ct_start_date).toLocaleDateString()}</td>
-            <td>${new Date(detail.ct_end_date).toLocaleDateString()}</td>
-            <td>
-              ${
-                detail.ct_status === "Pending"
-                  ? `<button class="btn btn-primary btn-sm start-task">Start</button>`
-                  : detail.ct_status === "Processing"
-                  ? `<button class="btn btn-success btn-sm complete-task">Complete</button>`
-                  : ""
-              }
-            </td>
+            <td>${
+              detail.ct_start_date
+                ? new Date(detail.ct_start_date).toLocaleDateString()
+                : ""
+            }</td>
+            <td>${
+              detail.ct_end_date
+                ? new Date(detail.ct_end_date).toLocaleDateString()
+                : ""
+            }</td>
+             <td>${
+               detail.last_updated_date
+                 ? new Date(detail.last_updated_date).toLocaleDateString()
+                 : new Date(detail.created_date).toLocaleDateString()
+             }</td>
+           
           </tr>
         `
       )

@@ -12,7 +12,37 @@ class UserTaskViewController {
 
   async getUserTaskViewByUserId(req, res) {
     try {
+      console.log(req.params.userid);
       const userTasks = await UserTaskViewRepository.getUserTaskByUserId(
+        req.params.userid
+      );
+      if (!userTasks) {
+        return res.status(404).json({ message: "UserTask not found" });
+      }
+      res.status(200).json(userTasks);
+    } catch (error) {
+      res.status(500).json({ error: "Error fetching userTasks" });
+    }
+  }
+
+  
+  async getUserTaskViewById(req, res) {
+    try {
+      const userTasks = await UserTaskViewRepository.getUserTaskByUserId(
+        req.params.id
+      );
+      if (!userTasks) {
+        return res.status(404).json({ message: "UserTask not found" });
+      }
+      res.status(200).json(userTasks);
+    } catch (error) {
+      res.status(500).json({ error: "Error fetching userTasks" });
+    }
+  }
+
+  async getUserTaskViewById(req, res) {
+    try {
+      const userTasks = await UserTaskViewRepository.getUserTaskById(
         req.params.id
       );
       if (!userTasks) {
