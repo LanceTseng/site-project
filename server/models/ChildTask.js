@@ -13,11 +13,11 @@ const ChildTask = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    subtask_name: {
+    child_task_name: {
       type: DataTypes.STRING(45),
       allowNull: false,
     },
-    subtask_description: {
+    child_task_description: {
       type: DataTypes.STRING(145),
       allowNull: true,
     },
