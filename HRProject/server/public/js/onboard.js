@@ -5,6 +5,7 @@ import * as ChildTaskApi from "./services/childTaskServices.js";
 import * as UserApi from "./services/userServices.js";
 import * as UserParentTaskApi from "./services/relUserParentTaskServices.js";
 import * as UserChildTaskApi from "./services/relUserChildTaskServices.js";
+import * as EmployeeViewApi from "./services/employeeViewService.js";
 import { isEqualIgnoreCase } from "./utils/stringUtils.js";
 
 $(document).ready(async function () {
@@ -29,40 +30,29 @@ $(document).ready(async function () {
 
   await populateDropdown("#department, #edit-department", "department");
   await populateDropdown("#status, #edit-status", "employee_status");
-  
 
   /** 🧑‍💼 Load Employees **/
   async function loadEmployees() {
     try {
-      const employees = await EmployeeApi.getTasks();
-      const departments =
-        (await ObjectTypeApi.getTaskByName("department")) || [];
-      const statuses =
-        (await ObjectTypeApi.getTaskByName("employee_status")) || [];
+      const employees = await EmployeeViewApi.getTasks(); // Fetch employee data
 
       const rows = employees
         .map((emp) => {
-          const department =
-            departments.find((d) => d.object_type_item_key == emp.department_id)
-              ?.object_type_item_value || "Unknown";
-          const status =
-            statuses.find((s) => s.object_type_item_key == emp.status)
-              ?.object_type_item_value || "Unknown";
-
+        
           return `
             <tr>
               <td>${emp.employee_id}</td>
               <td>${emp.first_name}</td>
               <td>${emp.last_name}</td>
-              <td>${department}</td>
-              <td>${status}</td>
+              <td>${emp.department_name}</td>
+              <td>${emp.status_name}</td>
               <td hidden>${emp.link_user_id}</td>
               <td>
                 <button class="btn btn-sm btn-primary edit-btn" data-id="${
                   emp.employee_id
                 }">Edit</button>
                 ${
-                  isEqualIgnoreCase(status, "pending")
+                  isEqualIgnoreCase(emp.status_name, "pending")
                     ? `<button class="btn btn-sm btn-success start-onboarding-btn" data-id="${emp.link_user_id}">Start Onboarding</button>`
                     : ""
                 }
@@ -70,9 +60,9 @@ $(document).ready(async function () {
             </tr>
           `;
         })
-        .join("");
+        .join(""); // Convert array to a string
 
-      $("#employee-table-body").html(rows);
+      $("#employee-table-body").html(rows); // Inject rows into the table body
     } catch (error) {
       handleError(error, "Error loading employees");
     }

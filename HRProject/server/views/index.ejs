@@ -6,7 +6,13 @@
     <title>HR Management System</title>
     <!-- Bootstrap CSS -->
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Material Icons -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
     <!-- FontAwesome Icons -->
@@ -78,7 +84,7 @@
         <div class="col-6 col-md-3">
           <div class="card text-center bg-light">
             <div class="card-body">
-              <h3>25</h3>
+              <h3 id="activeOnboarding">25</h3>
               <p>Active Onboarding</p>
             </div>
           </div>
@@ -86,7 +92,7 @@
         <div class="col-6 col-md-3">
           <div class="card text-center bg-light">
             <div class="card-body">
-              <h3>10</h3>
+              <h3 id="pendingOffboarding">10</h3>
               <p>Pending Offboarding</p>
             </div>
           </div>
@@ -94,7 +100,7 @@
         <div class="col-6 col-md-3">
           <div class="card text-center bg-light">
             <div class="card-body">
-              <h3>150</h3>
+              <h3 id="totalEmployees">150</h3>
               <p>Total Employees</p>
             </div>
           </div>
@@ -102,7 +108,7 @@
         <div class="col-6 col-md-3">
           <div class="card text-center bg-light">
             <div class="card-body">
-              <h3>15</h3>
+              <h3 id="recentHires">15</h3>
               <p>This Month's Hiring</p>
             </div>
           </div>
@@ -117,38 +123,13 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th>Employee</th>
-                  <th>Process</th>
+                  <th>Employee Name</th>
+                  <th>Department</th>
                   <th>Status</th>
                   <th>Date</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>John Doe</td>
-                  <td>Onboarding</td>
-                  <td>
-                    <span class="badge bg-primary">In Progress</span>
-                  </td>
-                  <td>2023-11-15</td>
-                </tr>
-                <tr>
-                  <td>Jane Smith</td>
-                  <td>Offboarding</td>
-                  <td>
-                    <span class="badge bg-danger">Pending</span>
-                  </td>
-                  <td>2023-11-14</td>
-                </tr>
-                <tr>
-                  <td>Mike Johnson</td>
-                  <td>Onboarding</td>
-                  <td>
-                    <span class="badge bg-success">Completed</span>
-                  </td>
-                  <td>2023-11-13</td>
-                </tr>
-              </tbody>
+              <tbody id="recentActivities"></tbody>
             </table>
           </div>
         </div>
@@ -159,6 +140,14 @@
     <%- include('./partials/footer') %>
 
     <!-- Bootstrap JS Bundle -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.2/umd/popper.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="/js/index.js" type="module"></script>
   </body>
 </html>
