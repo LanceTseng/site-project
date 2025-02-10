@@ -32,10 +32,21 @@ export const getUserTaskByUserId = async (id) => {
   }
 };
 
-// Function to get a specific user task by ID
-export const getUserTaskById = async (id) => {
+// Function to get a specific user task by ID - head
+export const getUserTaskByHeadId = async (id) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}${view.userTask}/${id}`);
+    const response = await axiosInstance.get(`${baseURL}${view.userTask}/head/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching user task with ID ${id}:`, error);
+    throw error;
+  }
+};
+
+//line
+export const getUserTaskByLineId = async (id) => {
+  try {
+    const response = await axiosInstance.get(`${baseURL}${view.userTask}/line/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching user task with ID ${id}:`, error);
