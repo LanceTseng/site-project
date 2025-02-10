@@ -41,18 +41,18 @@ async function displayUserTaskHeader() {
             <td>${task.user_name}</td>
             <td>${task.pt_name}</td>
             <td>${task.pt_desc}</td>
-            <td>${task.p_status_name}</td>
+            <td>${task.pt_status_name}</td>
             <td>${processRate.toFixed(2)}%</td>
             <td>${new Date(task.start_date).toLocaleDateString()}</td>
             <td>${new Date(task.end_date).toLocaleDateString()}</td>
              <td>${new Date(task.last_updated_date).toLocaleDateString()}</td>
             <td>
               ${
-                isEqualIgnoreCase(task.p_status_name, "Pending")
+                isEqualIgnoreCase(task.pt_status_name, "Pending")
                   ? `<button class="btn btn-primary btn-sm start-parent-task" data-id="${task.head_id}">Start</button>`
-                  : isEqualIgnoreCase(task.p_status_name, "Processing")
+                  : isEqualIgnoreCase(task.pt_status_name, "Processing")
                   ? `<button class="btn btn-success btn-sm complete-parent-task" data-id="${task.head_id}">Complete</button>`
-                  : ""
+                  : "N/A"
               }
             </td> 
           </tr>
@@ -67,16 +67,15 @@ async function displayUserTaskHeader() {
   }
 }
 
-$("#userTaskHeaderList").on(
-  "click",
-  ".start-parent-task",
-  "data",
-  async function () {
-    const user_task_head_id = $(this).data("id");
+//start process by parent task
+$("#userTaskHeaderList").on("click", ".start-parent-task", async function () {
+  const user_task_head_id = $(this).data("id");
+  try {
+    // Fetch parent task details
     const head_task = await UserTaskViewApi.getUserTaskById(user_task_head_id);
-    
+
     // Show confirmation dialog
-    Swal.fire({
+    const result = await Swal.fire({
       title: "Start All Subtasks?",
       text: `Are you sure you want to start all subtasks under [${head_task.pt_name}]?`,
       icon: "question",
@@ -84,17 +83,46 @@ $("#userTaskHeaderList").on(
       confirmButtonText: "Yes, Start",
       cancelButtonText: "No, Cancel",
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // If user confirms, start the subtasks
-        startSubTasks(head_id);
-      } else {
-        // If user cancels, show a message
-        Swal.fire("Cancelled", "Only parent task was started.", "info");
-      }
     });
+
+    if (result.isConfirmed) {
+      // Fetch and process child tasks
+      const childTasks = await UserTaskViewApi.getUserChildTaskByTaskId(
+        user_task_head_id
+      );
+
+      for (const task of childTasks) {
+        const user_child_task = await UserChildTaskApi.getTaskById(
+          task.line_id
+        );
+        user_child_task.status = 1; //Processings
+        user_child_task.start_date = new Date();
+
+        await UserChildTaskApi.updateTask(task.line_id, user_child_task);
+      }
+
+      const user_parent_task = await UserParentTaskApi.getTaskById(
+        user_task_head_id
+      );
+      user_parent_task.status = 1;
+      user_parent_task.start_date = new Date();
+      console.log(user_parent_task);
+
+      await UserParentTaskApi.updateTask(user_task_head_id, user_parent_task);
+
+      displayUserTaskHeader();
+
+      displayUserTaskDetail(user_task_head_id);
+
+      Swal.fire("Started!", "All subtasks have been started.", "success");
+    } else {
+      Swal.fire("Cancelled", "Only the parent task remains unchanged.", "info");
+    }
+  } catch (error) {
+    console.error("Error processing tasks:", error);
+    Swal.fire("Error", "Something went wrong. Please try again.", "error");
   }
-);
+});
 
 // Function to display user task details when a task is clicked
 async function displayUserTaskDetail(taskHeadId) {
@@ -143,7 +171,15 @@ async function displayUserTaskDetail(taskHeadId) {
                  ? new Date(detail.last_updated_date).toLocaleDateString()
                  : new Date(detail.created_date).toLocaleDateString()
              }</td>
-           
+           <td>
+              ${
+                isEqualIgnoreCase(detail.ct_status_name, "Pending")
+                  ? `<button class="btn btn-primary btn-sm start-current-task" data-id="${detail.line_id}">Start</button>`
+                  : isEqualIgnoreCase(detail.ct_status_name, "Processing")
+                  ? `<button class="btn btn-success btn-sm complete-current-task" data-id="${detail.line_id}">Complete</button>`
+                  : "N/A"
+              }
+            </td> 
           </tr>
         `
       )
