@@ -13,6 +13,10 @@ $(document).ready(async function () {
   $("#userTaskHeaderList").on("click", ".start-parent-task", function () {
     handleParentTaskStart($(this).data("id"));
   });
+
+  $("#userTaskDetailList").on("click", ".start-child-task", function () {
+    handleChildTaskStart($(this).data("id"), $(this).data("headid"));
+  });
 });
 
 async function displayUserTaskHeader() {
@@ -34,7 +38,11 @@ async function buildTaskRow(task) {
     task.count_child_tasks > 0
       ? (completeChildTasks / task.count_child_tasks) * 100
       : 0;
-  const statusButton = getStatusButton(task.pt_status_name, task.head_id);
+  const statusButton = getStatusButton(
+    task.pt_status_name,
+    task.head_id,
+    "parent"
+  );
 
   return `
     <tr class="task-row" data-task-head-id="${task.head_id}">
@@ -51,19 +59,25 @@ async function buildTaskRow(task) {
   `;
 }
 
-function getStatusButton(status, taskId) {
+function getStatusButton(status, taskId, type, headId = null) {
   if (isEqualIgnoreCase(status, "Pending")) {
-    return `<button class="btn btn-primary btn-sm start-parent-task" data-id="${taskId}">Start</button>`;
+    return isEqualIgnoreCase(type, "parent")
+      ? `<button class="btn btn-primary btn-sm start-${type}-task" data-id="${taskId}">Start</button>`
+      : `<button class="btn btn-primary btn-sm start-${type}-task" data-id="${taskId}" data-headid="${headId}">Start</button>`;
   }
   if (isEqualIgnoreCase(status, "Processing")) {
-    return `<button class="btn btn-success btn-sm complete-parent-task" data-id="${taskId}">Complete</button>`;
+    return isEqualIgnoreCase(type, "parent")
+      ? `<button class="btn btn-success btn-sm complete-${type}-task" data-id="${taskId}">Complete</button>`
+      : `<button class="btn btn-success btn-sm complete-${type}-task" data-id="${taskId}" data-headid="${headId}">Complete</button>`;
   }
   return "N/A";
 }
 
 async function handleParentTaskStart(user_task_head_id) {
   try {
-    const head_task = await UserTaskViewApi.getUserTaskById(user_task_head_id);
+    const head_task = await UserTaskViewApi.getUserTaskByHeadId(
+      user_task_head_id
+    );
     const result = await Swal.fire({
       title: "Start All Subtasks?",
       text: `Are you sure you want to start all subtasks under [${head_task.pt_name}]?`,
@@ -75,7 +89,7 @@ async function handleParentTaskStart(user_task_head_id) {
     });
 
     if (result.isConfirmed) {
-      await startChildTasks(user_task_head_id);
+      await startBatchChildTasks(user_task_head_id);
       await startParentTask(user_task_head_id);
       await displayUserTaskHeader();
       await displayUserTaskDetail(user_task_head_id);
@@ -89,7 +103,37 @@ async function handleParentTaskStart(user_task_head_id) {
   }
 }
 
-async function startChildTasks(taskHeadId) {
+async function handleChildTaskStart(user_task_line_id, user_task_head_id) {
+  try {
+    const child_task = await UserTaskViewApi.getUserTaskByLineId(
+      user_task_line_id
+    );
+    const result = await Swal.fire({
+      title: "Start Subtasks?",
+      text: `Are you sure you want to start the subtasks [${child_task.ct_name}]?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Start",
+      cancelButtonText: "No, Cancel",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      await startSingleChildTask(user_task_line_id);
+      await startParentTask(user_task_head_id);
+      await displayUserTaskHeader();
+      await displayUserTaskDetail(user_task_head_id);
+      Swal.fire("Started!", "The subtasks have been started.", "success");
+    } else {
+      Swal.fire("Cancelled", "Only the parent task remains unchanged.", "info");
+    }
+  } catch (error) {
+    console.error("Error processing tasks:", error);
+    Swal.fire("Error", "Something went wrong. Please try again.", "error");
+  }
+}
+
+async function startBatchChildTasks(taskHeadId) {
   const childTasks = await UserTaskViewApi.getUserChildTaskByTaskId(taskHeadId);
   for (const task of childTasks) {
     const updatedTask = await UserChildTaskApi.getTaskById(task.line_id);
@@ -99,11 +143,22 @@ async function startChildTasks(taskHeadId) {
   }
 }
 
+async function startSingleChildTask(taskLineId) {
+  const childTask = await UserTaskViewApi.getUserTaskByLineId(taskLineId);
+
+  const updatedTask = await UserChildTaskApi.getTaskById(childTask.line_id);
+  updatedTask.status = 1;
+  updatedTask.start_date = new Date();
+  await UserChildTaskApi.updateTask(taskLineId, updatedTask);
+}
+
 async function startParentTask(taskHeadId) {
   const parentTask = await UserParentTaskApi.getTaskById(taskHeadId);
-  parentTask.status = 1;
-  parentTask.start_date = new Date();
-  await UserParentTaskApi.updateTask(taskHeadId, parentTask);
+  if (!isEqualIgnoreCase(parentTask.pt_status_name, "processing")) {
+    parentTask.status = 1;
+    parentTask.start_date = new Date();
+    await UserParentTaskApi.updateTask(taskHeadId, parentTask);
+  }
 }
 
 async function displayUserTaskDetail(taskHeadId) {
@@ -111,6 +166,7 @@ async function displayUserTaskDetail(taskHeadId) {
     const taskDetails = await UserTaskViewApi.getUserChildTaskByTaskId(
       taskHeadId
     );
+
     const taskDetailRows = taskDetails.length
       ? taskDetails.map(buildTaskDetailRow).join("")
       : "<tr><td colspan='10'>No details available</td></tr>";
@@ -141,7 +197,12 @@ function buildTaskDetailRow(detail) {
       <td>${formatDate(detail.ct_start_date)}</td>
       <td>${formatDate(detail.ct_end_date)}</td>
       <td>${formatDate(detail.last_updated_date || detail.created_date)}</td>
-      <td>${getStatusButton(detail.ct_status_name, detail.line_id)}</td>
+      <td>${getStatusButton(
+        detail.ct_status_name,
+        detail.line_id,
+        "child",
+        detail.user_parenttask_id
+      )}</td>
     </tr>
   `;
 }
