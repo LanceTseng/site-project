@@ -87,7 +87,7 @@ class UserTaskViewController {
     }
   }
 
-  async getUserChildTaskViewByTaskId(req, res) {
+  async getUserChildTaskViewByTaskId(req, res) {//parent_task_id
     try {
       const childTasks = await UserTaskViewRepository.getUserChildTaskByTaskId(
         req.params.id
