@@ -37,7 +37,7 @@
             <th>Task Name</th>
             <th>Task Description</th>
             <th>Task Group</th>
-            <th>Auto Start?</th>
+            <th hidden>group_id</th>
             <th>Created Date</th>
             <th>Last Updated Date</th>
             <th>Actions</th>
@@ -97,13 +97,6 @@
                 <label for="taskGroupId">Task Group</label>
                 <select class="form-control" id="taskGroupId" required></select>
               </div>
-              <div class="form-group">
-                <label for="autoStart">Auto Start?</label>
-                <select class="form-control" id="autoStart">
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
-                </select>
-              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -126,9 +119,11 @@
     <%- include('../partials/footer-simple') %>
 
     <!-- Bootstrap JS and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Custom JS -->
     <script src="/js/mgmt-task.js" type="module"></script>
