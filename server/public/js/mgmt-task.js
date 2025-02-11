@@ -5,16 +5,15 @@ import { formatDate } from "./utils/stringUtils.js";
 // Populate task group dropdown
 async function populateTaskGroups() {
   const taskGroupDropdown = $("#taskGroupId");
-  taskGroupDropdown.empty();
-  taskGroupDropdown.append(
-    '<option value="" disabled selected>Select a Group</option>'
-  );
+  taskGroupDropdown
+    .empty()
+    .append('<option value="" disabled selected>Select a Group</option>');
 
   try {
-    const task_groups = await ObjectTypeApi.getTaskByName("task_group");
-    task_groups.forEach((group) => {
+    const taskGroups = await ObjectTypeApi.getTaskByName("task_group");
+    taskGroups.forEach(({ object_type_item_key, object_type_item_value }) => {
       taskGroupDropdown.append(
-        `<option value="${group.object_type_item_key}">${group.object_type_item_value}</option>`
+        `<option value="${object_type_item_key}">${object_type_item_value}</option>`
       );
     });
   } catch (error) {
@@ -22,44 +21,49 @@ async function populateTaskGroups() {
   }
 }
 
-// Render tasks
+// Render tasks in the table
 async function renderTasks() {
   const taskTableBody = $("#taskTable tbody");
   taskTableBody.empty();
 
   try {
-    const parent_tasks = await ParentTaskApi.getTasks();
-    const task_groups = await ObjectTypeApi.getTaskByName("task_group");
+    const [parentTasks, taskGroups] = await Promise.all([
+      ParentTaskApi.getTasks(),
+      ObjectTypeApi.getTaskByName("task_group"),
+    ]);
 
-    parent_tasks.forEach((task) => {
-      const taskGroup = task_groups.find(
-        (g) => g.object_type_item_key == task.task_group_id
-      );
-      const taskGroupName = taskGroup
-        ? taskGroup.object_type_item_value
-        : "Unknown Group"; // Handle missing groups
+    const taskGroupMap = new Map(
+      taskGroups.map((g) => [g.object_type_item_key, g.object_type_item_value])
+    );
 
-      const row = `
-        <tr data-id="${task.task_id}">
-          <td>${task.task_id}</td>
-          <td>${task.task_name}</td>
-          <td>${task.task_description}</td>
+    parentTasks.forEach(
+      ({
+        task_id,
+        task_name,
+        task_description,
+        task_group_id,
+        created_date,
+        last_updated_date,
+      }) => {
+        const taskGroupName =
+          taskGroupMap.get(task_group_id) || "Unknown Group";
+        taskTableBody.append(`
+        <tr data-id="${task_id}">
+          <td>${task_id}</td>
+          <td>${task_name}</td>
+          <td>${task_description}</td>
           <td>${taskGroupName}</td>
-          <td hidden>${task.task_group_id}</td>
-          <td>${formatDate(task.created_date)}</td>
-          <td>${formatDate(task.last_updated_date)}</td>
+          <td hidden>${task_group_id}</td>
+          <td>${formatDate(created_date)}</td>
+          <td>${formatDate(last_updated_date)}</td>
           <td>
-            <button class="btn btn-info btn-sm edit-task" data-id="${
-              task.task_id
-            }">Edit</button>
-            <a href="/mgmt-subtask/${
-              task.task_id
-            }" class="btn btn-primary btn-sm">Add Subtask</a>
+            <button class="btn btn-info btn-sm edit-task" data-id="${task_id}">Edit</button>
+            <a href="/mgmt-subtask/${task_id}" class="btn btn-primary btn-sm">Add Subtask</a>
           </td>
         </tr>
-      `;
-      taskTableBody.append(row);
-    });
+      `);
+      }
+    );
   } catch (error) {
     console.error("Error rendering tasks:", error);
   }
@@ -67,18 +71,16 @@ async function renderTasks() {
 
 // Reset modal form
 function resetTaskForm() {
-  $("#taskName").val("");
-  $("#taskDescription").val("");
-  $("#taskGroupId").val("");
+  $("#taskName, #taskDescription, #taskGroupId").val("");
 }
 
-// Create new task
-$("#saveTask").click(async function () {
+// Handle save task
+async function saveTask() {
   const taskName = $("#taskName").val();
   const taskDescription = $("#taskDescription").val();
-  const taskGroupId = parseInt($("#taskGroupId").val(), 10); // Ensure proper integer conversion
+  const taskGroupId = parseInt($("#taskGroupId").val(), 10);
 
-  if (!taskName || !taskGroupId) {
+  if (!taskName || isNaN(taskGroupId)) {
     alert("Please fill in all required fields.");
     return;
   }
@@ -89,18 +91,15 @@ $("#saveTask").click(async function () {
       task_description: taskDescription,
       task_group_id: taskGroupId,
     });
-
     await renderTasks();
     closeModal();
   } catch (error) {
     console.error("Error creating task:", error);
   }
-});
+}
 
-// Edit task
-$(document).on("click", ".edit-task", async function () {
-  const taskId = $(this).data("id");
-
+// Handle edit task
+async function editTask(taskId) {
   try {
     const task = await ParentTaskApi.getTaskById(taskId);
     $("#taskName").val(task.task_name);
@@ -127,7 +126,7 @@ $(document).on("click", ".edit-task", async function () {
   } catch (error) {
     console.error("Error fetching task for editing:", error);
   }
-});
+}
 
 // Close modal and reset form
 function closeModal() {
@@ -137,8 +136,12 @@ function closeModal() {
   resetTaskForm();
 }
 
-// Initial render
+// Event Listeners
 $(document).ready(function () {
   populateTaskGroups();
   renderTasks();
+  $("#saveTask").click(saveTask);
+  $(document).on("click", ".edit-task", function () {
+    editTask($(this).data("id"));
+  });
 });
