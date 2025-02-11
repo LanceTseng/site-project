@@ -1,7 +1,7 @@
 import * as UserTaskViewApi from "./services/userTaskViewServices.js";
 import * as UserParentTaskApi from "./services/relUserParentTaskServices.js";
 import * as UserChildTaskApi from "./services/relUserChildTaskServices.js";
-import { isEqualIgnoreCase } from "./utils/stringUtils.js";
+import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
 
 $(document).ready(async function () {
   await displayUserTaskHeader();
@@ -160,10 +160,11 @@ async function handleChildTaskComplete(user_task_line_id, user_task_head_id) {
     if (result.isConfirmed) {
       await completeSingleChildTask(user_task_line_id);
 
-      const child_tasks = await UserTaskViewApi.getUserTaskByHeadId(
-        user_task_head_id
-      )?? [];
-      const uncompleted_child_tasks = child_tasks.filter((o) => o.ct_status < 2).length;
+      const child_tasks =
+        (await UserTaskViewApi.getUserTaskByHeadId(user_task_head_id)) ?? [];
+      const uncompleted_child_tasks = child_tasks.filter(
+        (o) => o.ct_status < 2
+      ).length;
 
       if (uncompleted_child_tasks === 0) {
         await completeParentTask(user_task_head_id);
@@ -322,8 +323,4 @@ function buildTaskDetailRow(detail) {
       )}</td>
     </tr>
   `;
-}
-
-function formatDate(date) {
-  return date ? new Date(date).toLocaleDateString() : "";
 }

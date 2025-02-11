@@ -29,7 +29,7 @@ export const getTasks = async () => {
 };
 
 // Function to get a specific task by ID
-const getTaskById = async (taskId) => {
+export const getTaskById = async (taskId) => {
   try {
     const response = await axiosInstance.get(
       `${baseURL}${taskId}`
