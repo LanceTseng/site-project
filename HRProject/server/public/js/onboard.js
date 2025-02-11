@@ -95,6 +95,7 @@ $(document).ready(async function () {
           const childTasks = await ChildTaskApi.getTaskByParentTaskId(
             parent.task_id
           );
+          console.log(childTasks);
           const countChildTasks = childTasks?.length || 0;
 
           const userParentTask = await UserParentTaskApi.createTask({
@@ -116,15 +117,13 @@ $(document).ready(async function () {
               access_provisioning_id: child.access_provisioning_id || null,
               interview_id: child.interview_id || null,
               server_id: child.server_id || null,
-              hand_over_id: child.hand_over_id || null,
-              start_date: null,
-              end_date: null,
+              hand_over_id: child.hand_over_id || null
             });
           }
         }
 
         const emp = await EmployeeApi.getTaskById(userId);
-        emp.status = 1;
+        emp.status = 1;//onboarding
         await EmployeeApi.updateTask(emp.employee_id, emp);
 
         // Show success message
