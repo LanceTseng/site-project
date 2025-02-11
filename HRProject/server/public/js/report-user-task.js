@@ -17,6 +17,14 @@ $(document).ready(async function () {
   $("#userTaskDetailList").on("click", ".start-child-task", function () {
     handleChildTaskStart($(this).data("id"), $(this).data("headid"));
   });
+
+  $("#userTaskHeaderList").on("click", ".complete-parent-task", function () {
+    handleParentTaskComplete($(this).data("id"));
+  });
+
+  $("#userTaskDetailList").on("click", ".complete-child-task", function () {
+    handleChildTaskComplete($(this).data("id"), $(this).data("headid"));
+  });
 });
 
 async function displayUserTaskHeader() {
@@ -103,6 +111,87 @@ async function handleParentTaskStart(user_task_head_id) {
   }
 }
 
+async function handleParentTaskComplete(user_task_head_id) {
+  try {
+    const head_task = await UserTaskViewApi.getUserTaskByHeadId(
+      user_task_head_id
+    );
+    const result = await Swal.fire({
+      title: "Complete All Subtasks?",
+      text: `Are you sure you want to complete all subtasks under [${head_task.pt_name}]?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Start",
+      cancelButtonText: "No, Cancel",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      await completeBatchChildTasks(user_task_head_id);
+      await completeParentTask(user_task_head_id);
+      await displayUserTaskHeader();
+      await displayUserTaskDetail(user_task_head_id);
+      Swal.fire("Started!", "All subtasks have been started.", "success");
+    } else {
+      Swal.fire("Cancelled", "Only the parent task remains unchanged.", "info");
+    }
+  } catch (error) {
+    console.error("Error processing tasks:", error);
+    Swal.fire("Error", "Something went wrong. Please try again.", "error");
+  }
+}
+
+async function handleChildTaskComplete(user_task_line_id, user_task_head_id) {
+  try {
+    const child_task = await UserTaskViewApi.getUserTaskByLineId(
+      user_task_line_id
+    );
+
+    const result = await Swal.fire({
+      title: "Start Subtasks?",
+      text: `Are you sure you want to start the subtasks [${child_task.ct_name}]?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Start",
+      cancelButtonText: "No, Cancel",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      await completeSingleChildTask(user_task_line_id);
+
+      const child_tasks = await UserTaskViewApi.getUserTaskByHeadId(
+        user_task_head_id
+      )?? [];
+      const uncompleted_child_tasks = child_tasks.filter((o) => o.ct_status < 2).length;
+
+      if (uncompleted_child_tasks === 0) {
+        await completeParentTask(user_task_head_id);
+      }
+
+      await Promise.all([
+        displayUserTaskHeader(),
+        displayUserTaskDetail(user_task_head_id),
+      ]);
+
+      await Swal.fire("Started!", "The subtasks have been started.", "success");
+    } else {
+      await Swal.fire(
+        "Cancelled",
+        "Only the parent task remains unchanged.",
+        "info"
+      );
+    }
+  } catch (error) {
+    console.error("Error processing tasks:", error);
+    await Swal.fire(
+      "Error",
+      "Something went wrong. Please try again.",
+      "error"
+    );
+  }
+}
+
 async function handleChildTaskStart(user_task_line_id, user_task_head_id) {
   try {
     const child_task = await UserTaskViewApi.getUserTaskByLineId(
@@ -143,6 +232,16 @@ async function startBatchChildTasks(taskHeadId) {
   }
 }
 
+async function completeBatchChildTasks(taskHeadId) {
+  const childTasks = await UserTaskViewApi.getUserChildTaskByTaskId(taskHeadId);
+  for (const task of childTasks) {
+    const updatedTask = await UserChildTaskApi.getTaskById(task.line_id);
+    updatedTask.status = 2;
+    updatedTask.start_date = new Date();
+    await UserChildTaskApi.updateTask(task.line_id, updatedTask);
+  }
+}
+
 async function startSingleChildTask(taskLineId) {
   const childTask = await UserTaskViewApi.getUserTaskByLineId(taskLineId);
 
@@ -152,10 +251,28 @@ async function startSingleChildTask(taskLineId) {
   await UserChildTaskApi.updateTask(taskLineId, updatedTask);
 }
 
+async function completeSingleChildTask(taskLineId) {
+  const childTask = await UserTaskViewApi.getUserTaskByLineId(taskLineId);
+
+  const updatedTask = await UserChildTaskApi.getTaskById(childTask.line_id);
+  updatedTask.status = 2;
+  updatedTask.start_date = new Date();
+  await UserChildTaskApi.updateTask(taskLineId, updatedTask);
+}
+
 async function startParentTask(taskHeadId) {
   const parentTask = await UserParentTaskApi.getTaskById(taskHeadId);
   if (!isEqualIgnoreCase(parentTask.pt_status_name, "processing")) {
     parentTask.status = 1;
+    parentTask.start_date = new Date();
+    await UserParentTaskApi.updateTask(taskHeadId, parentTask);
+  }
+}
+
+async function completeParentTask(taskHeadId) {
+  const parentTask = await UserParentTaskApi.getTaskById(taskHeadId);
+  if (!isEqualIgnoreCase(parentTask.pt_status_name, "processing")) {
+    parentTask.status = 2;
     parentTask.start_date = new Date();
     await UserParentTaskApi.updateTask(taskHeadId, parentTask);
   }
