@@ -2,6 +2,7 @@ import * as ParentTaskApi from "./services/parentTaskServices.js";
 import * as ChildTaskApi from "./services/childTaskServices.js";
 import * as DocumentTaskApi from "./services/documentServices.js";
 import * as ObjectTypeApi from "./services/objectTypeServices.js";
+import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js"; 
 
 $(document).ready(async function () {
   const taskId = window.location.pathname.split("/").pop();
@@ -131,25 +132,23 @@ $(document).ready(async function () {
         const document =
           documents.find((doc) => doc.document_id === subtask.document_id) ??
           null;
-        const equipment_type =
+        const equipment =
           equipmentTypes.find(
             (eqpt) => eqpt.object_type_item_key == subtask.equiptment_type_id
           ) ?? null;
 
         // Default Values if Data is Null
-        const subtask_name = subtask.subtask_name ?? "N/A";
-        const subtask_description = subtask.subtask_description ?? "N/A";
+        const subtask_name = subtask.child_task_name ?? "N/A";
+        const subtask_description = subtask.child_task_description ?? "N/A";
         const document_status = document ? "N/A" : "NULL";
         const require_upload = document?.require_upload
           ? `<button class="btn btn-secondary btn-sm upload-btn" data-id="${subtask.child_task_id}">Upload File</button>`
           : "";
-        const equipment_status = equipment_type ? "N/A" : "NULL";
+        const equipment_type = equipment ? equipment.object_type_item_value : "N/A";
         const trainingModule = "N/A";
         const interview = "N/A";
         const survey = "N/A";
-        const created_date = subtask.created_date ?? "N/A";
-        const last_updated_date = subtask.last_updated_date ?? "N/A";
-        const enable_status = subtask.enable ?? "N/A";
+        const enable_status = (subtask.enabled)? "Y":"N";
 
         // Append Row to Table
         tableBody.append(`
@@ -159,17 +158,15 @@ $(document).ready(async function () {
             <td>${subtask_description}</td>
             <td>${document_status}</td>
             <td>${require_upload}</td>
-            <td>${equipment_status}</td>
+            <td>${equipment_type}</td>
             <td>${trainingModule}</td>
             <td>${interview}</td>
             <td>${survey}</td>
-            <td>${created_date}</td>
-            <td>${last_updated_date}</td>
             <td>${enable_status}</td>
             <td>
               <button data-id="${
                 subtask.child_task_id ?? ""
-              }" class="btn btn-sm btn-warning edit data-mode="edit"">Edit</button>
+              }" class="btn btn-sm btn-info edit data-mode="edit"">Edit</button>
             </td>
           </tr>
         `);
