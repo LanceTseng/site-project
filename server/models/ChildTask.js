@@ -49,6 +49,11 @@ const ChildTask = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    enabled: {
+      type: DataTypes.TINYINT,
+      allowNull: true,
+      defaultValue: 1,
+    },
   },
   {
     tableName: "b_child_tasks",

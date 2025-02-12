@@ -1,27 +1,20 @@
-// Mock Subtask Data
-import {
-  subtasks,
-  object_type,
-  training_modules,
-  interviews,
-  surveys,
-  tasks,
-} from "./mockdata.js"; // Adjust the path as necessary
+import * as ParentTaskApi from "./services/parentTaskServices.js";
+import * as ChildTaskApi from "./services/childTaskServices.js";
+import * as DocumentTaskApi from "./services/documentServices.js";
+import * as ObjectTypeApi from "./services/objectTypeServices.js";
 
-import { documents } from "./mockdata2.js";
-
-$(document).ready(function () {
+$(document).ready(async function () {
   const taskId = window.location.pathname.split("/").pop();
 
-  function populateTaskName() {
-    const task = tasks.find((t) => t.id == taskId);
-    const taskName = task ? task.task_name : "N/A";
+  async function populateTaskName() {
+    const parent_task = await ParentTaskApi.getTaskById(taskId);
 
-    $("#taskName").text(taskName);
+    $("#taskName").text(parent_task.task_name);
+    $("#taskName").attr("data-id", parent_task.task_id);
   }
 
   // Populate the Document Dropdown
-  function populateDocumentDropdown() {
+  async function populateDocumentDropdown() {
     const $documentDropdown = $("#documentId");
     $documentDropdown.empty(); // Clear existing options
 
@@ -30,16 +23,17 @@ $(document).ready(function () {
       `<option value="" disabled selected>Select a document</option>`
     );
 
+    const documents = await DocumentTaskApi.getTasks();
     // Populate dropdown with documents from mockdata.js
     documents.forEach((doc) => {
       $documentDropdown.append(
-        `<option value="${doc.id}">${doc.document_name}</option>`
+        `<option value="${doc.object_type_item_key}">${doc.object_type_item_value}</option>`
       );
     });
   }
 
   // Populate Device Type Dropdown
-  function populateDeviceTypeDropdown() {
+  async function populateDeviceTypeDropdown() {
     const $deviceDropdown = $("#deviceId");
     $deviceDropdown.empty(); // Clear existing options
 
@@ -49,11 +43,12 @@ $(document).ready(function () {
     );
 
     // Filter only the "Equipment" object types and populate dropdown
-    object_type
+    const equipment_types = await ObjectTypeApi.getTaskByName("equipment_type");
+    equipment_types
       .filter((type) => type.object === "Equiptment")
       .forEach((device) => {
         $deviceDropdown.append(
-          `<option value="${device.id}">${device.object_type}</option>`
+          `<option value="${device.object_type_item_key}">${device.object_type_item_value}</option>`
         );
       });
   }
@@ -67,7 +62,7 @@ $(document).ready(function () {
     $trainingDropdown.append(
       `<option value="" disabled selected>Select a training module</option>`
     );
-
+    const training_modules = [];
     // Populate options from training_modules array
     training_modules.forEach((module) => {
       $trainingDropdown.append(
@@ -86,6 +81,7 @@ $(document).ready(function () {
       `<option value="" disabled selected>Select an interview</option>`
     );
 
+    const interviews = [];
     // Populate options from interviews array
     interviews.forEach((interview) => {
       $interviewDropdown.append(
@@ -104,6 +100,7 @@ $(document).ready(function () {
       `<option value="" disabled selected>Select a survey</option>`
     );
 
+    const surveys = [];
     // Populate options from surveys array
     surveys.forEach((survey) => {
       $surveyDropdown.append(
@@ -113,58 +110,74 @@ $(document).ready(function () {
   }
 
   // Populate Subtask Table
-  function populateTable() {
-    const $tableBody = $("#subtaskTable tbody");
-    $tableBody.empty();
+  async function populateTable() {
+    const tableBody = $("#subtaskTable tbody");
+    tableBody.empty();
 
-    subtasks.forEach((subtask) => {
-      if (subtask.task_id == taskId) {
-        const document = documents.find(
-          (doc) => doc.id === subtask.document_id
-        );
-        const device = object_type.find(
-          (eqpt) =>
-            eqpt.object === "Equiptment" && eqpt.id == subtask.device_type_id
-        );
-        const trainingModule = training_modules.find(
-          (mod) => mod.id == subtask.training_module_id
-        );
-        const interview = interviews.find(
-          (int) => int.id == subtask.interview_id
-        );
-        const survey = surveys.find((surv) => surv.id == subtask.survey_id);
+    const parent_task_id = $("#taskName").attr("data-id");
+    if (!parent_task_id) {
+      console.error("Parent Task ID is missing.");
+      return;
+    }
 
-        $tableBody.append(`
+    try {
+      const subtasks = await ChildTaskApi.getTaskByParentTaskId(parent_task_id);
+      const documents = await DocumentTaskApi.getTasks();
+      const equipmentTypes = await ObjectTypeApi.getTaskByName(
+        "equipment_type"
+      );
+
+      subtasks.forEach((subtask) => {
+        const document =
+          documents.find((doc) => doc.document_id === subtask.document_id) ??
+          null;
+        const equipment_type =
+          equipmentTypes.find(
+            (eqpt) => eqpt.object_type_item_key == subtask.equiptment_type_id
+          ) ?? null;
+
+        // Default Values if Data is Null
+        const subtask_name = subtask.subtask_name ?? "N/A";
+        const subtask_description = subtask.subtask_description ?? "N/A";
+        const document_status = document ? "N/A" : "NULL";
+        const require_upload = document?.require_upload
+          ? `<button class="btn btn-secondary btn-sm upload-btn" data-id="${subtask.child_task_id}">Upload File</button>`
+          : "";
+        const equipment_status = equipment_type ? "N/A" : "NULL";
+        const trainingModule = "N/A";
+        const interview = "N/A";
+        const survey = "N/A";
+        const created_date = subtask.created_date ?? "N/A";
+        const last_updated_date = subtask.last_updated_date ?? "N/A";
+        const enable_status = subtask.enable ?? "N/A";
+
+        // Append Row to Table
+        tableBody.append(`
           <tr>
-            <td>${subtask.id}</td>
-            <td>${subtask.subtask_name}</td>
-            <td>${subtask.subtask_description}</td>
-            <td>${document ? document.document_name : "N/A"}</td>
-            <td>
-              ${
-                document.docuument_upload
-                  ? '<button class="btn btn-secondary btn-sm upload-btn">Upload File</button>'
-                  : ""
-              }
-            </td>
-            <td>${device ? device.object_type : "N/A"}</td>
-            <td>${trainingModule ? trainingModule.training_name : "N/A"}</td>
-            <td>${interview ? interview.interview_name : "N/A"}</td>
-            <td>${survey ? survey.survey_name : "N/A"}</td>
-            <td>${subtask.created_date}</td>
-            <td>${subtask.last_updated_date}</td>
-            <td>${subtask.enable}</td>
+            <td>${subtask.child_task_id ?? "N/A"}</td>
+            <td>${subtask_name}</td>
+            <td>${subtask_description}</td>
+            <td>${document_status}</td>
+            <td>${require_upload}</td>
+            <td>${equipment_status}</td>
+            <td>${trainingModule}</td>
+            <td>${interview}</td>
+            <td>${survey}</td>
+            <td>${created_date}</td>
+            <td>${last_updated_date}</td>
+            <td>${enable_status}</td>
             <td>
               <button data-id="${
-                subtask.id
-              }" class="btn btn-sm btn-warning edit">Edit</button>
+                subtask.child_task_id ?? ""
+              }" class="btn btn-sm btn-warning edit data-mode="edit"">Edit</button>
             </td>
           </tr>
         `);
-      }
-    });
+      });
+    } catch (error) {
+      console.error("Error populating table:", error);
+    }
   }
-
   // Reset Form Fields
   function resetForm() {
     $("#subtaskId").val("");
@@ -180,36 +193,33 @@ $(document).ready(function () {
   }
 
   // Save or Update Subtask
-  $("#saveSubtask").click(function () {
+  $("#saveSubtask").click(async function () {
     const mode = $(this).data("mode"); // Check if the button is in "add" or "edit" mode
-    const subtaskId = $("#subtaskId").val();
 
     const subtask = {
-      id: subtaskId || subtasks.length() + 1,
-      subtask_name: $("#subtaskName").val(),
-      subtask_description: $("#subtaskDescription").val(),
-      document_id: $("#documentId").val(),
-      device_type_id: $("#deviceId").val(),
-      upload_file_requirement: $("#fileRequirement").val(),
-      training_module_id: $("#trainingModuleId").val(),
-      interview_id: $("#interviewId").val(),
-      survey_id: $("#surveyId").val(),
-      created_date: new Date().toISOString(),
-      last_updated_date: new Date().toISOString(),
+      child_task_id: $("#subtaskId").val() || null,
+      child_task_name: $("#subtaskName").val() || null,
+      child_task_description: $("#subtaskDescription").val() || null,
+      document_id: $("#documentId").val() || null,
+      equipment_type_id: $("#deviceId").val() || null,
+      access_provisioning_id: $("#fileRequirement").val() || null,
+      training_module_id: $("#trainingModuleId").val() || null,
+      interview_id: $("#interviewId").val() || null,
+      survey_id: $("#surveyId").val() || null,
       enable: $("#enable").val() === "true",
     };
-
-    if (!subtask.subtask_name || !subtask.subtask_description) {
+ 
+    if (!subtask.child_task_name) {
       alert("Please fill in all required fields.");
       return;
     }
 
     if (mode === "add") {
       // Add new subtask
-      subtasks.push(subtask);
+      await ChildTaskApi.createTask(subtask);
     } else if (mode === "edit") {
       // Update existing subtask
-      const existingSubtask = subtasks.find((item) => item.id == subtaskId);
+      const existingSubtask = await ChildTaskApi.getTaskById(subtask.child_task_id);
       if (existingSubtask) {
         Object.assign(existingSubtask, subtask);
       }
@@ -230,21 +240,22 @@ $(document).ready(function () {
   });
 
   // Open Modal for Editing a Subtask
-  $(document).on("click", ".edit", function () {
+  $(document).on("click", ".edit", async function () {
     const subtaskId = $(this).data("id");
-    const subtask = subtasks.find((item) => item.id == subtaskId);
+    const subtask = await ChildTaskApi.getTaskById(subtaskId);
 
     if (subtask) {
-      $("#subtaskId").val(subtask.id);
-      $("#subtaskName").val(subtask.subtask_name);
-      $("#subtaskDescription").val(subtask.subtask_description);
+      $("#subtaskId").val(subtask.child_task_id);
+      $("#subtaskName").val(subtask.child_task_name);
+      $("#subtaskDescription").val(subtask.child_task_description);
       $("#documentId").val(subtask.document_id);
-      $("#deviceId").val(subtask.device_type_id);
-      $("#fileRequirement").val(subtask.upload_file_requirement);
+      $("#deviceId").val(subtask.equipment_type_id);
+      // $("#fileRequirement").val(subtask.u);
       $("#trainingModuleId").val(subtask.training_module_id);
       $("#interviewId").val(subtask.interview_id);
       $("#surveyId").val(subtask.survey_id);
-      $("#enable").val(subtask.enable ? "true" : "false");
+      //handover is
+      $("#enable").val(subtask.enabled ? "true" : "false");
 
       $("#saveSubtask").data("mode", "edit"); // Set mode to "edit"
       $("#addSubtaskModal").modal("show");
@@ -252,11 +263,11 @@ $(document).ready(function () {
   });
 
   // Initialize
-  populateTable();
-  populateDocumentDropdown();
-  populateDeviceTypeDropdown();
-  populateTrainingModuleDropdown();
-  populateInterviewDropdown();
-  populateSurveyDropdown();
-  populateTaskName();
+  await populateTaskName();
+  await populateTable();
+  await populateDocumentDropdown();
+  await populateDeviceTypeDropdown();
+  await populateTrainingModuleDropdown();
+  await populateInterviewDropdown();
+  await populateSurveyDropdown();
 });

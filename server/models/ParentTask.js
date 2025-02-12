@@ -19,19 +19,16 @@ const ParentTask = sequelize.define('ParentTask', {
     type: DataTypes.INTEGER,
     allowNull: true
   },
-  created_date: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: DataTypes.NOW
+  enabled: {
+    type: DataTypes.TINYINT,
+    allowNull: true,
+    defaultValue: 1,
   },
-  last_updated_date: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: DataTypes.NOW
-  }
 }, {
   tableName: 'b_parent_tasks',
-  timestamps: false
+  timestamps: true,
+  createdAt: "created_date",
+  updatedAt: "last_updated_date"
 });
 
 module.exports = ParentTask;
