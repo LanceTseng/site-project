@@ -22,6 +22,17 @@
       margin-left: 1%;
       margin-top: 1%;
     }
+    .table-responsive {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
   </style>
   <body>
     <!-- Navbar -->
@@ -46,22 +57,35 @@
         <h4>User Task Header</h4>
         <div class="row">
           <div class="col-12">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>User Name</th>
-                  <th>Task Name</th>
-                  <th>Task Description</th>
-                  <th>Status</th>
-                  <th>Process Rate</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Last Updated</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="userTaskHeaderList"></tbody>
-            </table>
+            <div
+              class="table-responsive"
+              style="max-height:700px; overflow-y: auto"
+            >
+              <table class="table table-striped">
+                <thead
+                  class="thead-dark"
+                  style="
+                    position: sticky;
+                    top: 0;
+                    background: white;
+                    z-index: 10;
+                  "
+                >
+                  <tr>
+                    <th>User Name</th>
+                    <th>Task Name</th>
+                    <th>Task Description</th>
+                    <th>Status</th>
+                    <th>Process Rate</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Last Updated</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="userTaskHeaderList"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -71,28 +95,31 @@
         <h4>User Task Detail</h4>
         <div class="row">
           <div class="col-12">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>Subtask Name</th>
-                  <th>Subtask Description</th>
-                  <th>Subtask Status</th>
-                  <th>Document</th>
-                  <th>Device Type</th>
-                  <th>Training Module</th>
-                  <th>Interview</th>
-                  <th>Survey</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Last Updated</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="userTaskDetailList"></tbody>
-            </table>
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+              <table class="table table-striped">
+                <thead class="thead-dark" style="position: sticky; top: 0; background: white; z-index: 10;">
+                  <tr>
+                    <th>Subtask Name</th>
+                    <th>Subtask Description</th>
+                    <th>Subtask Status</th>
+                    <th>Document</th>
+                    <th>Device Type</th>
+                    <th>Training Module</th>
+                    <th>Interview</th>
+                    <th>Survey</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Last Updated</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="userTaskDetailList"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
+      
     </div>
 
     <!-- Footer -->
