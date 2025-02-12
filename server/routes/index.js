@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 // Route for home page
@@ -11,6 +11,16 @@ router.get("/login", (req, res) => {
   res.render("login");
 });
 
+// Route for onboarding
+router.get("/onboarding", (req, res) => {
+  res.render("onboard/onboarding", { title: "Onboarding" });
+});
+
+router.get("/offboarding", (req, res) => {
+  res.render("offboard/offboarding", { title: "Offboarding" });
+});
+
+//------------------------------------------------------
 router.get("/maintenance", (req, res) => {
   res.render("maintenance/mgmt-index");
 });
@@ -33,16 +43,11 @@ router.get("/mgmt-equiptment", (req, res) => {
   res.render("maintenance/mgmt-equiptment");
 });
 
-
-// Route for onboarding
-router.get("/onboarding", (req, res) => {
-  res.render("onboard/onboarding", { title: "Onboarding" });
+router.get("/mgmt-user-employee", (req, res) => {
+  res.render("maintenance/mgmt-user-employee");
 });
 
-router.get("/offboarding", (req, res) => {
-  res.render("offboard/offboarding", { title: "Offboarding" });
-});
-
+//------------------------------------------------------
 //route for report
 router.get("/report", (req, res) => {
   res.render("report/report-index");
@@ -52,13 +57,8 @@ router.get("/report-user-task", (req, res) => {
   res.render("report/report-user-task");
 });
 
-router.get("/report-user-employee", (req, res) => {
-  res.render("report/report-user-employee");
-});
-
 router.get("/report-goal", (req, res) => {
   res.render("pages/goal");
 });
 
- 
 module.exports = router;
