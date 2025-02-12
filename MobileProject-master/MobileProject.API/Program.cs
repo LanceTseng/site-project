@@ -1,8 +1,5 @@
-
-using System.Security.Cryptography;
 using MobileProject.API.Repositories;
 using MobileProject.API.Repositories.Interfaces;
-using static MobileProject.API.Repositories.Interfaces.IUsersRepository;
 
 namespace MobileProject.API
 {
@@ -47,7 +44,6 @@ namespace MobileProject.API
             //app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
