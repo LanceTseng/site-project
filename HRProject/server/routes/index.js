@@ -52,6 +52,10 @@ router.get("/report-user-task", (req, res) => {
   res.render("report/report-user-task");
 });
 
+router.get("/report-user-employee", (req, res) => {
+  res.render("report/report-user-employee");
+});
+
 router.get("/report-goal", (req, res) => {
   res.render("pages/goal");
 });

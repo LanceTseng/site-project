@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User/Employee Management</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <style>
+    .parent {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1.5fr;
+      gap: 20px;
+      padding: 20px;
+    }
+    .table-container {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+  </style>
+  <body>
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+
+    <div class="parent">
+
+        <!-- Left Panel: Search Condition -->
+        <div>
+            <h5>Search Users</h5>
+            <input type="text" id="searchUser" class="form-control mb-2" placeholder="Search by Username">
+            <button class="btn btn-primary w-100" onclick="searchUsers()">Search</button>
+        </div>
+    
+        <!-- Middle Panel: User List -->
+        <div>
+            <h5>User List</h5>
+            <div class="table-container">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Role ID</th>
+                            <th>Active</th>
+                            <th>Created Date</th>
+                            <th>Last Updated</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userList"></tbody>
+                </table>
+            </div>
+        </div>
+    
+        <!-- Right Panel: Employee Form -->
+        <div>
+            <h5>Employee Details</h5>
+            <form id="employeeForm">
+                <input type="hidden" id="employeeId">
+                
+                <label class="form-label">First Name</label>
+                <input type="text" id="firstName" class="form-control mb-2">
+    
+                <label class="form-label">Last Name</label>
+                <input type="text" id="lastName" class="form-control mb-2">
+    
+                <label class="form-label">Department ID</label>
+                <input type="number" id="departmentId" class="form-control mb-2">
+    
+                <label class="form-label">Status</label>
+                <input type="number" id="status" class="form-control mb-2">
+    
+                <label class="form-label">Address</label>
+                <input type="text" id="address" class="form-control mb-2">
+    
+                <label class="form-label">Phone</label>
+                <input type="text" id="phone" class="form-control mb-2">
+    
+                <label class="form-label">Active</label>
+                <select id="isActive" class="form-control mb-2">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+    
+                <button type="button" class="btn btn-success w-100" onclick="saveEmployee()">Save</button>
+            </form>
+        </div>
+    </div>
+    <!-- Footer -->
+    <%- include('../partials/footer-simple') %>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="/js/report-user-employee.js" type="module"></script>
+  </body>
+</html>
