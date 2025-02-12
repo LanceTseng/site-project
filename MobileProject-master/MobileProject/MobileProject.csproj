@@ -12,6 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Resources\**" />
+    <EmbeddedResource Remove="Resources\**" />
+    <None Remove="Resources\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microcharts" Version="0.9.5.9" />
     <PackageReference Include="Microcharts.Forms" Version="0.9.5.9" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
@@ -26,7 +32,6 @@
 
   <ItemGroup>
     <Folder Include="Images\" />
-    <Folder Include="Resources\" />
   </ItemGroup>
 
   <ItemGroup>
