@@ -36,7 +36,9 @@ const userModuleRoutes = require("./routes/userRoutes");
 const relUserParentTaskRoutes = require("./routes/relUserParentTaskRoutes");
 const relUserChildTaskRoutes = require("./routes/relUserChildTaskRoutes");
 const employeeViewRoutes = require("./routes/employeeViewRoutes");
+
 const userTaskViewRoutes = require("./routes/userTaskViewRoutes");
+const userEmployeeViewRoutes = require("./routes/userEmployeeViewRoutes");
 
 app.use("/api", employeeRoutes);
 app.use("/api", accessProvisioningRoutes);
@@ -51,6 +53,8 @@ app.use("/api", relUserParentTaskRoutes);
 app.use("/api", relUserChildTaskRoutes);
 app.use("/api", employeeViewRoutes);
 app.use("/api", userTaskViewRoutes);
+app.use("/api", userEmployeeViewRoutes);
+
 
 //view
 app.get("/", (req, res) => {
