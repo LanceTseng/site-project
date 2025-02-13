@@ -37,6 +37,7 @@ const relUserParentTaskRoutes = require("./routes/relUserParentTaskRoutes");
 const relUserChildTaskRoutes = require("./routes/relUserChildTaskRoutes");
 const employeeViewRoutes = require("./routes/employeeViewRoutes");
 
+const eqptOccupiedHisRoutes = require('./routes/eqptOccupiedHisRoutes');
 const userTaskViewRoutes = require("./routes/userTaskViewRoutes");
 const userEmployeeViewRoutes = require("./routes/userEmployeeViewRoutes");
 
@@ -45,6 +46,7 @@ app.use("/api", accessProvisioningRoutes);
 app.use("/api", childTaskRoutes);
 app.use("/api", documentRoutes);
 app.use("/api", equipmentRoutes);
+app.use("/api", eqptOccupiedHisRoutes);
 app.use("/api", objectTypeRoutes);
 app.use("/api", parentTaskRoutes);
 app.use("/api", trainingModuleRoutes);
@@ -55,7 +57,6 @@ app.use("/api", employeeViewRoutes);
 app.use("/api", userTaskViewRoutes);
 app.use("/api", userEmployeeViewRoutes);
 
-
 //view
 app.get("/", (req, res) => {
   console.log("get");
@@ -65,6 +66,7 @@ app.get("/", (req, res) => {
 db.authenticate()
   .then(() => console.log("✅ MySQL Connected"))
   .catch((err) => console.error("❌ DB Connection Failed:", err));
+  
 
 app.listen(process.env.PORT || port, () => {
   console.log(`Sever is on Port:${port}！`);
