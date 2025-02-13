@@ -10,12 +10,31 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <style>
+      .parent {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1.5fr;
+        gap: 20px;
+        padding: 20px;
+      }
+      .table-container {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      thead th {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 10;
+      }
+    </style>
   </head>
+
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %>
+    <div class="parent"></div>
 
-   
     <!-- Footer -->
     <%- include('../partials/footer-simple') %>
 
@@ -25,6 +44,5 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
   </body>
 </html>
