@@ -54,13 +54,19 @@ class UserEmployeeViewRepository {
 
   async getUserEmployeeByUserName(userName) {
     try {
-      const rows = await db.query(
-        "SELECT * FROM v_user_employee WHERE username LIKE :userName",
-        {
-          replacements: { userName: `%${userName}%` },
-          type: QueryTypes.SELECT,
-        }
-      );
+      let query = "SELECT * FROM v_user_employee";
+      let replacements = {};
+
+      if (userName) {
+        query += " WHERE username LIKE :userName";
+        replacements.userName = `%${userName}%`;
+      }
+
+      const rows = await db.query(query, {
+        replacements,
+        type: QueryTypes.SELECT,
+      });
+
       return rows;
     } catch (error) {
       console.error(`Error fetching user with name "${userName}":`, error);

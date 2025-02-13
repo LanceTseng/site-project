@@ -51,7 +51,7 @@ export const getTaskByName = async (taskName) => {
 export const updateTask = async (taskId, updatedData) => {
   try {
     const response = await axiosInstance.put(
-      `${baseURL}/${taskId}`,
+      `${baseURL}${taskId}`,
       updatedData
     );
     return response.data;
