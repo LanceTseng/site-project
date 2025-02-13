@@ -34,68 +34,162 @@
     <%- include('../partials/navbar') %>
 
     <div class="parent">
+      <!-- Left Panel: Search Condition -->
+      <div>
+        <h5>Search Users</h5>
+        <input
+          type="text"
+          id="searchUser"
+          class="form-control mb-2"
+          placeholder="Search by Username"
+        />
+        <button class="btn btn-primary w-100" id="searchBtn">
+          Search
+        </button>
+      </div>
 
-        <!-- Left Panel: Search Condition -->
-        <div>
-            <h5>Search Users</h5>
-            <input type="text" id="searchUser" class="form-control mb-2" placeholder="Search by Username">
-            <button class="btn btn-primary w-100" onclick="searchUsers()">Search</button>
+      <!-- Middle Panel: User List -->
+      <div>
+        <h5>User List</h5>
+        <div class="table-container">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Role ID</th>
+                <th>Active</th>
+                <th>Created Date</th>
+                <th>Last Updated</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="userList"></tbody>
+          </table>
         </div>
-    
-        <!-- Middle Panel: User List -->
-        <div>
-            <h5>User List</h5>
-            <div class="table-container">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Username</th>
-                            <th>Role ID</th>
-                            <th>Active</th>
-                            <th>Created Date</th>
-                            <th>Last Updated</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userList"></tbody>
-                </table>
-            </div>
-        </div>
-    
-        <!-- Right Panel: Employee Form -->
-        <div>
-            <h5>Employee Details</h5>
-            <form id="employeeForm">
-                <input type="hidden" id="employeeId">
-                
-                <label class="form-label">First Name</label>
-                <input type="text" id="firstName" class="form-control mb-2">
-    
-                <label class="form-label">Last Name</label>
-                <input type="text" id="lastName" class="form-control mb-2">
-    
-                <label class="form-label">Department ID</label>
-                <input type="number" id="departmentId" class="form-control mb-2">
-    
-                <label class="form-label">Status</label>
-                <input type="number" id="status" class="form-control mb-2">
-    
-                <label class="form-label">Address</label>
-                <input type="text" id="address" class="form-control mb-2">
-    
-                <label class="form-label">Phone</label>
-                <input type="text" id="phone" class="form-control mb-2">
-    
-                <label class="form-label">Active</label>
-                <select id="isActive" class="form-control mb-2">
-                    <option value="1">Yes</option>
-                    <option value="0">No</option>
+      </div>
+
+      <!-- Right Panel: Employee Form -->
+      <div>
+        <h5>Employee Details</h5>
+        <form id="employeeForm">
+          <input type="hidden" id="employeeId" />
+
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" id="firstName" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" id="lastName" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Department</label>
+            <select id="edit-department" class="form-control" required>
+              <option value="" disabled selected>
+                Select a department
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select id="edit-status" class="form-control">
+              <option value="" disabled selected>
+                Select a status
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Address</label>
+            <input type="text" id="address" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="text" id="phone" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Active</label>
+            <select id="isActive" class="form-control">
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+
+          <button type="button" class="btn btn-success w-100" id="saveEmployee">
+            Save
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- User Edit Modal -->
+    <div
+      class="modal fade"
+      id="editUserModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="editUserModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="editUserForm">
+              <input type="hidden" id="editUserId" />
+
+              <div class="form-group">
+                <label>Username</label>
+                <input
+                  type="text"
+                  id="editUsername"
+                  class="form-control"
+                  readonly
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Role</label>
+                <select id="edit-role" class="form-control">
+                  <option value="" disabled> Select a Role</option>
                 </select>
-    
-                <button type="button" class="btn btn-success w-100" id="saveEmployee">Save</button>
+              </div>
+
+              <div class="form-group">
+                <label>Active</label>
+                <select id="editIsActive" class="form-control">
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-primary w-100"
+                id="saveUserChanges"
+              >
+                Save Changes
+              </button>
             </form>
+          </div>
         </div>
+      </div>
     </div>
     <!-- Footer -->
     <%- include('../partials/footer-simple') %>

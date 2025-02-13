@@ -1,7 +1,23 @@
 import * as UserEmployeeViewApi from "./services/userEmployeeViewServices.js";
 import * as UserApi from "./services/userServices.js";
 import * as EmployeeApi from "./services/employeeServices.js";
+import * as ObjectTypeApi from "./services/objectTypeServices.js";
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
+
+async function populateDropdown(dropdownId, taskName) {
+  try {
+    const items = (await ObjectTypeApi.getTaskByName(taskName)) || [];
+    const options = items
+      .map(
+        (item) =>
+          `<option value="${item.object_type_item_key}">${item.object_type_item_value}</option>`
+      )
+      .join("");
+    $(dropdownId).html(options);
+  } catch (error) {
+    handleError(error, `Error populating ${taskName} dropdown`);
+  }
+}
 
 // Load User List
 async function loadUsers() {
@@ -12,7 +28,7 @@ async function loadUsers() {
 
   $.each(users, function (index, user) {
     let row = `
-            <tr>
+            <tr class="user-row" data-userid="${user.user_id}">
                 <td>${user.user_id}</td>
                 <td>${user.username}</td>
                 <td data-id="${user.role_id}">${user.user_role}</td>
@@ -32,23 +48,26 @@ async function loadUsers() {
 
 // Load Employee Details
 async function loadEmployee(userId) {
-  const emp = await UserEmployeeViewApi.getUserEmployeeByUserId(userId);
-  if (!emp) return;
+  try {
+    const emp = await EmployeeApi.getTaskByUserId(userId);
+    if (!emp) return;
 
-  $("#employeeId").val(emp.employee_id);
-  $("#firstName").val(emp.first_name);
-  $("#lastName").val(emp.last_name);
-  $("#departmentId").val(emp.department_id);
-  $("#status").val(emp.status);
-  $("#address").val(emp.address);
-  $("#phone").val(emp.phone);
-  $("#isActive").val(emp.is_active);
+    $("#employeeId").val(emp.employee_id);
+    $("#firstName").val(emp.first_name);
+    $("#lastName").val(emp.last_name);
+    $("#edit-department").val(emp.department_id);
+    $("#edit-status").val(emp.status);
+    $("#address").val(emp.address);
+    $("#phone").val(emp.phone);
+    $("#isActive").val(emp.is_active); // Convert Boolean to String
+  } catch (error) {
+    console.error("Error loading employee:", error);
+  }
 }
 
 // Save Employee Data
 async function saveEmployee() {
-  let empId = $("#employeeId").val();
-  let empIndex = employees.findIndex((emp) => emp.employee_id == empId);
+  const empId = $("#employeeId").val();
 
   const empExisted = await EmployeeApi.getTaskById(empId);
 
@@ -56,8 +75,8 @@ async function saveEmployee() {
     employee_id: empId,
     first_name: $("#firstName").val(),
     last_name: $("#lastName").val(),
-    department_id: $("#departmentId").val(),
-    status: $("#status").val(),
+    department_id: $("#edit-department").val(),
+    status: $("#edit-status").val(),
     address: $("#address").val(),
     phone: $("#phone").val(),
     is_active: $("#isActive").val(),
@@ -65,7 +84,13 @@ async function saveEmployee() {
 
   Object.assign(empExisted, emp);
 
-  await EmployeeApi.updateTask(empId, emp);
+  try {
+    await EmployeeApi.updateTask(empId, emp);
+    Swal.fire("Success", "Employee updated successfully!", "success");
+  } catch (error) {
+    console.error("Error updating employee:", error);
+    Swal.fire("Error", "Failed to update Employee!", "error");
+  }
 }
 
 // Search Users
@@ -83,13 +108,13 @@ async function searchUsers() {
     // Iterate through filtered users and append rows to the table
     $.each(users, async function (index, user) {
       let row = `
-        <tr>
+        <tr class="user-row" data-userid="${user.user_id}">
           <td>${user.user_id}</td>
           <td>${user.username}</td>
-          <td>${user.role_id}</td>
-          <td>${user.is_active ? "Yes" : "No"}</td>
-          <td>${user.created_date}</td>
-          <td>${user.last_updated_date}</td>
+          <td data-id="${user.role_id}">${user.user_role}</td>
+          <td>${user.u_is_active ? "Yes" : "No"}</td>
+          <td>${formatDate(user.u_created_date)}</td>
+          <td>${formatDate(user.u_last_updated_date)}</td>
           <td>
             <button class="btn btn-warning btn-sm edit-user" data-userid="${
               user.user_id
@@ -103,7 +128,7 @@ async function searchUsers() {
     });
 
     // If no users found, show a message
-    if (filteredUsers.length === 0) {
+    if (users.length === 0) {
       tbody.append(
         '<tr><td colspan="7" class="text-center">No users found</td></tr>'
       );
@@ -119,15 +144,69 @@ async function searchUsers() {
 $(document).ready(async function () {
   await loadUsers();
 
+  await populateDropdown("#edit-status", "employee_status");
+  await populateDropdown("#edit-department", "department");
+  await populateDropdown("#edit-role", "user_role");
+
   // Search Users
   $("#searchBtn").on("click", searchUsers);
 
-  // Load Employee Details on User Edit Click
-  $(document).on("click", ".edit-user", async function () {
-    let userId = $(this).data("userid");
-    await loadEmployee(userId);
-  });
-
   // Save Employee
   $("#saveEmployee").on("click", saveEmployee);
+
+  $("#userList").on("click", ".user-row", function () {
+    let userId = $(this).data("userid");
+    loadEmployee(userId);
+  });
+
+  // Load User Data into Modal
+  $(document).on("click", ".edit-user", async function () {
+    let userId = $(this).data("userid");
+
+    try {
+      const user = await UserApi.getTaskById(userId); // Fetch user details
+
+      if (!user) {
+        Swal.fire("Error", "User not found!", "error");
+        return;
+      }
+
+      // Fill modal fields
+      $("#editUserId").val(user.user_id);
+      $("#editUsername").val(user.username);
+      $("#edit-role").val(user.role_id);
+      $("#editIsActive").val(user.is_active);
+
+      // Show the modal
+      $("#editUserModal").modal("show");
+    } catch (error) {
+      console.error("Error loading user:", error);
+      Swal.fire("Error", "Failed to load user data!", "error");
+    }
+  });
+
+  // Save User Changes
+  $("#saveUserChanges").on("click", async function () {
+    let userId = $("#editUserId").val();
+
+    const existUser = await UserApi.getTaskById(userId);
+
+    const updatedUser = {
+      role_id: $("#edit-role").val(),
+      is_active: $("#editIsActive").val() === "1", // Convert string to boolean
+    };
+
+    Object.assign(existUser, updatedUser);
+    try {
+      await UserApi.updateTask(userId, updatedUser); // API call to update user
+
+      Swal.fire("Success", "User updated successfully!", "success");
+
+      $("#editUserModal").modal("hide"); // Close the modal
+      await loadUsers(); // Refresh the user list
+    } catch (error) {
+      console.error("Error updating user:", error);
+      Swal.fire("Error", "Failed to update user!", "error");
+    }
+  });
 });
