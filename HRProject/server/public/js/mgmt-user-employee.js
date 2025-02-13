@@ -116,7 +116,7 @@ async function searchUsers() {
           <td>${formatDate(user.u_created_date)}</td>
           <td>${formatDate(user.u_last_updated_date)}</td>
           <td>
-            <button class="btn btn-warning btn-sm edit-user" data-userid="${
+            <button class="btn btn-info btn-sm edit-user" data-userid="${
               user.user_id
             }">
               Edit
@@ -140,6 +140,52 @@ async function searchUsers() {
     );
   }
 }
+
+async function loadUser(userId) {
+  try {
+    const user = await UserApi.getTaskById(userId); // Fetch user details
+
+    if (!user) {
+      Swal.fire("Error", "User not found!", "error");
+      return;
+    }
+
+    // Fill modal fields
+    $("#editUserId").val(user.user_id);
+    $("#editUsername").val(user.username);
+    $("#edit-role").val(user.role_id);
+    $("#editIsActive").val(user.is_active);
+
+    // Show the modal
+    $("#editUserModal").modal("show");
+  } catch (error) {
+    console.error("Error loading user:", error);
+    Swal.fire("Error", "Failed to load user data!", "error");
+  }
+}
+
+async function saveUser(userId) {
+  const existUser = await UserApi.getTaskById(userId);
+
+  const updatedUser = {
+    role_id: $("#edit-role").val(),
+    is_active: $("#editIsActive").val() === "1", // Convert string to boolean
+  };
+
+  Object.assign(existUser, updatedUser);
+  try {
+    await UserApi.updateTask(userId, updatedUser); // API call to update user
+
+    Swal.fire("Success", "User updated successfully!", "success");
+
+    $("#editUserModal").modal("hide"); // Close the modal
+    await loadUsers(); // Refresh the user list
+  } catch (error) {
+    console.error("Error updating user:", error);
+    Swal.fire("Error", "Failed to update user!", "error");
+  }
+}
+
 // Event Listeners
 $(document).ready(async function () {
   await loadUsers();
@@ -160,53 +206,12 @@ $(document).ready(async function () {
   });
 
   // Load User Data into Modal
-  $(document).on("click", ".edit-user", async function () {
-    let userId = $(this).data("userid");
-
-    try {
-      const user = await UserApi.getTaskById(userId); // Fetch user details
-
-      if (!user) {
-        Swal.fire("Error", "User not found!", "error");
-        return;
-      }
-
-      // Fill modal fields
-      $("#editUserId").val(user.user_id);
-      $("#editUsername").val(user.username);
-      $("#edit-role").val(user.role_id);
-      $("#editIsActive").val(user.is_active);
-
-      // Show the modal
-      $("#editUserModal").modal("show");
-    } catch (error) {
-      console.error("Error loading user:", error);
-      Swal.fire("Error", "Failed to load user data!", "error");
-    }
+  $("#tbody").on("click", ".edit-user", async function () {
+    loadUser($(this).data("userid"));
   });
 
   // Save User Changes
   $("#saveUserChanges").on("click", async function () {
-    let userId = $("#editUserId").val();
-
-    const existUser = await UserApi.getTaskById(userId);
-
-    const updatedUser = {
-      role_id: $("#edit-role").val(),
-      is_active: $("#editIsActive").val() === "1", // Convert string to boolean
-    };
-
-    Object.assign(existUser, updatedUser);
-    try {
-      await UserApi.updateTask(userId, updatedUser); // API call to update user
-
-      Swal.fire("Success", "User updated successfully!", "success");
-
-      $("#editUserModal").modal("hide"); // Close the modal
-      await loadUsers(); // Refresh the user list
-    } catch (error) {
-      console.error("Error updating user:", error);
-      Swal.fire("Error", "Failed to update user!", "error");
-    }
+    saveUser($("#editUserId").val());
   });
 });
