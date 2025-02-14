@@ -29,6 +29,8 @@ const accessProvisioningRoutes = require("./routes/accessProvisioningRoutes");
 const childTaskRoutes = require("./routes/childTaskRoutes");
 const documentRoutes = require("./routes/documentRoutes");
 const equipmentRoutes = require("./routes/equipmentRoutes");
+const eqptOccupiedHisRoutes = require('./routes/eqptOccupiedHisRoutes');
+const equipmentViewRoutes = require("./routes/equiptmentViewRoutes");
 const objectTypeRoutes = require("./routes/objectTypeRoutes");
 const parentTaskRoutes = require("./routes/parentTaskRoutes");
 const trainingModuleRoutes = require("./routes/trainingModuleRoutes");
@@ -37,7 +39,7 @@ const relUserParentTaskRoutes = require("./routes/relUserParentTaskRoutes");
 const relUserChildTaskRoutes = require("./routes/relUserChildTaskRoutes");
 const employeeViewRoutes = require("./routes/employeeViewRoutes");
 
-const eqptOccupiedHisRoutes = require('./routes/eqptOccupiedHisRoutes');
+
 const userTaskViewRoutes = require("./routes/userTaskViewRoutes");
 const userEmployeeViewRoutes = require("./routes/userEmployeeViewRoutes");
 
@@ -47,6 +49,7 @@ app.use("/api", childTaskRoutes);
 app.use("/api", documentRoutes);
 app.use("/api", equipmentRoutes);
 app.use("/api", eqptOccupiedHisRoutes);
+app.use("/api", equipmentViewRoutes);
 app.use("/api", objectTypeRoutes);
 app.use("/api", parentTaskRoutes);
 app.use("/api", trainingModuleRoutes);

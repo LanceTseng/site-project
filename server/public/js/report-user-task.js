@@ -162,9 +162,10 @@ async function handleChildTaskComplete(user_task_line_id, user_task_head_id) {
 
       const child_tasks =
         (await UserTaskViewApi.getUserTaskByHeadId(user_task_head_id)) ?? [];
-      const uncompleted_child_tasks = child_tasks.filter(
-        (o) => o.ct_status < 2
-      ).length;
+
+      const uncompleted_child_tasks = Array.isArray(child_tasks)
+        ? child_tasks.filter((o) => o?.ct_status < 2).length
+        : 0;
 
       if (uncompleted_child_tasks === 0) {
         await completeParentTask(user_task_head_id);
