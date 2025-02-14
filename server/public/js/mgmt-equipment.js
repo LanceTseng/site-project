@@ -160,21 +160,46 @@ async function saveEquiptment() {
   }
 }
 
+async function searchEqpt() {
+  const eqptName = $("#search-field").val();
+  const equipments = await EquipmentViewApi.getEqptByEqptName(eqptName);
+ 
+  let tbodyEqpt = $("#equipment-table-body");
+  tbodyEqpt.empty();
+  let tbodyEqptOccupied = $("#eqpt-occupied-table-body");
+  tbodyEqptOccupied.empty();
+
+  const rows = equipments
+    .map(
+      (item) => `
+  <tr class="eqpt-row" data-eqpt-id="${item.equipment_id}">
+    <td>${item.equipment_id}</td>
+    <td>${item.equipment_name}</td>
+    <td>${item.equipment_code}</td>
+    <td>${item.equipment_type}</td>
+    <td>${item.occupied_by_name || "N/A"}</td>
+    <td>${item.equiptment_occupied ? "Yes" : "No"}</td>
+    <td>
+      <button class="btn btn-info btn-sm edit-btn" data-mode="edit" data-id="${
+        item.equipment_id
+      }">
+        Edit
+      </button>
+    </td>
+  </tr>
+`
+    )
+    .join("");
+
+  $("#equipment-table-body").html(rows);
+}
+
 $(document).ready(async function () {
   loadEqpt();
 
   $("#equipment-table-body").on("click", ".eqpt-row", function () {
     const eqptId = $(this).data("eqpt-id");
     loadEqptOccupiedHis(eqptId);
-  });
-
-  // Search functionality
-  $("#search-field").on("input", function () {
-    const query = $(this).val().toLowerCase();
-    const filtered = equiptmets.filter((item) =>
-      item.equiptmet_name.toLowerCase().includes(query)
-    );
-    // loadTable(filtered);
   });
 
   // Edit modal
@@ -192,6 +217,10 @@ $(document).ready(async function () {
   // Open Add Modal
   $("#new-equipment-btn").on("click", function () {
     displayNewEquipment();
+  });
+
+  $("#search-btn").on("click", function () {
+    searchEqpt();
   });
 
   // Add new equipment

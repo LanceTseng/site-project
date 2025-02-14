@@ -58,6 +58,18 @@ export const getEqptByStatus = async (status) => {
   }
 };
 
+export const getEqptByEqptName = async (name) => {
+  try {
+    const response = await axiosInstance.get(
+      `${view.equiptment}eqptname/${name}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching task with ID ${name}:`, error);
+    throw error;
+  }
+};
+
 //---------------------------eqpt_occupied_his
 
 // Function to get a specific task by ID

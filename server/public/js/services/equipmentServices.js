@@ -36,17 +36,6 @@ export const getTaskById = async (taskId) => {
   }
 };
 
-// // Function to get a specific task by ID
-// export const getTaskByGroupId = async (taskId) => {
-//   try {
-//     const response = await axiosInstance.get(`${baseURL}group-id/${taskId}`);
-//     return response.data;
-//   } catch (error) {
-//     console.error(`Error fetching task with ID ${taskId}:`, error);
-//     throw error;
-//   }
-// };
-
 // Function to update a task
 export const updateTask = async (taskId, updatedData) => {
   try {
