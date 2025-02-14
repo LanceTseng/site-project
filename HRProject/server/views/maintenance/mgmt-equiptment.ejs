@@ -144,7 +144,11 @@
               </div>
 
               <div class="modal-footer">
-                <button id="saveEqpt" type="submit" class="btn btn-success w-100 submit-btn">
+                <button
+                  id="saveEqpt"
+                  type="submit"
+                  class="btn btn-success w-100 submit-btn"
+                >
                   Save
                 </button>
               </div>
@@ -154,7 +158,106 @@
       </div>
     </div>
 
-    <!-- Add New Equipment Modal -->
+    <!-- Assign Modal -->
+    <div
+      class="modal fade"
+      id="assign-modal"
+      tabindex="-1"
+      aria-labelledby="assignModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="assignModalLabel">Assign Equipment</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="assign-form">
+              <div class="form-group mb-3">
+                <label for="assign-name" class="form-label">Assign To</label>
+                <select id="assign-name" class="form-select form-control">
+                  <option value="" disabled>Select a User</option>
+                </select>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="assign-task" class="form-label">Relate Task</label>
+                <select id="assign-task" class="form-select form-control">
+                  <option value="" disabled>Select a Task</option>
+                </select>
+              </div>
+
+              <div class="form-group mb-3" hidden>
+                <input
+                  type="text"
+                  id="assign-eqpt-id"
+                  class="form-control"
+                  disabled
+                />
+                <input
+                type="text"
+                id="assign-eqpt-typeid"
+                class="form-control"
+                disabled
+              />
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="assign-eqpt-code" class="form-label"
+                  >Equipment Code</label
+                >
+                <input
+                  type="text"
+                  id="assign-eqpt-code"
+                  class="form-control"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="assign-eqpt-name" class="form-label"
+                  >Equipment Name</label
+                >
+                <input
+                  type="text"
+                  id="assign-eqpt-name"
+                  class="form-control"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="assign-eqpt-type" class="form-label"
+                  >Equipment Type</label
+                >
+                <input
+                  type="text"
+                  id="assign-eqpt-type"
+                  class="form-control"
+                  disabled
+                />
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  id="assignEqpt"
+                  type="submit"
+                  class="btn btn-success w-100 submit-btn"
+                >
+                  Assign
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Footer -->
     <%- include('../partials/footer-simple') %>

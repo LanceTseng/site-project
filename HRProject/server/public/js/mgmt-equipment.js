@@ -1,6 +1,8 @@
 import * as ObjectTypeApi from "./services/objectTypeServices.js";
 import * as UserApi from "./services/userServices.js";
+import * as UserTaskView from "./services/userTaskViewServices.js";
 import * as EquipmentApi from "./services/equipmentServices.js";
+import * as EqptOccupiedHisApi from "./services/eqptOccupiedHisServices.js";
 import * as EquipmentViewApi from "./services/equipmentViewServices.js";
 import { isEqualIgnoreCase } from "./utils/stringUtils.js";
 
@@ -21,6 +23,64 @@ async function populateDropdown(dropdownId, taskName) {
 
 populateDropdown("#edit-type", "equipment_type");
 
+async function populateUserDropdown(option) {
+  const $userDropdown = $(`#${option}`);
+  $userDropdown.empty(); // Clear existing options
+
+  // Add the default "Select" option
+  $userDropdown.append(
+    `<option value="" disabled selected>Select a User</option>`
+  );
+
+  // Filter only the "Equipment" object types and populate dropdown
+  const users = await UserApi.getTasks();
+  users
+    .filter((u) => u.is_active)
+    .forEach((u) => {
+      $userDropdown.append(
+        `<option value="${u.user_id}">${u.username}</option>`
+      );
+    });
+}
+
+async function populateUserTaskDropdown() {
+  const user = $("#assign-name").val();
+  const eqptType = $("#assign-eqpt-typeid").val();
+  const $taskDropdown = $("#assign-task");
+
+  // Clear existing options
+  $taskDropdown.empty();
+
+  // Add the default "Select" option
+  $taskDropdown.append(
+    `<option value="" disabled selected>Select a Task</option>`
+  );
+
+  try {
+    const userTasks = (await UserTaskView.getUserTaskByUserId(user)) || [];
+
+    userTasks.forEach((task) => {
+      if (
+        Number(task.equipment_type_id) === Number(eqptType) &&
+        Number(task.ct_status) === 1
+      ) {
+        $taskDropdown.append(
+          `<option value="${task.line_id}">${task.ct_name}</option>`
+        );
+      }
+    });
+
+    // Optional: Handle case when no matching tasks are found
+    if ($taskDropdown.children().length === 1) {
+      $taskDropdown.append(
+        `<option value="" disabled>No tasks available</option>`
+      );
+    }
+  } catch (error) {
+    console.error("Error populating task dropdown:", error);
+  }
+}
+
 async function loadEqpt() {
   try {
     const equipments = await EquipmentViewApi.getEqpts();
@@ -28,6 +88,8 @@ async function loadEqpt() {
       console.error("Invalid data format:", equipments);
       return;
     }
+
+    console.log(equipments);
 
     const rows = equipments
       .map(
@@ -38,13 +100,18 @@ async function loadEqpt() {
         <td>${item.equipment_code}</td>
         <td>${item.equipment_type}</td>
         <td>${item.occupied_by_name || "N/A"}</td>
-        <td>${item.equiptment_occupied ? "Yes" : "No"}</td>
+        <td>${item.occupied ? "Yes" : "No"}</td>
         <td>
           <button class="btn btn-info btn-sm edit-btn" data-mode="edit" data-id="${
             item.equipment_id
           }">
             Edit
           </button>
+          ${
+            item.occupied == "0"
+              ? `<button class="btn btn-sm btn-danger assign-btn" data-id="${item.equipment_id}">Assign</button>`
+              : `<button class="btn btn-sm btn-warning return-btn" data-id="${item.equipment_id}">Return</button>`
+          }
         </td>
       </tr>
     `
@@ -163,7 +230,7 @@ async function saveEquiptment() {
 async function searchEqpt() {
   const eqptName = $("#search-field").val();
   const equipments = await EquipmentViewApi.getEqptByEqptName(eqptName);
- 
+
   let tbodyEqpt = $("#equipment-table-body");
   tbodyEqpt.empty();
   let tbodyEqptOccupied = $("#eqpt-occupied-table-body");
@@ -185,6 +252,11 @@ async function searchEqpt() {
       }">
         Edit
       </button>
+      ${
+        item.equipment_occupied === "0"
+          ? `<button class="btn btn-sm btn-danger assign-btn" data-id="${item.equipment_id}">Assign</button>`
+          : `<button class="btn btn-sm btn-warning return-btn" data-id="${item.equipment_id}">Return</button>`
+      }
     </td>
   </tr>
 `
@@ -192,6 +264,50 @@ async function searchEqpt() {
     .join("");
 
   $("#equipment-table-body").html(rows);
+}
+
+async function assignEqpt(eqptId) {
+  populateUserDropdown("assign-name");
+
+  const eqpt = await EquipmentViewApi.getEqptByEqptId(eqptId);
+
+  $("#assign-eqpt-id").val(eqptId);
+  $("#assign-eqpt-typeid").val(eqpt.equipment_type_id);
+  $("#assign-eqpt-code").val(eqpt.equipment_code);
+  $("#assign-eqpt-name").val(eqpt.equipment_name);
+  $("#assign-eqpt-type").val(eqpt.equipment_type);
+
+  $("#assign-modal").modal("show");
+}
+
+async function assignEqptConfirm() {
+  try {
+    const eqptOccupied = {
+      equipment_id: $("#assign-eqpt-id").val(),
+      occupied_by: $("#assign-name").val(),
+      occupied_date: new Date(),
+      occupied_task_id: $("#assign-task").val() ?? -1,//no task
+    };
+
+    console.log(eqptOccupied);
+
+    await EqptOccupiedHisApi.createTask(eqptOccupied);
+
+    const eqpt = await EquipmentApi.getTaskById(eqptOccupied.equipment_id);
+    eqpt.occupied = true;
+    await EquipmentApi.updateTask(eqpt.equipment_id, eqpt);
+
+    Swal.fire("Success", `Equipment assigned successfully!`, "success");
+
+    loadEqpt();
+    loadEqptOccupiedHis(eqptOccupied.equipment_id);
+  } catch (error) {
+    Swal.fire("Error", `Failed to assigned equipment!`, "error");
+  }
+}
+
+async function returnEqpt(eqptId) {
+  populateUserDropdown("return-name");
 }
 
 $(document).ready(async function () {
@@ -208,6 +324,29 @@ $(document).ready(async function () {
     displayEditEquipment(eqptId);
   });
 
+  $("#equipment-table-body").on("click", ".assign-btn", function () {
+    //assgin function
+    const eqptId = $(this).data("id");
+    assignEqpt(eqptId);
+  });
+
+  $("#assign-name").on("change", function () {
+    //populate user task
+    populateUserTaskDropdown();
+  });
+
+  $("#equipment-table-body").on("click", ".return-btn", function () {
+    //return function
+    const eqptId = $(this).data("id");
+    console.log(eqptId);
+  });
+
+  $("#assign-form").on("submit", function (e) {
+    e.preventDefault();
+    assignEqptConfirm();
+    $("#assign-modal").modal("hide");
+  });
+
   $("#edit-form").on("submit", function (e) {
     e.preventDefault();
     saveEquiptment();
@@ -222,11 +361,4 @@ $(document).ready(async function () {
   $("#search-btn").on("click", function () {
     searchEqpt();
   });
-
-  // Add new equipment
-  // $("#new-equipment-form").on("submit", function (e) {
-  //   e.preventDefault();
-
-  //   $("#edit-modal").modal("hide");
-  // });
 });
