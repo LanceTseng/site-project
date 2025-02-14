@@ -12,7 +12,6 @@ class UserTaskViewController {
 
   async getUserTaskViewByUserId(req, res) {
     try {
-      console.log(req.params.userid);
       const userTasks = await UserTaskViewRepository.getUserTaskByUserId(
         req.params.userid
       );
@@ -25,20 +24,19 @@ class UserTaskViewController {
     }
   }
 
-  
-  async getUserTaskViewByUserId(req, res) {
-    try {
-      const userTasks = await UserTaskViewRepository.getUserTaskByUserId(
-        req.params.id
-      );
-      if (!userTasks) {
-        return res.status(404).json({ message: "UserTask not found" });
-      }
-      res.status(200).json(userTasks);
-    } catch (error) {
-      res.status(500).json({ error: "Error fetching userTasks" });
-    }
-  }
+  // async getUserTaskViewByUserId(req, res) {
+  //   try {
+  //     const userTasks = await UserTaskViewRepository.getUserTaskByUserId(
+  //       req.params.id
+  //     );
+  //     if (!userTasks) {
+  //       return res.status(404).json({ message: "UserTask not found" });
+  //     }
+  //     res.status(200).json(userTasks);
+  //   } catch (error) {
+  //     res.status(500).json({ error: "Error fetching userTasks" });
+  //   }
+  // }
 
   async getUserTaskViewByHeadId(req, res) {
     try {
@@ -54,7 +52,6 @@ class UserTaskViewController {
     }
   }
 
-  
   async getUserTaskViewByLineId(req, res) {
     try {
       const userTasks = await UserTaskViewRepository.getUserTaskByLineId(
@@ -102,7 +99,8 @@ class UserTaskViewController {
     }
   }
 
-  async getUserChildTaskViewByTaskId(req, res) {//parent_task_id
+  async getUserChildTaskViewByTaskId(req, res) {
+    //parent_task_id
     try {
       const childTasks = await UserTaskViewRepository.getUserChildTaskByTaskId(
         req.params.id
