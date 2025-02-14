@@ -13,7 +13,7 @@
     <style>
       .parent {
         display: grid;
-        grid-template-columns: 1fr 2fr ;
+        grid-template-columns: 0.5fr 1.5fr 2fr;
         gap: 20px;
         padding: 20px;
       }
@@ -34,7 +34,7 @@
     <!-- Navbar -->
     <%- include('../partials/navbar') %>
 
-    <div class="container mt-4">
+    <div class="mt-4">
       <h1>Equipment Management</h1>
       <div class="parent">
         <!-- Search Section -->
@@ -46,9 +46,7 @@
             placeholder="Search by name"
           />
 
-          <button id="search-btn" class="btn btn-primary w-100">
-            Search
-          </button>
+          <button id="search-btn" class="btn btn-primary w-100">Search</button>
           <p></p>
           <button id="new-equipment-btn" class="btn btn-success w-100">
             Add New Equipment
@@ -56,145 +54,107 @@
         </div>
 
         <!-- Equipment Table -->
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Assigned To</th>
-              <th>Occupied</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="equipment-table-body"></tbody>
-        </table>
-      </div>
+        <div>
+          <h3>Equipment List</h3>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Eqpt Name</th>
+                <th>Code</th>
+                <th>Type</th>
+                <th>Occupied By</th>
+                <th>Occupied</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="equipment-table-body"></tbody>
+          </table>
+        </div>
 
-      <!-- Edit Modal -->
-      <div
-        class="modal fade"
-        id="edit-modal"
-        tabindex="-1"
-        aria-labelledby="editModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="editModalLabel">Edit Equipment</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <form id="edit-form">
-                <input type="hidden" id="edit-id" />
-                <div class="mb-3">
-                  <label for="edit-name" class="form-label">Name</label>
-                  <input
-                    type="text"
-                    id="edit-name"
-                    class="form-control"
-                    required
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="edit-assigned-to" class="form-label"
-                    >Assigned To</label
-                  >
-                  <input
-                    type="number"
-                    id="edit-assigned-to"
-                    class="form-control"
-                    required
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="edit-occupied" class="form-label">Occupied</label>
-                  <select id="edit-occupied" class="form-select">
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                  </select>
-                </div>
-                <button type="submit" class="btn btn-success w-100">
-                  Save
-                </button>
-              </form>
-            </div>
-          </div>
+        <!-- Occupied Record -->
+        <div>
+          <h3>Occupied Record</h3>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Occupied Name</th>
+                <th>Occupied By</th>
+                <th>Occupied Date</th>
+                <th>Occupied Task</th>
+                <th>Released Date</th>
+                <th>Released Task</th>
+              </tr>
+            </thead>
+            <tbody id="eqpt-occupied-table-body"></tbody>
+          </table>
         </div>
       </div>
     </div>
-    <!-- Add New Equipment Modal -->
+
+    <!-- Edit/New Modal -->
     <div
       class="modal fade"
-      id="new-equipment-modal"
+      id="edit-modal"
       tabindex="-1"
-      aria-labelledby="newEquipmentModalLabel"
+      aria-labelledby="editModalLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="newEquipmentModalLabel">
-              Add New Equipment
-            </h5>
+            <h5 class="modal-title" id="editModalLabel">Edit Equipment</h5>
             <button
               type="button"
               class="btn-close"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
               aria-label="Close"
             ></button>
           </div>
           <div class="modal-body">
-            <form id="new-equipment-form">
-              <div class="mb-3">
-                <label for="new-name" class="form-label">Name</label>
+            <form id="edit-form">
+              <input type="hidden" id="edit-id" />
+
+              <div class="form-group mb-3">
+                <label for="edit-name" class="form-label">Name</label>
                 <input
                   type="text"
-                  id="new-name"
+                  id="edit-name"
                   class="form-control"
                   required
                 />
               </div>
-              <div class="mb-3">
-                <label for="new-type" class="form-label">Type</label>
+
+              <div class="form-group mb-3">
+                <label for="edit-code" class="form-label">Equipment Code</label>
                 <input
-                  type="number"
-                  id="new-type"
+                  type="text"
+                  id="edit-code"
                   class="form-control"
                   required
                 />
               </div>
-              <div class="mb-3">
-                <label for="new-assigned-to" class="form-label"
-                  >Assigned To</label
-                >
-                <input
-                  type="number"
-                  id="new-assigned-to"
-                  class="form-control"
-                />
-              </div>
-              <div class="mb-3">
-                <label for="new-occupied" class="form-label">Occupied</label>
-                <select id="new-occupied" class="form-select">
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
+
+              <div class="form-group mb-3">
+                <label for="edit-type" class="form-label">Equipment Type</label>
+                <select id="edit-type" class="form-select form-control">
+                  <option value="" disabled>Select a Type</option>
                 </select>
               </div>
-              <button type="submit" class="btn btn-primary w-100">
-                Add Equipment
-              </button>
+
+              <div class="modal-footer">
+                <button id="saveEqpt" type="submit" class="btn btn-success w-100 submit-btn">
+                  Save
+                </button>
+              </div>
             </form>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Add New Equipment Modal -->
 
     <!-- Footer -->
     <%- include('../partials/footer-simple') %>

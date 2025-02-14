@@ -83,15 +83,17 @@ class EquipmentViewController {
 
   async getEqptOccupiedViewByEqptId(req, res) {
     try {
-      const equipment = await equipmentViewRepo.getEqptOccupiedByEqptId(
-        req.params.eqptid
-      );
-      if (!equipment) {
-        return res.status(404).json({ message: "Data not found" });
+      const userEmp =
+        await equipmentViewRepo.getEqptOccupiedByEqptId(
+          req.params.eqptid
+        );
+      if (!userEmp) {
+        return res.status(404).json({ message: "UserEmployee not found" });
       }
-      res.status(200).json(equipment);
+      console.log(userEmp);
+      res.status(200).json(userEmp);
     } catch (error) {
-      res.status(500).json({ error: "Error fetching userTasks" });
+      res.status(500).json({ error: "Error fetching userEmp" });
     }
   }
 
