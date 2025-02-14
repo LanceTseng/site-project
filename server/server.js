@@ -1,5 +1,6 @@
 const express = require("express");
 const coookie = require("cookie-parser");
+const { logMiddleware, errorLogger } = require('./middlewares/loggerMiddleware');
 
 require("dotenv").config();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public"))); // ✅ Serves files inside `public/`
 app.use(express.urlencoded({ extended: false }));
 app.use(coookie());
+app.use(logMiddleware); // Logs incoming requests
 
 // Routes
 const indexRoutes = require("./routes/index");
