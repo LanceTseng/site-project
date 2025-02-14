@@ -166,7 +166,7 @@ $(document).ready(async function () {
             <td>
               <button data-id="${
                 subtask.child_task_id ?? ""
-              }" class="btn btn-sm btn-info edit data-mode="edit"">Edit</button>
+              }" class="btn btn-sm btn-info edit data-mode="edit">Edit</button>
             </td>
           </tr>
         `);
