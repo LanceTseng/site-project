@@ -26,7 +26,7 @@ class EquipmentViewRepository {
           type: QueryTypes.SELECT,
         }
       );
-      return rows;
+      return rows.length > 0 ? rows[0] : null;
     } catch (error) {
       console.error(
         `Error fetching user employee for user ID ${userId}:`,
@@ -45,7 +45,7 @@ class EquipmentViewRepository {
           type: QueryTypes.SELECT,
         }
       );
-      return rows;
+      return rows.length > 0 ? rows[0] : null;
     } catch (error) {
       console.error(
         `Error fetching user employee for employee ID ${eqptId}:`,
