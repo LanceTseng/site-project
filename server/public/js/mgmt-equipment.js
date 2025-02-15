@@ -1,10 +1,11 @@
 import * as ObjectTypeApi from "./services/objectTypeServices.js";
 import * as UserApi from "./services/userServices.js";
+import * as UserChildTaskApi from "./services/relUserChildTaskServices.js";
 import * as UserTaskView from "./services/userTaskViewServices.js";
 import * as EquipmentApi from "./services/equipmentServices.js";
 import * as EqptOccupiedHisApi from "./services/eqptOccupiedHisServices.js";
 import * as EquipmentViewApi from "./services/equipmentViewServices.js";
-import { isEqualIgnoreCase } from "./utils/stringUtils.js";
+import { formatDate, isEqualIgnoreCase } from "./utils/stringUtils.js";
 
 async function populateDropdown(dropdownId, taskName) {
   try {
@@ -43,7 +44,7 @@ async function populateUserDropdown(option) {
     });
 }
 
-async function populateUserTaskDropdown() {
+async function populateUserTaskAssignDropdown() {
   const user = $("#assign-name").val();
   const eqptType = $("#assign-eqpt-typeid").val();
   const $taskDropdown = $("#assign-task");
@@ -62,7 +63,46 @@ async function populateUserTaskDropdown() {
     userTasks.forEach((task) => {
       if (
         Number(task.equipment_type_id) === Number(eqptType) &&
-        Number(task.ct_status) === 1
+        Number(task.ct_status) === 1 &&
+        task.equipment_id == null
+      ) {
+        $taskDropdown.append(
+          `<option value="${task.line_id}">${task.ct_name}</option>`
+        );
+      }
+    });
+
+    // Optional: Handle case when no matching tasks are found
+    if ($taskDropdown.children().length === 1) {
+      $taskDropdown.append(
+        `<option value="" disabled>No tasks available</option>`
+      );
+    }
+  } catch (error) {
+    console.error("Error populating task dropdown:", error);
+  }
+}
+
+async function populateUserTaskReturnDropdown() {
+  const user = $("#return-user-id").val();
+  const eqptType = $("#return-eqpt-typeid").val();
+  const $taskDropdown = $("#return-task");
+
+  // Clear existing options
+  $taskDropdown.empty();
+
+  // Add the default "Select" option
+  $taskDropdown.append(
+    `<option value="" disabled selected>Select a Task</option>`
+  );
+
+  try {
+    const userTasks = (await UserTaskView.getUserTaskByUserId(user)) || [];
+    userTasks.forEach((task) => {
+      if (
+        Number(task.equipment_type_id) === Number(eqptType) &&
+        Number(task.ct_status) === 1 &&
+        task.equipment_id != null
       ) {
         $taskDropdown.append(
           `<option value="${task.line_id}">${task.ct_name}</option>`
@@ -99,7 +139,7 @@ async function loadEqpt() {
         <td>${item.equipment_name}</td>
         <td>${item.equipment_code}</td>
         <td>${item.equipment_type}</td>
-        <td>${item.occupied_by_name || "N/A"}</td>
+        <td>${item.occupied_by_name || ""}</td>
         <td>${item.occupied ? "Yes" : "No"}</td>
         <td>
           <button class="btn btn-info btn-sm edit-btn" data-mode="edit" data-id="${
@@ -135,11 +175,11 @@ async function loadEqptOccupiedHis(eqptId) {
       let row = `
         <tr>
           <td>${item.id}</td>
-          <td>${item.occupied_by_name || "N/A"}</td>
-          <td>${item.occupied_date || "N/A"}</td>
-          <td>${item.released_date || "N/A"}</td>
-          <td>${item.occupied_task_name || "N/A"}</td>
-          <td>${item.released_task_name || "N/A"}</td>
+          <td>${item.occupied_by_name || ""}</td>
+          <td>${item.occupied_date || ""}</td>
+          <td>${item.occupied_task_name || ""}</td>
+          <td>${item.released_date || ""}</td>
+          <td>${item.released_task_name || ""}</td>
         </tr>
       `;
       tbody.append(row);
@@ -244,7 +284,7 @@ async function searchEqpt() {
     <td>${item.equipment_name}</td>
     <td>${item.equipment_code}</td>
     <td>${item.equipment_type}</td>
-    <td>${item.occupied_by_name || "N/A"}</td>
+    <td>${item.occupied_by_name || ""}</td>
     <td>${item.equiptment_occupied ? "Yes" : "No"}</td>
     <td>
       <button class="btn btn-info btn-sm edit-btn" data-mode="edit" data-id="${
@@ -286,16 +326,22 @@ async function assignEqptConfirm() {
       equipment_id: $("#assign-eqpt-id").val(),
       occupied_by: $("#assign-name").val(),
       occupied_date: new Date(),
-      occupied_task_id: $("#assign-task").val() ?? -1,//no task
+      occupied_task_id: $("#assign-task").val() ?? -1, //no task
     };
-
-    console.log(eqptOccupied);
 
     await EqptOccupiedHisApi.createTask(eqptOccupied);
 
     const eqpt = await EquipmentApi.getTaskById(eqptOccupied.equipment_id);
     eqpt.occupied = true;
     await EquipmentApi.updateTask(eqpt.equipment_id, eqpt);
+
+    if (eqptOccupied.occupied_task_id > 0) {
+      const userChildTask = await UserChildTaskApi.getTaskById(
+        eqptOccupied.occupied_task_id
+      );
+      userChildTask.equipment_id = eqptOccupied.equipment_id;
+      await UserChildTaskApi.updateTask(userChildTask.id, userChildTask);
+    }
 
     Swal.fire("Success", `Equipment assigned successfully!`, "success");
 
@@ -306,8 +352,61 @@ async function assignEqptConfirm() {
   }
 }
 
+async function returnEqptConfirm() {
+  try {
+    const occupiedEqptHisId = $("#return-id").val();
+    const task = $("#return-task").val();
+  
+    const occupiedEqpt = await EqptOccupiedHisApi.getTaskById(
+      occupiedEqptHisId
+    );
+    occupiedEqpt.released_date = new Date();
+    occupiedEqpt.released_task_id = task ?? -1;
+    await EqptOccupiedHisApi.updateTask(occupiedEqptHisId, occupiedEqpt);
+
+    const eqpt = await EquipmentApi.getTaskById(occupiedEqpt.equipment_id);
+    eqpt.occupied = false;
+    await EquipmentApi.updateTask(occupiedEqpt.equipment_id, eqpt);
+
+    Swal.fire("Success", `Equipment assigned successfully!`, "success");
+
+    loadEqpt();
+    loadEqptOccupiedHis(occupiedEqpt.equipment_id);
+  } catch (error) {
+    console.error(error.message);
+    Swal.fire("Error", `Failed to return equipment!`, "error");
+  }
+}
+
 async function returnEqpt(eqptId) {
-  populateUserDropdown("return-name");
+  try {
+    const eqptOccupiedHis = await EquipmentViewApi.getEqptOccupiedByEqptId(
+      eqptId
+    );
+
+    const eqpt = await EquipmentViewApi.getEqptByEqptId(eqptId);
+
+    const unReturnEqpt = eqptOccupiedHis.find((x) => x.released_date === null);
+
+    if (!unReturnEqpt) {
+      console.warn("No occupied equipment found for return.");
+      return;
+    }
+    $("#return-id").val(unReturnEqpt.id);
+    $("#return-name").val(unReturnEqpt.occupied_by_name);
+    $("#return-eqpt-id").val(unReturnEqpt.equipment_id);
+    $("#return-user-id").val(unReturnEqpt.occupied_by);
+    $("#return-assign-date").val(formatDate(unReturnEqpt.occupied_date));
+    $("#return-eqpt-typeid").val(eqpt.equipment_type_id);
+    $("#return-eqpt-code").val(eqpt.equipment_code);
+    $("#return-eqpt-name").val(eqpt.equipment_name);
+
+    populateUserTaskReturnDropdown();
+
+    $("#return-modal").modal("show");
+  } catch (error) {
+    console.error("Error retrieving equipment data:", error);
+  }
 }
 
 $(document).ready(async function () {
@@ -332,19 +431,25 @@ $(document).ready(async function () {
 
   $("#assign-name").on("change", function () {
     //populate user task
-    populateUserTaskDropdown();
+    populateUserTaskAssignDropdown();
   });
 
   $("#equipment-table-body").on("click", ".return-btn", function () {
     //return function
     const eqptId = $(this).data("id");
-    console.log(eqptId);
+    returnEqpt(eqptId);
   });
 
   $("#assign-form").on("submit", function (e) {
     e.preventDefault();
     assignEqptConfirm();
     $("#assign-modal").modal("hide");
+  });
+
+  $("#return-form").on("submit", function (e) {
+    e.preventDefault();
+    returnEqptConfirm();
+    $("#return-modal").modal("hide");
   });
 
   $("#edit-form").on("submit", function (e) {

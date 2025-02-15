@@ -25,6 +25,16 @@ export const getTasks = async () => {
   }
 };
 
+export const getTaskById = async (taskId) => {
+  try {
+    const response = await axiosInstance.get(`${baseURL}${taskId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching task with ID ${taskId}:`, error);
+    throw error;
+  }
+};
+
 // Function to get a specific task by ID
 export const getTaskByUserId = async (taskId) => {
   try {

@@ -80,7 +80,6 @@
               <tr>
                 <th>ID</th>
                 <th>Occupied Name</th>
-                <th>Occupied By</th>
                 <th>Occupied Date</th>
                 <th>Occupied Task</th>
                 <th>Released Date</th>
@@ -181,7 +180,11 @@
             <form id="assign-form">
               <div class="form-group mb-3">
                 <label for="assign-name" class="form-label">Assign To</label>
-                <select id="assign-name" class="form-select form-control">
+                <select
+                  id="assign-name"
+                  class="form-select form-control"
+                  required
+                >
                   <option value="" disabled>Select a User</option>
                 </select>
               </div>
@@ -201,11 +204,11 @@
                   disabled
                 />
                 <input
-                type="text"
-                id="assign-eqpt-typeid"
-                class="form-control"
-                disabled
-              />
+                  type="text"
+                  id="assign-eqpt-typeid"
+                  class="form-control"
+                  disabled
+                />
               </div>
 
               <div class="form-group mb-3">
@@ -251,6 +254,122 @@
                   class="btn btn-success w-100 submit-btn"
                 >
                   Assign
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Retrun Modal -->
+    <div
+      class="modal fade"
+      id="return-modal"
+      tabindex="-1"
+      aria-labelledby="assignModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="returnModalLabel">Return Equipment</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="return-form">
+              <div class="form-group mb-3">
+                <label for="return-name" class="form-label">Return From</label>
+                <input
+                  type="text"
+                  id="return-name"
+                  class="form-control"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="return-task" class="form-label">Relate Task</label>
+                <select id="return-task" class="form-select form-control">
+                  <option value="" disabled>Select a Task</option>
+                </select>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="return-assign-date" class="form-label"
+                  >Assigned Date</label
+                >
+                <input
+                  type="text"
+                  id="return-assign-date"
+                  class="form-control"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group mb-3" hidden>
+                <input
+                  type="text"
+                  id="return-user-id"
+                  class="form-control"
+                  disabled
+                />
+                <input
+                  type="text"
+                  id="return-eqpt-id"
+                  class="form-control"
+                  disabled
+                />
+                <input
+                  type="text"
+                  id="return-eqpt-typeid"
+                  class="form-control"
+                  disabled
+                />
+                <input
+                type="text"
+                id="return-id"
+                class="form-control"
+                disabled
+              />
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="return-eqpt-code" class="form-label"
+                  >Equipment Code</label
+                >
+                <input
+                  type="text"
+                  id="return-eqpt-code"
+                  class="form-control"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="return-eqpt-name" class="form-label"
+                  >Equipment Name</label
+                >
+                <input
+                  type="text"
+                  id="return-eqpt-name"
+                  class="form-control"
+                  disabled
+                />
+              </div>
+ 
+              <div class="modal-footer">
+                <button
+                  id="returnEqpt"
+                  type="submit"
+                  class="btn btn-success w-100 submit-btn"
+                >
+                  Return
                 </button>
               </div>
             </form>
