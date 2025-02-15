@@ -1,6 +1,7 @@
 import * as UserTaskViewApi from "./services/userTaskViewServices.js";
 import * as UserParentTaskApi from "./services/relUserParentTaskServices.js";
 import * as UserChildTaskApi from "./services/relUserChildTaskServices.js";
+import * as DocumentApi from "./services/documentServices.js";
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
 
 $(document).ready(async function () {
@@ -299,6 +300,7 @@ async function displayUserTaskDetail(taskHeadId) {
 }
 
 function buildTaskDetailRow(detail) {
+  console.log(detail);
   return `
     <tr>
       <td>${detail.ct_task_name || "N/A"}</td>
@@ -306,7 +308,12 @@ function buildTaskDetailRow(detail) {
       <td>${detail.ct_status_name || "N/A"}</td>
       <td>${
         detail.document_id
-          ? `<a href="${detail.document_path}" target="_blank">View Document</a>`
+          ? `<a href="${detail.document_path}" target="_blank">${detail.document_name}</a>`
+          : "N/A"
+      }</td>
+      <td>${
+        detail.require_upload
+          ? `<button class="btn btn-secondary upload-file-btn" data-id="${detail.line_id}">Upload File</button>`
           : "N/A"
       }</td>
       <td>${detail.eqpt_name || "N/A"}</td>
