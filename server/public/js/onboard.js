@@ -38,7 +38,6 @@ $(document).ready(async function () {
 
       const rows = employees
         .map((emp) => {
-        
           return `
             <tr>
               <td>${emp.employee_id}</td>
@@ -92,10 +91,10 @@ $(document).ready(async function () {
         if (!parentTasks.length) throw new Error("Parent tasks not found.");
 
         for (const parent of parentTasks) {
-          const childTasks = await ChildTaskApi.getTaskByParentTaskId(
-            parent.task_id
-          );
-          console.log(childTasks);
+          const childTasks = (
+            await ChildTaskApi.getTaskByParentTaskId(parent.task_id)
+          ).filter((task) => task.enabled === true); // Example filter condition
+
           const countChildTasks = childTasks?.length || 0;
 
           const userParentTask = await UserParentTaskApi.createTask({
@@ -117,13 +116,13 @@ $(document).ready(async function () {
               access_provisioning_id: child.access_provisioning_id || null,
               interview_id: child.interview_id || null,
               server_id: child.server_id || null,
-              hand_over_id: child.hand_over_id || null
+              hand_over_id: child.hand_over_id || null,
             });
           }
         }
 
         const emp = await EmployeeApi.getTaskById(userId);
-        emp.status = 1;//onboarding
+        emp.status = 1; //onboarding
         await EmployeeApi.updateTask(emp.employee_id, emp);
 
         // Show success message
