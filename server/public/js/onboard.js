@@ -91,9 +91,11 @@ $(document).ready(async function () {
         if (!parentTasks.length) throw new Error("Parent tasks not found.");
 
         for (const parent of parentTasks) {
-          const childTasks = (
-            await ChildTaskApi.getTaskByParentTaskId(parent.task_id)
-          ).filter((task) => task.enabled === true); // Example filter condition
+          //get child task by parent
+          const childTasks = await ChildTaskApi.getTaskByParentTaskId(
+            parent.task_id
+          );
+          // Example filter condition
 
           const countChildTasks = childTasks?.length || 0;
 
@@ -104,13 +106,18 @@ $(document).ready(async function () {
             count_child_tasks: countChildTasks,
           });
 
+ 
+
           for (const child of childTasks) {
+            if (child.enaabled == 0) continue;
+
             await UserChildTaskApi.createTask({
               user_parenttask_id: userParentTask.id,
               child_task_id: child.child_task_id,
               status: 0,
               document_id: child.document_id || null,
               document_path: "",
+              require_upload: child.require_upload || 0,
               equipment_type_id: child.equipment_type_id || null,
               training_module_id: child.training_module_id || null,
               access_provisioning_id: child.access_provisioning_id || null,
