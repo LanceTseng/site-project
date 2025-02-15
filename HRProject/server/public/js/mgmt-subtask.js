@@ -2,7 +2,8 @@ import * as ParentTaskApi from "./services/parentTaskServices.js";
 import * as ChildTaskApi from "./services/childTaskServices.js";
 import * as DocumentTaskApi from "./services/documentServices.js";
 import * as ObjectTypeApi from "./services/objectTypeServices.js";
-import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js"; 
+import * as ChildTaskView from "./services/chilsTaskViewServices.js";
+import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
 
 $(document).ready(async function () {
   const taskId = window.location.pathname.split("/").pop();
@@ -28,7 +29,7 @@ $(document).ready(async function () {
     // Populate dropdown with documents from mockdata.js
     documents.forEach((doc) => {
       $documentDropdown.append(
-        `<option value="${doc.object_type_item_key}">${doc.object_type_item_value}</option>`
+        `<option value="${doc.document_id}">${doc.document_name}</option>`
       );
     });
   }
@@ -45,13 +46,11 @@ $(document).ready(async function () {
 
     // Filter only the "Equipment" object types and populate dropdown
     const equipment_types = await ObjectTypeApi.getTaskByName("equipment_type");
-    equipment_types
-      .filter((type) => type.object === "Equiptment")
-      .forEach((device) => {
-        $deviceDropdown.append(
-          `<option value="${device.object_type_item_key}">${device.object_type_item_value}</option>`
-        );
-      });
+    equipment_types.forEach((device) => {
+      $deviceDropdown.append(
+        `<option value="${device.object_type_item_key}">${device.object_type_item_value}</option>`
+      );
+    });
   }
 
   // Populate Training Module Dropdown
@@ -122,47 +121,24 @@ $(document).ready(async function () {
     }
 
     try {
-      const subtasks = await ChildTaskApi.getTaskByParentTaskId(parent_task_id);
-      const documents = await DocumentTaskApi.getTasks();
-      const equipmentTypes = await ObjectTypeApi.getTaskByName(
-        "equipment_type"
+      const subtasks = await ChildTaskView.getChildTaskByParentId(
+        parent_task_id
       );
 
       subtasks.forEach((subtask) => {
-        const document =
-          documents.find((doc) => doc.document_id === subtask.document_id) ??
-          null;
-        const equipment =
-          equipmentTypes.find(
-            (eqpt) => eqpt.object_type_item_key == subtask.equiptment_type_id
-          ) ?? null;
-
-        // Default Values if Data is Null
-        const subtask_name = subtask.child_task_name ?? "N/A";
-        const subtask_description = subtask.child_task_description ?? "N/A";
-        const document_status = document ? "N/A" : "NULL";
-        const require_upload = document?.require_upload
-          ? `<button class="btn btn-secondary btn-sm upload-btn" data-id="${subtask.child_task_id}">Upload File</button>`
-          : "";
-        const equipment_type = equipment ? equipment.object_type_item_value : "N/A";
-        const trainingModule = "N/A";
-        const interview = "N/A";
-        const survey = "N/A";
-        const enable_status = (subtask.enabled)? "Y":"N";
-
         // Append Row to Table
         tableBody.append(`
           <tr>
-            <td>${subtask.child_task_id ?? "N/A"}</td>
-            <td>${subtask_name}</td>
-            <td>${subtask_description}</td>
-            <td>${document_status}</td>
-            <td>${require_upload}</td>
-            <td>${equipment_type}</td>
-            <td>${trainingModule}</td>
-            <td>${interview}</td>
-            <td>${survey}</td>
-            <td>${enable_status}</td>
+            <td>${subtask.child_task_id}</td>
+            <td>${subtask.child_task_name}</td>
+            <td>${subtask.child_task_description}</td>
+            <td>${subtask.document_name ?? "N/A"}</td>
+            <td>${subtask.require_upload ? "Y" : "N"}</td>
+            <td>${subtask.eqpt_type ?? "N/A"}</td>
+            <td>${subtask.training_module_id ?? "N/A"}</td>
+            <td>${subtask.interview_id ?? "N/A"}</td>
+            <td>${subtask.survey_id ?? "N/A"}</td>
+            <td>${subtask.enabled ? "Yes" : "No"}</td>
             <td>
               <button data-id="${
                 subtask.child_task_id ?? ""
@@ -191,42 +167,54 @@ $(document).ready(async function () {
 
   // Save or Update Subtask
   $("#saveSubtask").click(async function () {
-    const mode = $(this).data("mode"); // Check if the button is in "add" or "edit" mode
+    const mode = $("#saveSubtask").data("mode"); // Check if the button is in "add" or "edit" mode
 
-    const subtask = {
-      child_task_id: $("#subtaskId").val() || null,
-      child_task_name: $("#subtaskName").val() || null,
-      child_task_description: $("#subtaskDescription").val() || null,
-      document_id: $("#documentId").val() || null,
-      equipment_type_id: $("#deviceId").val() || null,
-      access_provisioning_id: $("#fileRequirement").val() || null,
-      training_module_id: $("#trainingModuleId").val() || null,
-      interview_id: $("#interviewId").val() || null,
-      survey_id: $("#surveyId").val() || null,
-      enable: $("#enable").val() === "true",
-    };
- 
-    if (!subtask.child_task_name) {
-      alert("Please fill in all required fields.");
-      return;
-    }
+    try {
+      const subtask = {
+        child_task_id: $("#subtaskId").val() || null,
+        parent_task_id: $("#taskName").attr("data-id"),
+        child_task_name: $("#subtaskName").val() || null,
+        child_task_description: $("#subtaskDescription").val() || null,
+        document_id: $("#documentId").val() || null,
+        training_module_id: $("#trainingModuleId").val() || null,
+        equipment_type_id: $("#deviceId").val() || null,
+        access_provisioning_id: null,
+        interview_id: $("#interviewId").val() || null,
+        survey_id: $("#surveyId").val() || null,
+        hand_over_id: null,
+        enabled: $("#enable").val() === "true",
+      };
 
-    if (mode === "add") {
-      // Add new subtask
-      await ChildTaskApi.createTask(subtask);
-    } else if (mode === "edit") {
-      // Update existing subtask
-      const existingSubtask = await ChildTaskApi.getTaskById(subtask.child_task_id);
-      if (existingSubtask) {
-        Object.assign(existingSubtask, subtask);
+      if (!subtask.child_task_name) {
+        Swal.fire("Error", `Please fill in all required fields.`, "error");
+        return;
       }
-    }
 
-    populateTable();
-    resetForm();
-    $("#addSubtaskModal").modal("hide");
-    $(".modal-backdrop").remove(); // Ensure the shadow (backdrop) is removed
-    $("body").removeClass("modal-open"); // Remove class preventing scrolling
+      if (mode === "add") {
+        // Add new subtask
+        await ChildTaskApi.createTask(subtask);
+      } else if (mode === "edit") {
+        // Update existing subtask
+        const existingSubtask = await ChildTaskApi.getTaskById(
+          subtask.child_task_id
+        );
+        if (existingSubtask) {
+          Object.assign(existingSubtask, subtask);
+        }
+        await ChildTaskApi.updateTask(subtask.child_task_id, subtask);
+      }
+
+      Swal.fire("Success", `Equipment ${mode}ed successfully!`, "success");
+
+      populateTable();
+      resetForm();
+      $("#addSubtaskModal").modal("hide");
+      // $(".modal-backdrop").remove(); // Ensure the shadow (backdrop) is removed
+      // $("body").removeClass("modal-open"); // Remove class preventing scrolling
+    } catch (error) {
+      console.error("Error:", error);
+      Swal.fire("Error", `Failed to ${mode}ed subtask!`, "error");
+    }
   });
 
   // Open Modal for Adding a Subtask
