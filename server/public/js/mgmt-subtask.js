@@ -1,6 +1,6 @@
 import * as ParentTaskApi from "./services/parentTaskServices.js";
 import * as ChildTaskApi from "./services/childTaskServices.js";
-import * as DocumentTaskApi from "./services/documentServices.js";
+import * as DocumentApi from "./services/documentServices.js";
 import * as ObjectTypeApi from "./services/objectTypeServices.js";
 import * as ChildTaskView from "./services/chilsTaskViewServices.js";
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
@@ -25,7 +25,7 @@ $(document).ready(async function () {
       `<option value="" disabled selected>Select a document</option>`
     );
 
-    const documents = await DocumentTaskApi.getTasks();
+    const documents = await DocumentApi.getTasks();
     // Populate dropdown with documents from mockdata.js
     documents.forEach((doc) => {
       $documentDropdown.append(
@@ -158,7 +158,7 @@ $(document).ready(async function () {
     $("#subtaskDescription").val("");
     $("#documentId").val("");
     $("#deviceId").val("");
-    $("#fileRequirement").val("Yes");
+    $("#fileRequirement").val("");
     $("#trainingModuleId").val("");
     $("#interviewId").val("");
     $("#surveyId").val("");
@@ -227,7 +227,9 @@ $(document).ready(async function () {
   // Open Modal for Editing a Subtask
   $(document).on("click", ".edit", async function () {
     const subtaskId = $(this).data("id");
-    const subtask = await ChildTaskApi.getTaskById(subtaskId);
+    const subtask = await ChildTaskView.getChildTaskById(subtaskId);
+
+    console.log(subtask);
 
     if (subtask) {
       $("#subtaskId").val(subtask.child_task_id);
@@ -235,7 +237,7 @@ $(document).ready(async function () {
       $("#subtaskDescription").val(subtask.child_task_description);
       $("#documentId").val(subtask.document_id);
       $("#deviceId").val(subtask.equipment_type_id);
-      // $("#fileRequirement").val(subtask.u);
+      $("#fileRequirement").val(subtask.require_upload);
       $("#trainingModuleId").val(subtask.training_module_id);
       $("#interviewId").val(subtask.interview_id);
       $("#surveyId").val(subtask.survey_id);
@@ -245,6 +247,13 @@ $(document).ready(async function () {
       $("#saveSubtask").data("mode", "edit"); // Set mode to "edit"
       $("#addSubtaskModal").modal("show");
     }
+  });
+
+  $("#documentId").on("change", async function () {
+    const docId = $("#documentId").val();
+
+    const document = await DocumentApi.getTaskById(docId);
+    $("#fileRequirement").val(document.require_upload);
   });
 
   // Initialize
