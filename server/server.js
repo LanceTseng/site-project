@@ -17,7 +17,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 // app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, "public"))); // ✅ Serves files inside `public/`
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(coookie());
 app.use(logMiddleware); // Logs incoming requests
 
@@ -25,7 +25,7 @@ app.use(logMiddleware); // Logs incoming requests
 const indexRoutes = require("./routes/index");
 app.use("/", indexRoutes);
 //api
-
+ 
 const employeeRoutes = require("./routes/employeeRoutes");
 const accessProvisioningRoutes = require("./routes/accessProvisioningRoutes");
 const childTaskRoutes = require("./routes/childTaskRoutes");
@@ -64,6 +64,10 @@ app.use("/api", employeeViewRoutes);
 app.use("/api", userTaskViewRoutes);
 app.use("/api", userEmployeeViewRoutes);
 app.use("/api", childTaskViewRoutes);
+
+//upload test
+const uploadRoutes = require("./routes/uploadRoutes");
+app.use("/api", uploadRoutes);
 
 //view
 app.get("/", (req, res) => {
