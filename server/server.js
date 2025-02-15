@@ -32,18 +32,20 @@ const childTaskRoutes = require("./routes/childTaskRoutes");
 const documentRoutes = require("./routes/documentRoutes");
 const equipmentRoutes = require("./routes/equipmentRoutes");
 const eqptOccupiedHisRoutes = require('./routes/eqptOccupiedHisRoutes');
-const equipmentViewRoutes = require("./routes/equiptmentViewRoutes");
 const objectTypeRoutes = require("./routes/objectTypeRoutes");
 const parentTaskRoutes = require("./routes/parentTaskRoutes");
 const trainingModuleRoutes = require("./routes/trainingModuleRoutes");
 const userModuleRoutes = require("./routes/userRoutes");
 const relUserParentTaskRoutes = require("./routes/relUserParentTaskRoutes");
 const relUserChildTaskRoutes = require("./routes/relUserChildTaskRoutes");
-const employeeViewRoutes = require("./routes/employeeViewRoutes");
+
 
 
 const userTaskViewRoutes = require("./routes/userTaskViewRoutes");
 const userEmployeeViewRoutes = require("./routes/userEmployeeViewRoutes");
+const employeeViewRoutes = require("./routes/employeeViewRoutes");
+const childTaskViewRoutes = require("./routes/childTaskViewRoutes");
+const equipmentViewRoutes = require("./routes/equiptmentViewRoutes");
 
 app.use("/api", employeeRoutes);
 app.use("/api", accessProvisioningRoutes);
@@ -61,6 +63,7 @@ app.use("/api", relUserChildTaskRoutes);
 app.use("/api", employeeViewRoutes);
 app.use("/api", userTaskViewRoutes);
 app.use("/api", userEmployeeViewRoutes);
+app.use("/api", childTaskViewRoutes);
 
 //view
 app.get("/", (req, res) => {
