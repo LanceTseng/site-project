@@ -99,23 +99,23 @@ class UserTaskViewController {
     }
   }
 
-  async getUserChildTaskViewByTaskId(req, res) {
-    //parent_task_id
-    try {
-      const childTasks = await UserTaskViewRepository.getUserChildTaskByTaskId(
-        req.params.id
-      );
 
-      if (!childTasks || childTasks.length === 0) {
-        return res.status(404).json({ message: "UserTask not found" });
+   async getUserChildTaskViewByTaskId(req, res) {//parent id
+      try {
+        const childTasks =
+          await UserTaskViewRepository.getUserChildTaskByTaskId(
+            req.params.id
+          );
+        if (!childTasks) {
+          return res.status(404).json({ message: "UserEmployee not found" });
+        }
+   
+        res.status(200).json(childTasks);
+      } catch (error) {
+        res.status(500).json({ error: "Error fetching userEmp" });
       }
-
-      res.status(200).json(childTasks);
-    } catch (error) {
-      console.error("Error fetching child tasks:", error);
-      res.status(500).json({ error: "Error fetching childTasks" });
     }
-  }
+  
 }
 
 // Export an instance of the class

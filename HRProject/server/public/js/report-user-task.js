@@ -42,16 +42,35 @@ async function buildTaskRow(task) {
   const childTasks = await UserTaskViewApi.getUserChildTaskByTaskId(
     task.head_id
   );
-  const completeChildTasks = childTasks.filter((c) => c.ct_status === 2).length;
-  const processRate =
-    task.count_child_tasks > 0
-      ? (completeChildTasks / task.count_child_tasks) * 100
-      : 0;
+
   const statusButton = getStatusButton(
     task.pt_status_name,
     task.head_id,
     "parent"
   );
+
+  if (childTasks.length === 0) {
+    return `
+    <tr class="task-row" data-task-head-id="${task.head_id}">
+      <td>${task.user_name}</td>
+      <td>${task.pt_name}</td>
+      <td>${task.pt_desc}</td>
+      <td>${task.pt_status_name}</td>
+      <td>${isEqualIgnoreCase(task.pt_status_name, "completed") ? 100 : 0}%</td>
+      <td>${formatDate(task.pt_start_date)}</td>
+      <td>${formatDate(task.pt_end_date)}</td>
+      <td>${formatDate(task.last_updated_date) || task.created_date}</td>
+      <td>${statusButton}</td>
+    </tr>
+  `;
+  }
+
+  const completeChildTasks =
+    childTasks.filter((c) => c.ct_status === 2).length ?? 0;
+  const processRate =
+    task.count_child_tasks > 0
+      ? (completeChildTasks / task.count_child_tasks) * 100
+      : 0;
 
   return `
     <tr class="task-row" data-task-head-id="${task.head_id}">
@@ -289,7 +308,7 @@ async function displayUserTaskDetail(taskHeadId) {
 
     const taskDetailRows = taskDetails.length
       ? taskDetails.map(buildTaskDetailRow).join("")
-      : "<tr><td colspan='10'>No details available</td></tr>";
+      : "<tr><td colspan='13'>No details available</td></tr>";
     $("#userTaskDetailList").html(taskDetailRows);
   } catch (error) {
     console.error(
@@ -300,7 +319,6 @@ async function displayUserTaskDetail(taskHeadId) {
 }
 
 function buildTaskDetailRow(detail) {
-  console.log(detail);
   return `
     <tr>
       <td>${detail.ct_task_name || "N/A"}</td>
