@@ -17,7 +17,7 @@ class ChildTaskViewRespository {
   async getChildTaskById(id) {
     try {
       const rows = await db.query(
-        "SELECT * FROM v_child_tasks WHERE id = :id",
+        "SELECT * FROM v_child_tasks WHERE child_task_id   = :id",
         {
           replacements: { id },
           type: QueryTypes.SELECT,
