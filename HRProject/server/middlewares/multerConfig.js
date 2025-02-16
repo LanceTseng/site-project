@@ -3,24 +3,43 @@ const path = require("path");
 const fs = require("fs");
 
 // Ensure 'files' directory exists
-const uploadDir = path.join(__dirname, "../files");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+const uploadUserFileDir = path.join(__dirname, "../files");
+if (!fs.existsSync(uploadUserFileDir)) {
+  fs.mkdirSync(uploadUserFileDir, { recursive: true });
+}
+
+const uploadOfficialFileDir = path.join(__dirname, "../files/offical");
+if (!fs.existsSync(uploadOfficialFileDir)) {
+  fs.mkdirSync(uploadOfficialFileDir, { recursive: true });
 }
 
 // Multer Storage Configuration
-const storage = multer.diskStorage({
+const storageUserUpload = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir); // Save files to 'files/' directory
+    cb(null, uploadUserFileDir); // Save files to 'files/' directory
   },
   filename: (req, file, cb) => {
-    const formatFileName =  file.originalname.replace(/ /g, "_");
+    const formatFileName = file.originalname.replace(/ /g, "_");
     const uniqueName = Date.now() + "-" + formatFileName;
     cb(null, uniqueName);
   },
 });
 
-const upload = multer({ storage });
+const storageOfficialUpload = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadOfficialFileDir); // Save files to 'files/' directory
+  },
+  filename: (req, file, cb) => {
+    const formatFileName = file.originalname.replace(/ /g, "_");
+    const uniqueName = Date.now() + "-" + formatFileName;
+    cb(null, uniqueName);
+  },
+});
 
-module.exports = upload;
-  
+const uploadUserFile = multer({ storage: storageUserUpload });
+const uploadOfficalFile = multer({ storage: storageOfficialUpload });
+
+module.exports = {
+  uploadUserFile,
+  uploadOfficalFile,
+};

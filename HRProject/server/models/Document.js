@@ -13,11 +13,12 @@ const Document = sequelize.define('Document', {
   },
   document_path: {
     type: DataTypes.STRING(45),
-    allowNull: false,
+    allowNull: true,
   },
   require_upload: {
     type: DataTypes.TINYINT,
     allowNull: false,
+    defaultValue: 1
   },
 }, {
   tableName: 'b_documents',

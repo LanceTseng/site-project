@@ -37,6 +37,7 @@ class DocumentController {
       const newDocument = await documentRepo.create(req.body);
       res.status(201).json(newDocument);
     } catch (error) {
+      console.error(error.message);
       res.status(500).json({ error: "Server error" });
     }
   }
