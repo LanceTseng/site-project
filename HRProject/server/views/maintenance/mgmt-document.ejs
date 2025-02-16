@@ -3,19 +3,88 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Equipment Management</title>
+    <title>Document Management</title>
 
     <!-- Bootstrap CSS -->
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <style>
+      .parent {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr 2fr;
+        gap: 20px;
+        padding: 20px;
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+      .table-container {
+        max-height: 630px;
+        overflow-y: auto;
+      }
+      thead th {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 10;
+      }
+    </style>
   </head>
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %>
+    <div class="mt-4 container">
+      <h2>Document Management</h2>
+      <button class="btn btn-primary mb-3" id="addDocumentBtn">
+        Add Document
+      </button>
+    </div>
+    <div class="parent">
+      <!-- 🔍 Search Section -->
+      <div class="container">
+        <h5>Search Documents</h5>
+        <input
+          type="text"
+          id="searchField"
+          class="form-control"
+          placeholder="Enter document name"
+        />
+        <button class="btn btn-secondary mt-2" id="searchBtn">Search</button>
+      </div>
 
-   
+      <!-- 📊 Document Table -->
+      <div class="table-container">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Path</th>
+              <th>Require Upload</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="documentTableBody">
+            <!-- Table Rows Will Be Generated Here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 📄 Document Preview Section -->
+      <div>
+        <h5>Document Preview</h5>
+        <iframe
+          id="documentPreview"
+          style="width: 100%; height: 630px"
+          frameborder="0"
+        ></iframe>
+      </div>
+    </div>
+
+
+    <!-- add/edit modal -->
+     
     <!-- Footer -->
     <%- include('../partials/footer-simple') %>
 
@@ -23,6 +92,9 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-     
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="/js/mgmt-document.js" type="module"></script>
   </body>
 </html>
