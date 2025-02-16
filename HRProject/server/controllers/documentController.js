@@ -1,4 +1,4 @@
-const documentRepo = require('../repositories/documentRepository');
+const documentRepo = require("../repositories/documentRepository");
 
 class DocumentController {
   async getAll(req, res) {
@@ -6,27 +6,29 @@ class DocumentController {
       const documents = await documentRepo.getAll();
       res.json(documents);
     } catch (error) {
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: "Server error" });
     }
   }
 
   async getById(req, res) {
     try {
       const document = await documentRepo.getById(req.params.id);
-      if (!document) return res.status(404).json({ error: 'Document not found' });
+      if (!document)
+        return res.status(404).json({ error: "Document not found" });
       res.json(document);
     } catch (error) {
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: "Server error" });
     }
   }
 
   async getByName(req, res) {
     try {
       const document = await documentRepo.getByName(req.params.name);
-      if (!document) return res.status(404).json({ error: 'Document not found' });
+      if (!document)
+        return res.status(404).json({ error: "Document not found" });
       res.json(document);
     } catch (error) {
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: "Server error" });
     }
   }
 
@@ -35,27 +37,31 @@ class DocumentController {
       const newDocument = await documentRepo.create(req.body);
       res.status(201).json(newDocument);
     } catch (error) {
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: "Server error" });
     }
   }
 
   async update(req, res) {
     try {
-      const updatedDocument = await documentRepo.update(req.params.id, req.body);
-      if (!updatedDocument) return res.status(404).json({ error: 'Document not found' });
+      const updatedDocument = await documentRepo.update(
+        req.params.id,
+        req.body
+      );
+      if (!updatedDocument)
+        return res.status(404).json({ error: "Document not found" });
       res.json(updatedDocument);
     } catch (error) {
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: "Server error" });
     }
   }
 
   async delete(req, res) {
     try {
       const result = await documentRepo.delete(req.params.id);
-      if (!result) return res.status(404).json({ error: 'Document not found' });
-      res.json({ message: 'Document deleted' });
+      if (!result) return res.status(404).json({ error: "Document not found" });
+      res.json({ message: "Document deleted" });
     } catch (error) {
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: "Server error" });
     }
   }
 }
