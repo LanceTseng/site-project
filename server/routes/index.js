@@ -47,6 +47,10 @@ router.get("/mgmt-user-employee", (req, res) => {
   res.render("maintenance/mgmt-user-employee");
 });
 
+router.get("/mgmt-document", (req, res) => {
+  res.render("maintenance/mgmt-document");
+});
+
 //------------------------------------------------------
 //route for report
 router.get("/report", (req, res) => {
