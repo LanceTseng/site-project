@@ -4,12 +4,21 @@ const router = express.Router();
 const upload = require("../middlewares/multerConfig");
 
 // File Upload Endpoint
-router.post("/upload", upload.single("file"), (req, res) => {
+router.post("/upload-user-file", upload.uploadUserFile.single("file"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
-  console.log(req.file.filename);
+  res.json({
+    message: "File uploaded successfully",
+    filename: req.file.filename,
+  });
+});
+
+router.post("/upload-offical-file", upload.uploadOfficalFile.single("file"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
 
   res.json({
     message: "File uploaded successfully",

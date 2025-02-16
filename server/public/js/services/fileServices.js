@@ -1,12 +1,13 @@
 import axiosInstance from "/js/utils/axiosInstance.js"; // Absolute path for browser
 const baseURL = "api/";
 
+//user
 export const uploadFile = async (file) => {
   try {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await axiosInstance.post(`${baseURL}upload`, formData, {
+    const response = await axiosInstance.post(`${baseURL}upload-user-file`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -18,6 +19,25 @@ export const uploadFile = async (file) => {
     throw error;
   }
 };
+
+export const uploadOfficalFile = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await axiosInstance.post(`${baseURL}upload-offical-file`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
+  }
+};
+
 
 export const getFile = async (filename) => {
     try {
