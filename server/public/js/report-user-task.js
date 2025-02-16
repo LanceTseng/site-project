@@ -416,10 +416,10 @@ function buildTaskDetailRow(detail) {
 
   const rowHtml = `
     <tr id="${rowId}">
-      <td>${detail.ct_task_name || "N/A"}</td>
-      <td>${detail.ct_desc || "N/A"}</td>
-      <td>${detail.ct_status_name || "N/A"}</td>
-      <td id="${documentCellId}">N/A</td> 
+      <td>${detail.ct_task_name || ""}</td>
+      <td>${detail.ct_desc || ""}</td>
+      <td>${detail.ct_status_name || ""}</td>
+      <td id="${documentCellId}"></td> 
       <td>${
         detail.require_upload &&
         isEqualIgnoreCase(detail.ct_status_name, "processing")
@@ -427,10 +427,13 @@ function buildTaskDetailRow(detail) {
             <a href="${detail.document_path}" target="_blank">${filename}</a>`
           : `<a href="${detail.document_path}" target="_blank">${filename}</a>`
       }</td>  
-      <td>${detail.eqpt_name || "N/A"}</td>
-      <td>${detail.trainning_module_id || "N/A"}</td>
-      <td>${detail.interview_id || "N/A"}</td>
-      <td>${detail.survey_id || "N/A"}</td>
+      <td>${detail.eqpt_type_name || ""}</td>
+      <td>${
+        detail.equipment_id ? `${detail.eqpt_name}(${detail.eqpt_code})` : ""
+      } </td>
+      <td>${detail.trainning_module_id || ""}</td>
+      <td>${detail.interview_id || ""}</td>
+      <td>${detail.survey_id || ""}</td>
       <td>${formatDate(detail.ct_start_date)}</td>
       <td>${formatDate(detail.ct_end_date)}</td>
       <td>${formatDate(detail.last_updated_date || detail.created_date)}</td>

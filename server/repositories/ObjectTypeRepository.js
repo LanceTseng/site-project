@@ -10,7 +10,14 @@ class ObjectTypeRepository {
   }
 
   async getByName(name) {
-    return await ObjectType.findAll({ where: { object_type_name: name } });
+    return await ObjectType.findAll({
+      where: { object_type_name: name },
+      order: [
+        ["object_type_name", "ASC"],
+        ["object_sequence", "ASC"],
+        ["object_type_item_value", "ASC"],
+      ],
+    });
   }
 
   async create(data) {

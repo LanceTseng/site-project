@@ -119,9 +119,12 @@
       <div class="row">
         <div class="col-12">
           <h5>Recent Activities</h5>
-          <div class="table-responsive">
+          <div class="table-responsive" style="max-height: 225px; overflow-y: auto;">
             <table class="table table-striped">
-              <thead>
+              <thead
+                class="thead-dark"
+                style="position: sticky; top: 0; background: white; z-index: 10"
+              >
                 <tr>
                   <th>Employee Name</th>
                   <th>Department</th>
