@@ -2,6 +2,7 @@ import * as EmployeeApi from "./services/employeeServices.js";
 import * as ObjectTypeApi from "./services/objectTypeServices.js";
 import * as ParentTaskApi from "./services/parentTaskServices.js";
 import * as ChildTaskApi from "./services/childTaskServices.js";
+import * as ChildTaskViewApi from "./services/chilsTaskViewServices.js";
 import * as UserApi from "./services/userServices.js";
 import * as UserParentTaskApi from "./services/relUserParentTaskServices.js";
 import * as UserChildTaskApi from "./services/relUserChildTaskServices.js";
@@ -92,12 +93,12 @@ $(document).ready(async function () {
 
         for (const parent of parentTasks) {
           //get child task by parent
-          const childTasks = await ChildTaskApi.getTaskByParentTaskId(
+          const childTasks = await ChildTaskViewApi.getChildTaskByParentId(
             parent.task_id
           );
           // Example filter condition
 
-          const countChildTasks = childTasks?.length || 0;
+          const countChildTasks = childTasks.filter((t) => Boolean(t.enabled))?.length || 0;
 
           const userParentTask = await UserParentTaskApi.createTask({
             user_id: userId,
@@ -106,26 +107,26 @@ $(document).ready(async function () {
             count_child_tasks: countChildTasks,
           });
 
- 
-
-          for (const child of childTasks) {
-            if (child.enaabled == 0) continue;
-
-            await UserChildTaskApi.createTask({
-              user_parenttask_id: userParentTask.id,
-              child_task_id: child.child_task_id,
-              status: 0,
-              document_id: child.document_id || null,
-              document_path: "",
-              require_upload: child.require_upload || 0,
-              equipment_type_id: child.equipment_type_id || null,
-              training_module_id: child.training_module_id || null,
-              access_provisioning_id: child.access_provisioning_id || null,
-              interview_id: child.interview_id || null,
-              server_id: child.server_id || null,
-              hand_over_id: child.hand_over_id || null,
-            });
-          }
+          await Promise.all(
+            childTasks
+              .filter((t) => Boolean(t.enabled))
+              .map((child) =>
+                UserChildTaskApi.createTask({
+                  user_parenttask_id: userParentTask.id,
+                  child_task_id: child.child_task_id,
+                  status: 0,
+                  document_id: child.document_id || null,
+                  document_path: "",
+                  require_upload: child.require_upload || 0,
+                  equipment_type_id: child.equipment_type_id || null,
+                  training_module_id: child.training_module_id || null,
+                  access_provisioning_id: child.access_provisioning_id || null,
+                  interview_id: child.interview_id || null,
+                  servery_id: child.servery_id || null,
+                  hand_over_id: child.hand_over_id || null,
+                })
+              )
+          );
         }
 
         const emp = await EmployeeApi.getTaskById(userId);

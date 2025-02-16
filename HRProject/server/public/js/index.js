@@ -24,26 +24,30 @@ $(document).ready(async function () {
     // Populate Recent Activities Table
     const tableBody = $("#recentActivities").empty(); // Clear existing rows
 
-    const recentActivities = data.filter((o) => [0, 1, 3].includes(o.status));
- 
+    const recentActivities = data
+      .filter((o) => [0, 1, 3].includes(o.status)) // Filter by status
+      .sort((a, b) => {
+        return new Date(b.last_updated_date) - new Date(a.last_updated_date);
+      });
 
-    if (recentActivities.length > 0 ) {
+    if (recentActivities.length > 0) {
       const statusClasses = {
         onboarding: "bg-success",
-        pending:"bg-info",
+        pending: "bg-info",
         offboarding: "bg-danger",
       };
 
       recentActivities.forEach((employee) => {
         console.log(employee);
-        const badgeClass = statusClasses[employee.status_name] || "bg-secondary"; // Default class
+        const badgeClass =
+          statusClasses[employee.status_name] || "bg-secondary"; // Default class
 
         const row = `
           <tr>
             <td>${employee.first_name} ${employee.last_name}</td>
             <td>${employee.department_name}</td>
             <td><span class="badge ${badgeClass}">${capitalize(
-              employee.status_name
+          employee.status_name
         )}</span></td>
             <td>${formatDate(employee.last_updated_date)}</td>
           </tr>`;

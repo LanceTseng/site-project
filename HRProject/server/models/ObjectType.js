@@ -21,6 +21,10 @@ const ObjectType = sequelize.define(
       type: DataTypes.STRING(45),
       allowNull: true,
     },
+    object_sequence: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+    },
   },
   {
     tableName: 'b_object_type',
