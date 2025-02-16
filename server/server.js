@@ -66,8 +66,8 @@ app.use("/api", userEmployeeViewRoutes);
 app.use("/api", childTaskViewRoutes);
 
 //upload test
-const uploadRoutes = require("./routes/uploadRoutes");
-app.use("/api", uploadRoutes);
+const fileRoutes = require("./routes/fileRoutes");
+app.use("/api", fileRoutes);
 
 //view
 app.get("/", (req, res) => {

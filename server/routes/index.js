@@ -61,4 +61,9 @@ router.get("/report-goal", (req, res) => {
   res.render("pages/goal");
 });
 
+//upload test
+router.get("/upload", (req, res) => {
+  res.render("upload");
+});
+
 module.exports = router;

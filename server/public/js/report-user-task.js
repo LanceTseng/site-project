@@ -2,6 +2,8 @@ import * as UserTaskViewApi from "./services/userTaskViewServices.js";
 import * as UserParentTaskApi from "./services/relUserParentTaskServices.js";
 import * as UserChildTaskApi from "./services/relUserChildTaskServices.js";
 import * as DocumentApi from "./services/documentServices.js";
+import * as FileApi from "./services/fileServices.js";
+
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
 
 $(document).ready(async function () {
@@ -25,6 +27,10 @@ $(document).ready(async function () {
 
   $("#userTaskDetailList").on("click", ".complete-child-task", function () {
     handleChildTaskComplete($(this).data("id"), $(this).data("headid"));
+  });
+
+  $("#userTaskDetailList").on("click", ".upload-file-btn", function () {
+    handleChildTaskFileUpload($(this).data("id"));
   });
 });
 
@@ -56,7 +62,9 @@ async function buildTaskRow(task) {
       <td>${task.pt_name}</td>
       <td>${task.pt_desc}</td>
       <td>${task.pt_status_name}</td>
-      <td>${isEqualIgnoreCase(task.pt_status_name, "completed") ? 100 : 0}%</td>
+      <td>${
+        isEqualIgnoreCase(task.pt_status_name, "completed") ? 100.0 : 0.0
+      }%</td>
       <td>${formatDate(task.pt_start_date)}</td>
       <td>${formatDate(task.pt_end_date)}</td>
       <td>${formatDate(task.last_updated_date) || task.created_date}</td>
@@ -219,6 +227,7 @@ async function handleChildTaskStart(user_task_line_id, user_task_head_id) {
     const child_task = await UserTaskViewApi.getUserTaskByLineId(
       user_task_line_id
     );
+
     const result = await Swal.fire({
       title: "Start Subtasks?",
       text: `Are you sure you want to start the subtasks [${child_task.ct_name}]?`,
@@ -244,6 +253,53 @@ async function handleChildTaskStart(user_task_line_id, user_task_head_id) {
   }
 }
 
+async function handleChildTaskFileUpload(user_task_line_id) {
+  try {
+    const user_child_task = await UserChildTaskApi.getTaskById(
+      user_task_line_id
+    );
+
+    // Create a hidden file input element
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "*/*";
+
+    fileInput.addEventListener("change", async function () {
+      if (!fileInput.files.length) return;
+
+      const selectedFile = fileInput.files[0];
+
+      try {
+        // Upload file using Axios
+        const response = await FileApi.uploadFile(selectedFile);
+
+        //update to child task document
+        const file = await FileApi.getFileUrl(response.filename);
+
+        user_child_task.document_path = file.fileurl;
+        await UserChildTaskApi.updateTask(user_task_line_id, user_child_task);
+
+        fileInput.value = ""; // Reset input after upload
+
+        Swal.fire("Started!", "File upload successfully.", "success");
+      } catch (uploadError) {
+        console.error("File upload failed:", uploadError);
+        await Swal.fire("Error", "File upload failed.", "error");
+      }
+    });
+
+    // Trigger file selection
+    fileInput.click();
+  } catch (error) {
+    console.error("Error processing tasks:", error);
+    await Swal.fire(
+      "Error",
+      "Something went wrong. Please try again.",
+      "error"
+    );
+  }
+}
+
 async function startBatchChildTasks(taskHeadId) {
   const childTasks = await UserTaskViewApi.getUserChildTaskByTaskId(taskHeadId);
   for (const task of childTasks) {
@@ -265,18 +321,14 @@ async function completeBatchChildTasks(taskHeadId) {
 }
 
 async function startSingleChildTask(taskLineId) {
-  const childTask = await UserTaskViewApi.getUserTaskByLineId(taskLineId);
-
-  const updatedTask = await UserChildTaskApi.getTaskById(childTask.line_id);
+  const updatedTask = await UserChildTaskApi.getTaskById(taskLineId);
   updatedTask.status = 1;
   updatedTask.start_date = new Date();
   await UserChildTaskApi.updateTask(taskLineId, updatedTask);
 }
 
 async function completeSingleChildTask(taskLineId) {
-  const childTask = await UserTaskViewApi.getUserTaskByLineId(taskLineId);
-
-  const updatedTask = await UserChildTaskApi.getTaskById(childTask.line_id);
+  const updatedTask = await UserChildTaskApi.getTaskById(taskLineId);
   updatedTask.status = 2;
   updatedTask.start_date = new Date();
   await UserChildTaskApi.updateTask(taskLineId, updatedTask);
@@ -318,22 +370,63 @@ async function displayUserTaskDetail(taskHeadId) {
   }
 }
 
+async function getOfficalDocumentFile(documentId) {
+  try {
+    const response = await DocumentApi.getTaskById(documentId);
+
+    if (!response || !response.document_path) return "";
+
+    const fileResponse = await FileApi.getOfficalFileUrl(
+      response.document_path
+    );
+
+    return fileResponse?.fileurl || "";
+  } catch (error) {
+    console.error("Error fetching official document file:", error);
+    return "";
+  }
+}
+
+function updateDocumentLink(documentId, documentCellId, documentName) {
+  if (!documentId) return;
+
+  getOfficalDocumentFile(documentId)
+    .then((officialUrl) => {
+      setTimeout(() => {
+        const documentCell = $(`#${documentCellId}`);
+        if (documentCell.length > 0) {
+          documentCell.html(
+            officialUrl && typeof officialUrl === "string"
+              ? `<a href="${officialUrl}" target="_blank">${documentName}</a>`
+              : documentName
+          );
+        }
+      }, 100);
+    })
+    .catch((error) => {
+      console.error("Error updating document link:", error);
+    });
+}
 function buildTaskDetailRow(detail) {
-  return `
-    <tr>
+  const fileUrl = detail.document_path || "";
+  const filename = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+
+  const rowId = `task-row-${detail.line_id}`;
+  const documentCellId = `document-link-${detail.line_id}`;
+
+  const rowHtml = `
+    <tr id="${rowId}">
       <td>${detail.ct_task_name || "N/A"}</td>
       <td>${detail.ct_desc || "N/A"}</td>
       <td>${detail.ct_status_name || "N/A"}</td>
+      <td id="${documentCellId}">N/A</td> 
       <td>${
-        detail.document_id
-          ? `<a href="${detail.document_path}" target="_blank">${detail.document_name}</a>`
-          : "N/A"
-      }</td>
-      <td>${
-        detail.require_upload
-          ? `<button class="btn btn-secondary upload-file-btn" data-id="${detail.line_id}">Upload File</button>`
-          : "N/A"
-      }</td>
+        detail.require_upload &&
+        isEqualIgnoreCase(detail.ct_status_name, "processing")
+          ? `<button class="btn btn-secondary upload-file-btn" data-id="${detail.line_id}">Upload File</button>
+            <a href="${detail.document_path}" target="_blank">${filename}</a>`
+          : `<a href="${detail.document_path}" target="_blank">${filename}</a>`
+      }</td>  
       <td>${detail.eqpt_name || "N/A"}</td>
       <td>${detail.trainning_module_id || "N/A"}</td>
       <td>${detail.interview_id || "N/A"}</td>
@@ -349,4 +442,16 @@ function buildTaskDetailRow(detail) {
       )}</td>
     </tr>
   `;
+
+  setTimeout(() => {
+    if (detail.document_id) {
+      updateDocumentLink(
+        detail.document_id,
+        documentCellId,
+        detail.document_name
+      );
+    }
+  }, 100);
+
+  return rowHtml;
 }
