@@ -20,6 +20,16 @@ router.get("/offboarding", (req, res) => {
   res.render("offboard/offboarding", { title: "Offboarding" });
 });
 
+// Route for Login Settings
+router.get("/form/:formtypeid?/userid/:userid?", (req, res) => {
+  const { formtypeid, userid } = req.params;
+
+  console.log("Form Type ID:", formtypeid);
+  console.log("User ID:", userid);
+
+  res.render("pages/form", { formtypeid, userid });
+});
+
 //------------------------------------------------------
 router.get("/maintenance", (req, res) => {
   res.render("maintenance/mgmt-index");
