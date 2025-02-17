@@ -282,6 +282,9 @@ async function handleChildTaskFileUpload(user_task_line_id) {
         fileInput.value = ""; // Reset input after upload
 
         Swal.fire("Started!", "File upload successfully.", "success");
+
+        await displayUserTaskHeader();
+        await displayUserTaskDetail(user_child_task.user_parenttask_id);
       } catch (uploadError) {
         console.error("File upload failed:", uploadError);
         await Swal.fire("Error", "File upload failed.", "error");

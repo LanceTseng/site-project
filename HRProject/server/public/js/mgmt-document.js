@@ -77,12 +77,10 @@ async function saveDocument() {
     console.log(mode);
 
     const docEdit = {
-      document_id: $("#documentId").val() || -1,
+      document_id: $("#documentId").val() || null,
       document_name: $("#documentName").val(),
       require_upload: $("#requireUpload").val(),
     };
-
-    console.log(docEdit);
 
     if (isEqualIgnoreCase(mode, "add")) {
       await DocumentApi.createTask(docEdit);
