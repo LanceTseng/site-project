@@ -3,6 +3,7 @@ import * as ChildTaskApi from "./services/childTaskServices.js";
 import * as DocumentApi from "./services/documentServices.js";
 import * as ObjectTypeApi from "./services/objectTypeServices.js";
 import * as ChildTaskView from "./services/chilsTaskViewServices.js";
+import * as FormDesignViewApi from "./services/formDesignViewServices.js";
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
 
 $(document).ready(async function () {
@@ -91,7 +92,7 @@ $(document).ready(async function () {
   }
 
   // Populate Survey Dropdown
-  function populateSurveyDropdown() {
+  async function populateSurveyDropdown() {
     const $surveyDropdown = $("#surveyId");
     $surveyDropdown.empty();
 
@@ -100,11 +101,12 @@ $(document).ready(async function () {
       `<option value="" disabled selected>Select a survey</option>`
     );
 
-    const surveys = [];
+    const surveys =
+      await FormDesignViewApi.getFormDesignViewFormTypeByFormTypeId();
     // Populate options from surveys array
     surveys.forEach((survey) => {
       $surveyDropdown.append(
-        `<option value="${survey.id}">${survey.survey_name}</option>`
+        `<option value="${survey.form_id}">${survey.form_name}</option>`
       );
     });
   }
@@ -132,12 +134,12 @@ $(document).ready(async function () {
             <td>${subtask.child_task_id}</td>
             <td>${subtask.child_task_name}</td>
             <td>${subtask.child_task_description}</td>
-            <td>${subtask.document_name ?? "N/A"}</td>
+            <td>${subtask.document_name ?? ""}</td>
             <td>${subtask.require_upload ? "Y" : "N"}</td>
-            <td>${subtask.eqpt_type ?? "N/A"}</td>
-            <td>${subtask.training_module_id ?? "N/A"}</td>
-            <td>${subtask.interview_id ?? "N/A"}</td>
-            <td>${subtask.survey_id ?? "N/A"}</td>
+            <td>${subtask.eqpt_type ?? ""}</td>
+            <td>${subtask.training_module_id ?? ""}</td>
+            <td>${subtask.interview_id ?? ""}</td>
+            <td>${subtask.servey_name ?? ""}</td>
             <td>${subtask.enabled ? "Yes" : "No"}</td>
             <td>
               <button data-id="${
