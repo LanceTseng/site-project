@@ -6,7 +6,7 @@ class RelUserFormController {
       const tasks = await UserFormRepository.getAll();
       res.json(tasks);
     } catch (error) {
-      res.status(500).json({ error: "Server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 
@@ -16,7 +16,7 @@ class RelUserFormController {
       if (!task) return res.status(404).json({ error: "Task not found" });
       res.json(task);
     } catch (error) {
-      res.status(500).json({ error: "Server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 
@@ -26,17 +26,18 @@ class RelUserFormController {
       if (!task) return res.status(404).json({ error: "Task not found" });
       res.json(task);
     } catch (error) {
-      res.status(500).json({ error: "Server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 
 
   async create(req, res) {
     try {
+      console.log(req.body);
       const newTask = await UserFormRepository.create(req.body);
       res.status(201).json(newTask);
     } catch (error) {
-      res.status(500).json({ error: "Server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 
@@ -50,7 +51,7 @@ class RelUserFormController {
         return res.status(404).json({ error: "Task not found" });
       res.json(updatedTask);
     } catch (error) {
-      res.status(500).json({ error: "Server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 
@@ -60,7 +61,7 @@ class RelUserFormController {
       if (!result) return res.status(404).json({ error: "Task not found" });
       res.json({ message: "Task deleted" });
     } catch (error) {
-      res.status(500).json({ error: "Server error" });
+      res.status(500).json({ error: error.message });
     }
   }
 }

@@ -21,13 +21,10 @@ router.get("/offboarding", (req, res) => {
 });
 
 // Route for Login Settings
-router.get("/form/:formtypeid?/userid/:userid?", (req, res) => {
-  const { formtypeid, userid } = req.params;
+router.get("/form/:formid?/lineid/:lineid?", (req, res) => {
+  const { formid, lineid } = req.params;
 
-  console.log("Form Type ID:", formtypeid);
-  console.log("User ID:", userid);
-
-  res.render("pages/form", { formtypeid, userid });
+  res.render("pages/form", { formid, lineid });
 });
 
 //------------------------------------------------------

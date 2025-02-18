@@ -318,7 +318,7 @@ async function completeBatchChildTasks(taskHeadId) {
   for (const task of childTasks) {
     const updatedTask = await UserChildTaskApi.getTaskById(task.line_id);
     updatedTask.status = 2;
-    updatedTask.start_date = new Date();
+    updatedTask.end_date= new Date();
     await UserChildTaskApi.updateTask(task.line_id, updatedTask);
   }
 }
@@ -350,7 +350,7 @@ async function completeParentTask(taskHeadId) {
   const parentTask = await UserParentTaskApi.getTaskById(taskHeadId);
   if (!isEqualIgnoreCase(parentTask.pt_status_name, "processing")) {
     parentTask.status = 2;
-    parentTask.start_date = new Date();
+    parentTask.end_date = new Date();
     await UserParentTaskApi.updateTask(taskHeadId, parentTask);
   }
 }
@@ -416,7 +416,6 @@ function buildTaskDetailRow(detail) {
 
   const rowId = `task-row-${detail.line_id}`;
   const documentCellId = `document-link-${detail.line_id}`;
-
   const rowHtml = `
     <tr id="${rowId}">
       <td>${detail.ct_task_name || ""}</td>
@@ -436,7 +435,10 @@ function buildTaskDetailRow(detail) {
       } </td>
       <td>${detail.trainning_module_id || ""}</td>
       <td>${detail.interview_id || ""}</td>
-      <td>${detail.survey_id || ""}</td>
+      <td>${
+        `<a href="/form/${detail.survey_id}/lineid/${detail.line_id}" target="_blank">${detail.survey_name}</a>` ||
+        ""
+      }</td>
       <td>${formatDate(detail.ct_start_date)}</td>
       <td>${formatDate(detail.ct_end_date)}</td>
       <td>${formatDate(detail.last_updated_date || detail.created_date)}</td>

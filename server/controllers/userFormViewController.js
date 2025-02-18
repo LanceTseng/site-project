@@ -23,6 +23,21 @@ class UserFormViewController {
       res.status(500).json({ error: "Error fetching userForm" });
     }
   }
+
+  
+  async getUserFormViewByLineId(req, res) {
+    try {
+      const userForm = await UserFormViewRepository.getUserFormByLineId(
+        req.params.lineid
+      );
+      if (!userForm) {
+        return res.status(404).json({ message: "UserEmployee not found" });
+      }
+      res.status(200).json(userForm);
+    } catch (error) {
+      res.status(500).json({ error: "Error fetching userForm" });
+    }
+  }
 }
 
 // Export an instance of the class

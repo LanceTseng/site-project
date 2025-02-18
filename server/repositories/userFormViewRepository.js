@@ -32,6 +32,25 @@ class UserFormViewRepository {
       throw error;
     }
   }
+
+  async getUserFormByLineId(lineId) {
+    try {
+      const rows = await db.query(
+        "SELECT * FROM v_user_form WHERE user_childtask_id = :lineId",
+        {
+          replacements: { lineId },
+          type: QueryTypes.SELECT,
+        }
+      );
+      return rows;
+    } catch (error) {
+      console.error(
+        `Error fetching user employee for user ID ${lineId}:`,
+        error
+      );
+      throw error;
+    }
+  }
 }
 
 module.exports = new UserFormViewRepository();

@@ -9,10 +9,6 @@ const UserForm = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     form_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -41,7 +37,9 @@ const UserForm = sequelize.define(
   },
   {
     tableName: "rel_user_form",
-    timestamps: false, // Change to true if you want Sequelize to manage timestamps
+    timestamps: true,
+    createdAt: "created_date",
+    updatedAt: "last_updated_date", // Change to true if you want Sequelize to manage timestamps
   }
 );
 
