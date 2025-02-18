@@ -183,6 +183,7 @@ async function submitSurvey(formId, lineId) {
       text: "Survey submitted successfully!",
     }).then(() => {
       $("#surveyForm").empty(); // Clear form only after successful submission
+      window.location.href = "/report-user-task"; // Change this to your desired URL
     });
   } catch (error) {
     Swal.fire({
