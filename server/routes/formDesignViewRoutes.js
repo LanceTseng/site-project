@@ -8,5 +8,9 @@ router.get(
   "/form-design-view/formid/:formdid",
   FormDesignViewController.getFormDesignViewByFormId
 );
+router.get(
+  "/form-design-view/formtypeid",
+  FormDesignViewController.getFormDesignViewFormTypeByFormTypeId
+);
 
 module.exports = router;
