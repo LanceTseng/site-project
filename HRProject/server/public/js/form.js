@@ -1,5 +1,6 @@
 import * as UserChildTaskApi from "./services/relUserChildTaskServices.js";
 import * as UserFormApi from "./services/relUserFormServices.js";
+import * as UserFormViewApi from "./services/userFormViewServices.js";
 import * as FormDesignViewApi from "./services/formDesignViewServices.js";
 
 let surveyQuestions = []; // Move surveyQuestions to a global scope
@@ -121,45 +122,91 @@ async function populateFormContent(formId) {
   }
 }
 
-$(document).ready(function () {
-  populateFormContent(2);
+async function submitSurvey(formId, lineId) {
+  try {
+    const answers = [];
+    surveyQuestions.forEach((question) => {
+      const answer =
+        $(`[name="q${question.id}"]:checked`).val() ||
+        $(`[name="q${question.id}"]`).val();
+
+      const result = {
+        form_question_id: question.id,
+        form_question_response: answer ? answer.trim() : "",
+      };
+      answers.push(result);
+    });
+
+    console.log("Survey Responses:", answers);
+
+    if (Object.values(answers).some((val) => val === "")) {
+      Swal.fire({
+        icon: "warning",
+        title: "Oops!",
+        text: "Please answer all questions before submitting.",
+      });
+      return;
+    }
+
+    const existSurvey = await UserFormViewApi.getAllUserTasksByLineId(lineId);
+
+    if (!existSurvey || existSurvey.length === 0) {
+      for (const a of answers) {
+        // Use for...of to handle async/await properly
+        const userform = {
+          id: null,
+          form_id: formId,
+          form_question_id: a.form_question_id,
+          form_question_response: a.form_question_response,
+          user_childtask_id: lineId,
+        };
+
+        await UserFormApi.createTask(userform);
+      }
+    } else {
+      for (const e of existSurvey) {
+        // Use for...of to handle async/await properly
+        const newResponse = answers.find(
+          (a) => a.form_question_id === e.form_question_id
+        );
+
+        if (newResponse) {
+          e.form_question_response = newResponse.form_question_response;
+          await UserFormApi.updateTask(e.id, e);
+        }
+      }
+    }
+
+    Swal.fire({
+      icon: "success",
+      title: "Thank You!",
+      text: "Survey submitted successfully!",
+    }).then(() => {
+      $("#surveyForm").empty(); // Clear form only after successful submission
+    });
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Error!",
+      text: "Failed to submit the survey.",
+    });
+    console.error("Survey submission error:", error);
+  }
+}
+
+$(document).ready(async function () {
+  const pathParts = window.location.pathname.split("/"); // Split by "/"
+
+  // Find dynamic parameters based on your URL structure
+  const formIdIndex = pathParts.indexOf("form") + 1; // Get index after 'form'
+  const lineIdIndex = pathParts.indexOf("lineid") + 1; // Get index after 'lineid'
+  // Extract formId and lineId safely
+  const formId = formIdIndex > 0 ? pathParts[formIdIndex] : null;
+  const lineId = lineIdIndex > 0 ? pathParts[lineIdIndex] : null;
+
+  populateFormContent(formId);
 
   $("#submitBtn").click(async function () {
-    try {
-      const answers = {};
-      surveyQuestions.forEach((question) => {
-        const answer =
-          $(`[name="q${question.id}"]:checked`).val() ||
-          $(`[name="q${question.id}"]`).val();
-        answers[`q${question.id}`] = answer ? answer.trim() : "";
-      });
-
-      console.log("Survey Responses:", answers);
-
-      if (Object.values(answers).some((val) => val === "")) {
-        Swal.fire({
-          icon: "warning",
-          title: "Oops!",
-          text: "Please answer all questions before submitting.",
-        });
-        return;
-      }
-
-      const response = await axios.post("/submit-survey", answers);
-      Swal.fire({
-        icon: "success",
-        title: "Thank You!",
-        text: "Survey submitted successfully!",
-      }).then(() => {
-        $("#surveyForm").empty(); // Clear form only after successful submission
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error!",
-        text: "Failed to submit the survey.",
-      });
-      console.error("Survey submission error:", error);
-    }
+    submitSurvey(formId, lineId);
   });
 });

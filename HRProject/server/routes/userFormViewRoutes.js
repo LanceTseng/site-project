@@ -8,5 +8,10 @@ router.get(
   "/user-form-view/userid/:userid",
   UserFormViewController.getUserFormViewByUserId
 );
+router.get(
+  "/user-form-view/lineid/:lineid",
+  UserFormViewController.getUserFormViewByLineId
+);
+
 
 module.exports = router;

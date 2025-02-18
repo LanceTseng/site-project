@@ -20,3 +20,14 @@ export const getAllUserTasksByUserId = async (id) => {
     throw error;
   }
 };
+
+//userChildTaskId(LineId)
+export const getAllUserTasksByLineId = async (id) => {
+  try {
+    const response = await axiosInstance.get(`${baseURL}lineid/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user tasks:", error);
+    throw error;
+  }
+};
