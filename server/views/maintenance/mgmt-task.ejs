@@ -10,6 +10,24 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <style>
+      .parent {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+      }
+      .table-container {
+        max-height: 520px;
+        overflow-y: auto;
+      }
+      thead th {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 10;
+      }
+    </style>
   </head>
   <body>
     <!-- Navbar -->
@@ -30,25 +48,31 @@
       </button>
 
       <!-- Task Table -->
-      <table class="table table-bordered mt-4" id="taskTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Task Name</th>
-            <th>Task Description</th>
-            <th>Task Group</th>
-            <th hidden>group_id</th>
-            <th>Created Date</th>
-            <th>Last Updated Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Data will be dynamically populated here -->
-        </tbody>
-      </table>
+      <div class="parent">
+        <div class="table-container">
+          <table
+            class="table table-bordered mt-4 table-container"
+            id="taskTable"
+          >
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Task Name</th>
+                <th>Task Description</th>
+                <th>Task Group</th>
+                <th hidden>group_id</th>
+                <th>Created Date</th>
+                <th>Last Updated Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Data will be dynamically populated here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-
     <!-- Task Modal -->
     <div
       class="modal fade"
@@ -127,6 +151,5 @@
 
     <!-- Custom JS -->
     <script src="/js/mgmt-task.js" type="module"></script>
-
   </body>
 </html>
