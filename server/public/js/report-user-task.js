@@ -436,7 +436,7 @@ function buildTaskDetailRow(detail) {
       <td>${detail.trainning_module_id || ""}</td>
       <td>${detail.interview_id || ""}</td>
       <td>${
-        `<a href="/form/${detail.survey_id}/lineid/${detail.line_id}" target="_blank">${detail.survey_name}</a>` ||
+        `<a href="/form/${detail.survey_id}/lineid/${detail.line_id}" target="_self">${detail.survey_name}</a>` ||
         ""
       }</td>
       <td>${formatDate(detail.ct_start_date)}</td>
