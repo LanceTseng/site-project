@@ -11,6 +11,18 @@
       rel="stylesheet"
     />
   </head>
+  <style>
+    .table-container {
+      max-height: 520px;
+      overflow-y: auto;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+  </style>
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %> <%- include('./mgmt-task-nav') %>
@@ -23,35 +35,31 @@
       </h3>
 
       <!-- Add Subtask Button -->
-      <button
-        type="button"
-        class="btn btn-primary"
-        id="addSubtaskButton"
-      >
+      <button type="button" class="btn btn-primary" id="addSubtaskButton">
         Add Subtask
       </button>
-
-      <!-- Subtask Table -->
-      <table class="table table-bordered mt-4" id="subtaskTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Subtask Name</th>
-            <th>Description</th>
-            <th>Document</th>
-            <th>Documnet Upload</th>
-            <th>Device</th>
-            <th>Training Module ID</th>
-            <th>Interview ID</th>
-            <th>Survey ID</th>
-            <th>Enable</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="table-container">
+        <!-- Subtask Table -->
+        <table class="table table-bordered mt-4" id="subtaskTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Subtask Name</th>
+              <th>Description</th>
+              <th>Document</th>
+              <th>Documnet Upload</th>
+              <th>Device</th>
+              <th>Training Module ID</th>
+              <th>Interview ID</th>
+              <th>Survey ID</th>
+              <th>Enable</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
-
     <!-- Add Subtask Modal -->
     <div
       class="modal fade"
@@ -155,7 +163,9 @@
             <button class="btn btn-secondary" data-dismiss="modal">
               Close
             </button>
-            <button class="btn btn-primary" id="saveSubtask"  data-mode="">Save</button>
+            <button class="btn btn-primary" id="saveSubtask" data-mode="">
+              Save
+            </button>
           </div>
         </div>
       </div>
