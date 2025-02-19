@@ -122,7 +122,7 @@ $(document).ready(async function () {
                   training_module_id: child.training_module_id || null,
                   access_provisioning_id: child.access_provisioning_id || null,
                   interview_id: child.interview_id || null,
-                  servery_id: child.servery_id || null,
+                  survey_id: child.survey_id || null,
                   hand_over_id: child.hand_over_id || null,
                 })
               )

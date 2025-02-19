@@ -318,7 +318,7 @@ async function completeBatchChildTasks(taskHeadId) {
   for (const task of childTasks) {
     const updatedTask = await UserChildTaskApi.getTaskById(task.line_id);
     updatedTask.status = 2;
-    updatedTask.end_date= new Date();
+    updatedTask.end_date = new Date();
     await UserChildTaskApi.updateTask(task.line_id, updatedTask);
   }
 }
@@ -412,33 +412,45 @@ function updateDocumentLink(documentId, documentCellId, documentName) {
 }
 function buildTaskDetailRow(detail) {
   const fileUrl = detail.document_path || "";
-  const filename = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+  const filename = fileUrl
+    ? fileUrl.substring(fileUrl.lastIndexOf("/") + 1)
+    : "";
 
   const rowId = `task-row-${detail.line_id}`;
   const documentCellId = `document-link-${detail.line_id}`;
+
+  const uploadButton =
+    detail.require_upload &&
+    isEqualIgnoreCase(detail.ct_status_name, "processing")
+      ? `<button class="btn btn-secondary upload-file-btn" data-id="${detail.line_id}">Upload File</button>`
+      : "";
+
+  const fileLink = fileUrl
+    ? `<a href="${fileUrl}" target="_blank">${filename}</a>`
+    : "No file";
+
+  const surveyLink = detail.survey_id
+    ? isEqualIgnoreCase(detail.ct_status_name, "processing")
+      ? `<a href="/form/${detail.survey_id}/lineid/${detail.line_id}" target="_self">${detail.survey_name}</a>`
+      : isEqualIgnoreCase(detail.ct_status_name, "completed")
+      ? `<a href="/form-review/${detail.line_id}" target="_self">${detail.survey_name}(Review)</a>`
+      : `${detail.survey_name}`
+    : "";
+
   const rowHtml = `
     <tr id="${rowId}">
       <td>${detail.ct_task_name || ""}</td>
       <td>${detail.ct_desc || ""}</td>
       <td>${detail.ct_status_name || ""}</td>
-      <td id="${documentCellId}"></td> 
-      <td>${
-        detail.require_upload &&
-        isEqualIgnoreCase(detail.ct_status_name, "processing")
-          ? `<button class="btn btn-secondary upload-file-btn" data-id="${detail.line_id}">Upload File</button>
-            <a href="${detail.document_path}" target="_blank">${filename}</a>`
-          : `<a href="${detail.document_path}" target="_blank">${filename}</a>`
-      }</td>  
+      <td id="${documentCellId}"></td>
+      <td>${uploadButton} ${fileLink}</td>  
       <td>${detail.eqpt_type_name || ""}</td>
       <td>${
-        detail.equipment_id ? `${detail.eqpt_name}(${detail.eqpt_code})` : ""
-      } </td>
+        detail.equipment_id ? `${detail.eqpt_name} (${detail.eqpt_code})` : ""
+      }</td>
       <td>${detail.trainning_module_id || ""}</td>
       <td>${detail.interview_id || ""}</td>
-      <td>${
-        `<a href="/form/${detail.survey_id}/lineid/${detail.line_id}" target="_self">${detail.survey_name}</a>` ||
-        ""
-      }</td>
+      <td>${surveyLink}</td>
       <td>${formatDate(detail.ct_start_date)}</td>
       <td>${formatDate(detail.ct_end_date)}</td>
       <td>${formatDate(detail.last_updated_date || detail.created_date)}</td>
@@ -451,15 +463,14 @@ function buildTaskDetailRow(detail) {
     </tr>
   `;
 
-  setTimeout(() => {
-    if (detail.document_id) {
-      updateDocumentLink(
-        detail.document_id,
-        documentCellId,
-        detail.document_name
-      );
-    }
-  }, 100);
+  // Update document link if document_id exists
+  if (detail.document_id) {
+    updateDocumentLink(
+      detail.document_id,
+      documentCellId,
+      detail.document_name
+    );
+  }
 
   return rowHtml;
 }

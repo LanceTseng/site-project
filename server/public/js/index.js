@@ -38,7 +38,6 @@ $(document).ready(async function () {
       };
 
       recentActivities.forEach((employee) => {
-        console.log(employee);
         const badgeClass =
           statusClasses[employee.status_name] || "bg-secondary"; // Default class
 
