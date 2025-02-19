@@ -20,12 +20,18 @@ router.get("/offboarding", (req, res) => {
   res.render("offboard/offboarding", { title: "Offboarding" });
 });
 
-// Route for Login Settings
+// Route for Form Settings
 router.get("/form/:formid?/lineid/:lineid?", (req, res) => {
   const { formid, lineid } = req.params;
 
   res.render("pages/form", { formid, lineid });
 });
+router.get("/form-review/:lineid?", (req, res) => {
+  const { lineid } = req.params;
+  res.render("pages/form-review", { lineid });
+});
+
+//--
 
 //------------------------------------------------------
 router.get("/maintenance", (req, res) => {
