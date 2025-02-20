@@ -13,8 +13,7 @@ $(document).ready(async function () {
   /** 🛠️ Utility Functions **/
   const handleError = (error, message) => console.error(message, error);
 
-  /** 🔽 Populate Dropdowns **/
-  async function populateDropdown(dropdownId, taskName) {
+  const populateDropdown = async (dropdownId, taskName) => {
     try {
       const items = (await ObjectTypeApi.getTaskByName(taskName)) || [];
       const options = items
@@ -27,16 +26,11 @@ $(document).ready(async function () {
     } catch (error) {
       handleError(error, `Error populating ${taskName} dropdown`);
     }
-  }
+  };
 
-  await populateDropdown("#department, #edit-department", "department");
-  await populateDropdown("#status, #edit-status", "employee_status");
-
-  /** 🧑‍💼 Load Employees **/
-  async function loadEmployees() {
+  const loadEmployees = async () => {
     try {
-      const employees = await EmployeeViewApi.getTasks(); // Fetch employee data
-
+      const employees = await EmployeeViewApi.getTasks();
       const rows = employees
         .map((emp) => {
           return `
@@ -60,104 +54,102 @@ $(document).ready(async function () {
             </tr>
           `;
         })
-        .join(""); // Convert array to a string
-
-      $("#employee-table-body").html(rows); // Inject rows into the table body
+        .join("");
+      $("#employee-table-body").html(rows);
     } catch (error) {
       handleError(error, "Error loading employees");
     }
-  }
+  };
 
-  await loadEmployees();
+  const startOnboardingProcess = async (userId) => {
+    try {
+      const taskGroup = (await ObjectTypeApi.getTaskByName("task_group")) || [];
+      const onboardGroup = taskGroup.find(
+        (o) => o.object_type_item_value.toLowerCase() === "onboard"
+      );
 
-  /** 🚀 Onboarding Process **/
-  $("#employee-table-body").on(
-    "click",
-    ".start-onboarding-btn",
-    async function () {
-      const userId = $(this).data("id");
+      if (!onboardGroup) throw new Error("TaskGroup 'Onboard' not found.");
 
-      try {
-        const taskGroup =
-          (await ObjectTypeApi.getTaskByName("task_group")) || [];
-        const onboardGroup = taskGroup.find(
-          (o) => o.object_type_item_value.toLowerCase() === "onboard"
+      const parentTasks = await ParentTaskApi.getTaskByGroupId(
+        onboardGroup.object_type_item_key
+      );
+      if (!parentTasks.length) throw new Error("Parent tasks not found.");
+
+      for (const parent of parentTasks) {
+        const childTasks = await ChildTaskViewApi.getChildTaskByParentId(
+          parent.task_id
         );
 
-        if (!onboardGroup) throw new Error("TaskGroup 'Onboard' not found.");
+        const countChildTasks =
+          childTasks.filter((t) => Boolean(t.enabled))?.length || 0;
 
-        const parentTasks = await ParentTaskApi.getTaskByGroupId(
-          onboardGroup.object_type_item_key
+        const userParentTask = await UserParentTaskApi.createTask({
+          user_id: userId,
+          parent_task_id: parent.task_id,
+          status: 0,
+          count_child_tasks: countChildTasks,
+        });
+
+        await Promise.all(
+          childTasks
+            .filter((t) => Boolean(t.enabled))
+            .map((child) =>
+              UserChildTaskApi.createTask({
+                user_parenttask_id: userParentTask.id,
+                child_task_id: child.child_task_id,
+                status: 0,
+                document_id: child.document_id || null,
+                document_path: "",
+                require_upload: child.require_upload || 0,
+                equipment_type_id: child.equipment_type_id || null,
+                training_module_id: child.training_module_id || null,
+                access_provisioning_id: child.access_provisioning_id || null,
+                interview_id: child.interview_id || null,
+                survey_id: child.survey_id || null,
+                hand_over_id: child.hand_over_id || null,
+              })
+            )
         );
-        if (!parentTasks.length) throw new Error("Parent tasks not found.");
+      }
 
-        for (const parent of parentTasks) {
-          //get child task by parent
-          const childTasks = await ChildTaskViewApi.getChildTaskByParentId(
-            parent.task_id
-          );
-          // Example filter condition
+      const emp = await EmployeeApi.getTaskById(userId);
+      emp.status = 1; // onboarding
+      await EmployeeApi.updateTask(emp.employee_id, emp);
 
-          const countChildTasks = childTasks.filter((t) => Boolean(t.enabled))?.length || 0;
-
-          const userParentTask = await UserParentTaskApi.createTask({
-            user_id: userId,
-            parent_task_id: parent.task_id,
-            status: 0,
-            count_child_tasks: countChildTasks,
-          });
-
-          await Promise.all(
-            childTasks
-              .filter((t) => Boolean(t.enabled))
-              .map((child) =>
-                UserChildTaskApi.createTask({
-                  user_parenttask_id: userParentTask.id,
-                  child_task_id: child.child_task_id,
-                  status: 0,
-                  document_id: child.document_id || null,
-                  document_path: "",
-                  require_upload: child.require_upload || 0,
-                  equipment_type_id: child.equipment_type_id || null,
-                  training_module_id: child.training_module_id || null,
-                  access_provisioning_id: child.access_provisioning_id || null,
-                  interview_id: child.interview_id || null,
-                  survey_id: child.survey_id || null,
-                  hand_over_id: child.hand_over_id || null,
-                })
-              )
-          );
-        }
-
-        const emp = await EmployeeApi.getTaskById(userId);
-        emp.status = 1; //onboarding
-        await EmployeeApi.updateTask(emp.employee_id, emp);
-
-        // Show success message
-        $("#onboarding-alert")
-          .html(
-            `<div class="alert alert-success alert-dismissible fade show" role="alert">
+      $("#onboarding-alert")
+        .html(
+          `<div class="alert alert-success alert-dismissible fade show" role="alert">
         Onboarding process has started successfully for ${emp.first_name} ${emp.last_name}.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>`
-          )
-          .show();
+        )
+        .show();
 
-        // Hide the message after 3 seconds
-        setTimeout(() => {
-          $("#onboarding-alert").hide();
-        }, 3000);
+      setTimeout(() => {
+        $("#onboarding-alert").hide();
+      }, 3000);
 
-        await loadEmployees();
-      } catch (error) {
-        handleError(error, "Error in onboarding process");
-      }
+      await loadEmployees();
+    } catch (error) {
+      handleError(error, "Error in onboarding process");
+    }
+  };
+
+  await populateDropdown("#department, #edit-department", "department");
+  await populateDropdown("#status, #edit-status", "employee_status");
+  await loadEmployees();
+
+  $("#employee-table-body").on(
+    "click",
+    ".start-onboarding-btn",
+    async function () {
+      const userId = $(this).data("id");
+      await startOnboardingProcess(userId);
     }
   );
 
-  /** ➕ Add New Employee **/
   $("#employee-form").on("submit", async function (e) {
     e.preventDefault();
 
@@ -192,7 +184,6 @@ $(document).ready(async function () {
     }
   });
 
-  /** ✏️ Edit Employee **/
   $("#employee-table-body").on("click", ".edit-btn", async function () {
     try {
       const id = $(this).data("id");
@@ -217,7 +208,6 @@ $(document).ready(async function () {
     }
   });
 
-  /** 💾 Save Edited Employee **/
   $("#edit-employee-form").on("submit", async function (e) {
     e.preventDefault();
 
