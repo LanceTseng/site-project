@@ -4,7 +4,7 @@ using MobileProject.API.Models;
 using MobileProject.API.Repositories.Interfaces;
 using StatusCodes = Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace MobileProject.API.Controllers
+namespace MobileProject.API.Controllers.api
 {
     [Route("api/[controller]")]
     [ApiController]

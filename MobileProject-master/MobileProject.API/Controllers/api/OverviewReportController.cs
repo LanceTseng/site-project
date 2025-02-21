@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MobileProject.API.Models;
 using MobileProject.API.Repositories.Interfaces;
 
-namespace MobileProject.API.Controllers
+namespace MobileProject.API.Controllers.api
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -32,7 +32,7 @@ namespace MobileProject.API.Controllers
             [FromQuery] string? userName,
             [FromQuery] string? role,
             [FromQuery] string? productName,
-            [FromQuery] DateTime? dateFrom, 
+            [FromQuery] DateTime? dateFrom,
             [FromQuery] DateTime? dateTo)
         {
             var report = await _overviewReportRepository.GetOverviewByConditionAsync(userName, role, productName, dateFrom, dateTo);

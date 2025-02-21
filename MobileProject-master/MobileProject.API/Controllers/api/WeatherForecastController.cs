@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace MobileProject.API.Controllers
+namespace MobileProject.API.Controllers.api
 {
     [ApiController]
     [Route("[controller]")]

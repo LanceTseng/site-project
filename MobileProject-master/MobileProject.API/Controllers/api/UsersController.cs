@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using StatusCodes = Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace MobileProject.API.Controllers
+namespace MobileProject.API.Controllers.api
 {
     [Route("api/[controller]")]
     [ApiController]

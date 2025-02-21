@@ -3,7 +3,7 @@ using MobileProject.API.Models;
 using MobileProject.API.Repositories.Interfaces;
 using StatusCodes = Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace MobileProject.API.Controllers
+namespace MobileProject.API.Controllers.api
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -50,7 +50,7 @@ namespace MobileProject.API.Controllers
         public async Task<IActionResult> GetCartRecordByCondition([FromQuery] string? userName,
             [FromQuery] string? productName, [FromQuery] string? status, [FromQuery] int userId, [FromQuery] int productId, [FromQuery] string? transactionCode)
         {
-            var cartRecords = await _cartRecordRepository.GetCartRecordsByConditionAsync(userName, productName, status, userId, productId,transactionCode);
+            var cartRecords = await _cartRecordRepository.GetCartRecordsByConditionAsync(userName, productName, status, userId, productId, transactionCode);
             if (!cartRecords.Any())
             {
                 return NotFound(new Response
