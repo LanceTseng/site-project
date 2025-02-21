@@ -16,11 +16,8 @@ let gridOptions = null;
 function loadUsers() {
     axios.get(`${apiBaseUrl}/GetAllUsers`)
         .then(response => {
-            if (!gridOptions) {
-                setupGrid(response.data);
-            } else {
-                gridOptions.api.setRowData(response.data); // ✅ Refresh Grid Data
-            }
+           
+            setupGrid(response.data);  // ✅ First-time setup
         })
         .catch(error => console.error("Error loading users:", error));
 }
@@ -38,32 +35,41 @@ function setupGrid(users) {
         {
             headerName: "Actions",
             field: "actions",
-            cellRenderer: params => `
-                <button class="btn btn-sm btn-primary me-2" onclick="editUser(${params.data.id})">Edit</button>
-                <button class="btn btn-sm btn-danger" onclick="deleteUser(${params.data.id})">Delete</button>
-            `
+            cellRenderer: params => {
+                const div = document.createElement("div");
+                div.innerHTML = `
+                    <button class="btn btn-sm btn-primary me-2 edit-btn">Edit</button>
+                    <button class="btn btn-sm btn-danger delete-btn">Delete</button>
+                `;
+                div.querySelector(".edit-btn").addEventListener("click", () => editUser(params.data.id));
+                div.querySelector(".delete-btn").addEventListener("click", () => deleteUser(params.data.id));
+                return div;
+            }
         }
     ];
 
-    // ✅ Ensure the grid element exists
-    const gridDiv = document.getElementById("userGrid");
-    if (!gridDiv) {
+    // ✅ Get the plain DOM element instead of a jQuery object
+    const gridDiv = document.getElementById("userGrid");    
+     if (!gridDiv) {
         console.error("Grid container not found");
         return;
     }
-
-    // ✅ Initialize AG Grid with fixed height
-    const gridApi = agGrid.createGrid(gridDiv, {
+    gridOptions = null;
+    gridDiv.innerHTML = "";
+    // ✅ Store gridOptions globally
+    gridOptions = {
         columnDefs: columnDefs,
         rowData: users,
         rowSelection: "multiple",
         pagination: true,
-        paginationPageSize: 10,  // ✅ Adjust page size if needed
-        domLayout: "normal",  // ✅ Use "normal" instead of "autoHeight"
-    });
+        paginationPageSize: 30,
+        domLayout: "normal",
+    };
 
+    agGrid.createGrid(gridDiv, gridOptions);
     gridDiv.style.height = "500px";  // ✅ Set fixed height
 }
+
 
 // 🔹 Search Function for AG Grid
 function searchGrid() {
@@ -119,21 +125,21 @@ function addUser(event) {
 
     const id = $("#userId").val();
     const user = {
-        id: $("#userId").val() || null,
+        id: id || null,
         userName: $("#userName").val(),
         password: $("#password").val(),
         phone: $("#phone").val(),
         email: $("#email").val(),
         role: $("#role").val(),
-        createdDate: $("#createdDate").val()
+        createdDate: $("#createdDate").val() || new Date().toISOString()
     };
 
     if (!id) delete user.id;
-    if (!id) user.createdDate = new Date();
 
     const request = id
         ? axios.put(`${apiBaseUrl}/UpdateUser`, user)
         : axios.post(`${apiBaseUrl}/CreateUser`, user);
+
 
     request
         .then(() => {
@@ -145,12 +151,13 @@ function addUser(event) {
                 showConfirmButton: false
             });
             closeModal();
-            loadUsers();
+            loadUsers();  // ✅ Refresh grid after action
         })
         .catch(error => {
             console.error("Error saving user:", error);
             Swal.fire({ title: "Error!", text: error.message, icon: "error" });
         });
+
 }
 
 // 🔹 Edit User
@@ -185,8 +192,9 @@ function deleteUser(id) {
 
 // 🔹 Batch Delete Selected Users
 function deleteSelectedUsers() {
-    const selectedRows = gridOptions.api.getSelectedRows();
+    if (!gridOptions) return;
 
+    const selectedRows = gridOptions.api.getSelectedRows();
     if (selectedRows.length === 0) {
         Swal.fire({ title: "No users selected!", text: "Please select users to delete.", icon: "warning" });
         return;
@@ -215,6 +223,8 @@ function deleteSelectedUsers() {
 
 // 🔹 Select All / Unselect All
 function toggleSelectAll() {
+    if (!gridOptions) return;
+
     const allSelected = gridOptions.api.getSelectedRows().length > 0;
     gridOptions.api.forEachNode(node => node.setSelected(!allSelected));
 }
