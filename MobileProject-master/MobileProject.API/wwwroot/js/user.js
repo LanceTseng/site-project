@@ -3,10 +3,7 @@
 
     // Submit Form Event
     $("#userForm").submit(addUser);
-
-    // Search Event
-    $("#searchUsername, #searchEmail, #searchPhone, #searchRole").on("input", searchGrid);
-});
+   });
 
 // ✅ API Base URL (Define Only Once)
 const apiBaseUrl = "/api/Users";
@@ -82,12 +79,13 @@ function searchGrid() {
         role: $("#searchRole").val().toLowerCase()
     };
 
-    gridOptions.api.setFilterModel({
-        userName: { type: "contains", filter: filters.userName },
-        email: { type: "contains", filter: filters.email },
-        phone: { type: "contains", filter: filters.phone },
-        role: { type: "equals", filter: filters.role }
-    });
+    var queryString = `?userName=${filters.userName}&password=${filters.password}&email=${filters.email}&phone=${filters.phone}&role=${filters.role}`;
+    axios.get(`${apiBaseUrl}/GetUsersByCondition/${queryString}`)
+        .then(response => {
+
+            setupGrid(response.data);  // ✅ First-time setup
+        })
+        .catch(error => console.error("Error loading users:", error));
 }
 
 // 🔹 Reset Search Filters
