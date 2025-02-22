@@ -1,4 +1,6 @@
-﻿$(document).ready(function () {
+﻿
+
+$(document).ready(function () {
     loadCartRecords();
 });
 
@@ -42,7 +44,7 @@ function setupGrid(records) {
         }
     ];
 
-    const gridDiv = document.getElementById("cartGrid");
+    const gridDiv = $("#cartGrid").get(0);
     gridDiv.innerHTML = "";
     gridApi = agGrid.createGrid(gridDiv, {
         columnDefs,
@@ -57,17 +59,23 @@ function searchGrid() {
     if (!gridApi) return;
 
     const filters = {
-        userName: $("#searchTransactionCode").val().toLowerCase(),
-        prodcutName: $("#searchUserName").val().toLowerCase(),
+        transactionCode: $("#searchTransactionCode").val().toLowerCase(),
+        productName: $("#searchProductName").val().toLowerCase(),
+        userName: $("#searchUserName").val().toLowerCase(),
         status: $("#searchStatus").val().toLowerCase(),
     };
 
-    var queryString = `?userName=${filters.userName}&productName=${filters.prodcutName}&status=${filters.status}`;
-    axios.get(`${apiBaseUrl}/GetCartRecordViewByCondition${queryString}`)
+    var query = `?userName=${filters.userName}&productName=${filters.productName}&status=${filters.status}&transactionCode=${filters.transactionCode}`
+    axios.get(`${apiBaseUrl}/GetCartRecordViewByCondition${query}`)
         .then(response => {
             setupGrid(response.data);  // ✅ First-time setup
         })
         .catch(error => console.error("Error loading users:", error));
+}
+
+function resetFilters() {
+    $("#searchTransactionCode, #searchUserName, #searchStatus").val("");
+    searchGrid();
 }
 
 function editCart(id) {
@@ -81,7 +89,6 @@ function openModal(cartData = null) {
     $("#cartModal").modal("show");
 
     if (cartData) {
-        console.log(cartData);
         // Populate form fields for editing
         $("#cartId").val(cartData.id);
         $("#cartQty").val(cartData.qty);
@@ -90,27 +97,46 @@ function openModal(cartData = null) {
         $("#cartProductName").val(cartData.productName);
         $("#cartUserId").val(cartData.userId);
         $("#cartStatus").val(cartData.status);
+        $("#cartProductPrice").val(cartData.price);
     } else {
         $("#cartForm")[0].reset();  // Reset form for Add mode
     }
 }
 // ✅ Handle Form Submission (Add / Edit)
-document.getElementById("cartForm").addEventListener("submit", async function (event) {
+$("#cartForm").on("submit", async function (event) {
     event.preventDefault();
+    const id = $("#cartId").val();
+    const cardRecord = await axios.get(`${apiBaseUrl}/GetCartRecordById/${id}`);
 
-    const cartData = {
-        qty: document.getElementById("cartQty").value,
-        total: document.getElementById("cartTotal").value,
-        productId: document.getElementById("cartProductId").value,
-        userId: document.getElementById("cartUserId").value,
-        status: document.getElementById("cartStatus").value
-    };
+    cardRecord.data.qty = $("#cartQty").val();
+    cardRecord.data.total = $("#cartTotal").val();
 
     try {
-        if (selectedCartId) {
-            // 🔄 Update existing record (PUT)
-            await axios.put(`${apiBaseUrl}/UpdateCart/${selectedCartId}`, cartData);
+        await axios.put(`${apiBaseUrl}/UpdateCartRecord`, cardRecord.data);
+
+
+        if (cardRecord.data.transactionCode) {
+            const order = await axios.get(`api/Orders/GetOrdersByCondition?transactionCode=${cardRecord.data.transactionCode}`);
+
+            const cartRecord = await axios.get(`${apiBaseUrl}/GetCartRecordByCondition?transactionCode=${cardRecord.data.transactionCode}`);
+            let sum = 0;
+            cartRecord.data.forEach(record => {
+                sum += record.total;
+            });
+
+            order.data[0].subtotal = sum;
+    
+
+            await axios.put(`api/Orders/UpdateOrder`, order.data[0]);
         }
+
+        Swal.fire({
+            title: "Success!",
+            text: "Cart updated successfully",
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false
+        });
 
         closeModal();
         loadCartRecords(); // Refresh grid after update
@@ -119,11 +145,17 @@ document.getElementById("cartForm").addEventListener("submit", async function (e
     }
 });
 
+$("#cartQty").on("change", function () {
+    const qty = parseFloat($("#cartQty").val()) || 0;
+    const price = parseFloat($("#cartProductPrice").val()) || 0;
+    $("#cartTotal").val((qty * price).toFixed(2));
+});
+
 // ✅ Delete a Single Record
 function deleteRecord(cartId) {
     if (!confirm("Are you sure you want to delete this record?")) return;
 
-    axios.delete(`${apiBaseUrl}/DeleteCart/${cartId}`)
+    axios.delete(`${apiBaseUrl}/DeleteCartRecord/${cartId}`)
         .then(() => loadCartRecords())
         .catch(error => console.error("Error deleting record:", error));
 }
