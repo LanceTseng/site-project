@@ -99,5 +99,37 @@ namespace MobileProject.API.Controllers.api
             var response = await _cartRecordRepository.DeleteCartRecordAsync(id);
             return StatusCode(response.StatusCode, response);
         }
+
+        //View
+        [HttpGet("GetAllCartRecordsView")]
+        public async Task<IActionResult> GetAllCartRecordsView()
+        {
+            var cartRecords = await _cartRecordRepository.GetAllCartRecordsViewAsync();
+            if (!cartRecords.Any())
+            {
+                return NotFound(new Response
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    StatusMessage = "No cart records found."
+                });
+            }
+            return Ok(cartRecords);
+        }
+
+        [HttpGet("GetCartRecordViewByCondition")]
+        public async Task<IActionResult> GetCartRecordViewByCondition([FromQuery] string? userName,
+            [FromQuery] string? productName, [FromQuery] string? status, [FromQuery] int userId, [FromQuery] int productId, [FromQuery] string? transactionCode, [FromQuery] int cartId)
+        {
+            var cartRecords = await _cartRecordRepository.GetCartRecordsViewByConditionAsync(userName, productName, status, userId, productId, transactionCode, cartId);
+            if (!cartRecords.Any())
+            {
+                return NotFound(new Response
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    StatusMessage = "No cart records found for the user."
+                });
+            }
+            return Ok(cartRecords);
+        }
     }
 }
