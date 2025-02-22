@@ -3,17 +3,16 @@
 
     // Submit Form Event
     $("#userForm").submit(addUser);
-   });
+});
 
 // ✅ API Base URL (Define Only Once)
 const apiBaseUrl = "/api/Users";
-let gridOptions = null;
+let gridApi = null;
 
 // 🔹 Load Users into AG Grid
 function loadUsers() {
     axios.get(`${apiBaseUrl}/GetAllUsers`)
         .then(response => {
-           
             setupGrid(response.data);  // ✅ First-time setup
         })
         .catch(error => console.error("Error loading users:", error));
@@ -46,31 +45,30 @@ function setupGrid(users) {
     ];
 
     // ✅ Get the plain DOM element instead of a jQuery object
-    const gridDiv = document.getElementById("userGrid");    
-     if (!gridDiv) {
+    const gridDiv = document.getElementById("userGrid");
+    if (!gridDiv) {
         console.error("Grid container not found");
         return;
     }
-    gridOptions = null;
+
     gridDiv.innerHTML = "";
     // ✅ Store gridOptions globally
-    gridOptions = {
+    const gridOptions = {
         columnDefs: columnDefs,
         rowData: users,
         rowSelection: "multiple",
         pagination: true,
         paginationPageSize: 30,
-        domLayout: "normal",
+        domLayout: "normal"
     };
 
-    agGrid.createGrid(gridDiv, gridOptions);
+    gridApi = agGrid.createGrid(gridDiv, gridOptions);
     gridDiv.style.height = "500px";  // ✅ Set fixed height
 }
 
-
 // 🔹 Search Function for AG Grid
 function searchGrid() {
-    if (!gridOptions) return;
+    if (!gridApi) return;
 
     const filters = {
         userName: $("#searchUsername").val().toLowerCase(),
@@ -82,7 +80,6 @@ function searchGrid() {
     var queryString = `?userName=${filters.userName}&password=${filters.password}&email=${filters.email}&phone=${filters.phone}&role=${filters.role}`;
     axios.get(`${apiBaseUrl}/GetUsersByCondition/${queryString}`)
         .then(response => {
-
             setupGrid(response.data);  // ✅ First-time setup
         })
         .catch(error => console.error("Error loading users:", error));
@@ -138,7 +135,6 @@ function addUser(event) {
         ? axios.put(`${apiBaseUrl}/UpdateUser`, user)
         : axios.post(`${apiBaseUrl}/CreateUser`, user);
 
-
     request
         .then(() => {
             Swal.fire({
@@ -155,7 +151,6 @@ function addUser(event) {
             console.error("Error saving user:", error);
             Swal.fire({ title: "Error!", text: error.message, icon: "error" });
         });
-
 }
 
 // 🔹 Edit User
@@ -190,9 +185,10 @@ function deleteUser(id) {
 
 // 🔹 Batch Delete Selected Users
 function deleteSelectedUsers() {
-    if (!gridOptions) return;
+    if (!gridApi) return;
+    console.log(gridApi);
 
-    const selectedRows = gridOptions.api.getSelectedRows();
+    const selectedRows = gridApi.getSelectedRows();
     if (selectedRows.length === 0) {
         Swal.fire({ title: "No users selected!", text: "Please select users to delete.", icon: "warning" });
         return;
@@ -221,8 +217,8 @@ function deleteSelectedUsers() {
 
 // 🔹 Select All / Unselect All
 function toggleSelectAll() {
-    if (!gridOptions) return;
+    if (!gridApi) return;
 
-    const allSelected = gridOptions.api.getSelectedRows().length > 0;
-    gridOptions.api.forEachNode(node => node.setSelected(!allSelected));
+    const allSelected = gridApi.getSelectedRows().length > 0;
+    gridApi.forEachNode(node => node.setSelected(!allSelected));
 }
