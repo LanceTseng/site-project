@@ -27,6 +27,14 @@ namespace MobileProject.API
                 });
             });
 
+            // Enable session storage
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             //  Dependency Injection
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
             builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
