@@ -57,7 +57,6 @@ namespace MobileProject.API.Controllers.api
             }
 
             return Ok(orders);
-
         }
 
         // POST: api/Orders
@@ -100,6 +99,39 @@ namespace MobileProject.API.Controllers.api
         {
             var response = await _ordersRepository.DeleteOrderAsync(id);
             return StatusCode(response.StatusCode, response);
+        }
+
+        //View
+        [HttpGet("GetAllOrdersView")]
+        public async Task<IActionResult> GetAllOrdersView()
+        {
+            var orders = await _ordersRepository.GetAllOrdersViewAsync();
+            if (!orders.Any())
+            {
+                return NotFound(new Response
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    StatusMessage = "No order found."
+                });
+            }
+            return Ok(orders);
+        }
+
+        [HttpGet("GetOrderViewByCondition")]
+        public async Task<IActionResult> GetOrderViewByCondition([FromQuery] string? userName,
+            [FromQuery] string? transactionCode, [FromQuery] string? status, [FromQuery] int userId,
+            [FromQuery] DateTime dateFrom, [FromQuery] DateTime dateTo)
+        {
+            var orders = await _ordersRepository.GetOrderViewByConditionAsync(userName, transactionCode, status, userId, dateFrom, dateTo);
+            if (!orders.Any())
+            {
+                return NotFound(new Response
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    StatusMessage = "No order found."
+                });
+            }
+            return Ok(orders);
         }
     }
 }
