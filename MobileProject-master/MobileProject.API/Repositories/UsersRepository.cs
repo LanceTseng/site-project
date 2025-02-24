@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Diagnostics;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using MobileProject.API.Models;
@@ -46,7 +47,7 @@ namespace MobileProject.API.Repositories
             parameters.Add("@Email", email, DbType.String);
             parameters.Add("@Phone", phone, DbType.String);
             parameters.Add("@Role", role, DbType.String);
-        
+
             return await connection.QueryAsync<User>(query, parameters);
         }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MobileProject.API.Models;
 
 namespace MobileProject.API.Controllers
 {
@@ -14,5 +15,6 @@ namespace MobileProject.API.Controllers
         {
             return View();
         }
+
     }
 }

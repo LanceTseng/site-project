@@ -1,15 +1,16 @@
 ﻿function loadLoginStatus() {
     let user = JSON.parse(sessionStorage.getItem("user"));
 
+    $(".btn-logout").hide();
+    $(".btn-login").hide();
+
     if (user) {
         $(".text-login-user").html(`Welcome, ${user.userName} (${user.role})!`);
 
         $(".btn-logout").show();
-        $(".btn-login").hide();
     } else {
         $(".text-login-user").html(`Welcome, Guest!`);
 
-        $(".btn-logout").hide();
         $(".btn-login").show();
     }
 }
@@ -32,7 +33,8 @@ $(document).ready(function () {
 
     loadLoginStatus();
 
-    $(".btn-logout").click(function () {
+    $(".btn-logout").click(function (e) {
+        e.preventDefault();
         logout();
     });
 });

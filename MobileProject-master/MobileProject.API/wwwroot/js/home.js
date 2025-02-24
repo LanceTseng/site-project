@@ -1,6 +1,10 @@
 ﻿function loadLoginStatus() {
     const user = JSON.parse(sessionStorage.getItem("user"));
 
+    $(".guest-section").hide();
+    $(".user-section").hide();
+    $(".admin-section").hide();
+
     if (user) {
         $(".text-login-user").html(`Welcome, ${user.userName} (${user.role})`);
 
@@ -19,13 +23,10 @@
     } else {
         // Show guest section, hide others
         $(".guest-section").show();
-        $(".user-section").hide();
-        $(".admin-section").hide();
     }
 }
 
 function logout() {
-
     Swal.fire({
         icon: "success",
         title: "Logout Successful",
@@ -39,7 +40,6 @@ function logout() {
         }, 100);  // ✅ Small delay ensures data is cleared first
     });
 }
-
 
 $(document).ready(function () {
     loadLoginStatus();
