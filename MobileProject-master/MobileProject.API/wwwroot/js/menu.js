@@ -156,9 +156,29 @@ async function addToCart() {
 }
 async function removeFromCart() {
     try {
-        const proudct = $(this).data("id");
+        const id = $(this).data("id");
 
-        //await axios.delete(`/api/CartRecords/DeleteCartRecord/${id}`);
+        const result = await Swal.fire({
+            title: "Remove Item?",
+            text: `Are you sure you want to remove?`,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Yes, remove",
+            reverseButtons: true,
+        });
+
+        if (result.isConfirmed) {
+            await axios.delete(`/api/CartRecords/DeleteCartRecord/${id}`);
+            Swal.fire({
+                icon: "success",
+                title: "Remove Successful",
+                text: "Cart updated successfully.",
+                timer: 1500,
+                showConfirmButton: false
+            })
+        } 
+
+        loadCartRecords();
     } catch (error) {
         console.error("Error fetching cart:", error);
     }
