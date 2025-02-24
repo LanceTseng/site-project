@@ -13,5 +13,11 @@ namespace MobileProject.API.Controllers
         {
             return View();
         }
+
+        
+        public IActionResult OrderHistory()
+        {
+            return View();
+        }
     }
 }
