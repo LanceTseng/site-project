@@ -8,7 +8,14 @@ $(document).ready(function () {
     // Event Listeners
     $(document).on("click", ".add-to-cart", addToCart);
     $(document).on("click", ".remove-item", removeFromCart);
-    $(document).on("change", ".qty-update", updateQty);
+
+    let timeout;
+    $(document).on("input change", ".qty-update", function () {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            updateQty.call(this); // Call update function after user stops typing
+        }, 500); // Delay of 500ms (adjust as needed)
+    });
 });
 
 function loginUser() {
@@ -187,8 +194,14 @@ async function removeFromCart() {
 async function updateQty() {
     try {
         const item = JSON.parse($(this).attr("data-item")); // Get product data
-       
-        console.log(item);
+        const qty = parseInt($(this).closest("tr").find(".qty-update").val(), 10); // Get quantity
+
+        item.qty = qty;
+        item.total = qty * item.price;
+
+        await axios.put(`/api/CartRecords/UpdateCartRecord`, item);
+
+        await loadCartRecords();
     } catch (error) {
         console.error("Error fetching cart:", error);
     }
