@@ -8,7 +8,7 @@
         $(".guest-section").hide();
 
         // Show user or admin section based on role
-        if (user.role.toLowerCase() === "user" ) {
+        if (user.role.toLowerCase() === "user") {
             $(".user-section").show();
         }
 
@@ -24,6 +24,28 @@
     }
 }
 
+function logout() {
+
+    Swal.fire({
+        icon: "success",
+        title: "Logout Successful",
+        text: "Redirecting to home...",
+        timer: 1500,
+        showConfirmButton: false
+    }).then(() => {
+        sessionStorage.removeItem("user");
+        setTimeout(() => {
+            window.location.reload();
+        }, 100);  // ✅ Small delay ensures data is cleared first
+    });
+}
+
+
 $(document).ready(function () {
     loadLoginStatus();
+
+    $(".btn-logout").click(function (event) {
+        event.preventDefault();
+        logout();
+    });
 })

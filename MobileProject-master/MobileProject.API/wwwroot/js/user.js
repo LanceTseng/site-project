@@ -1,9 +1,20 @@
 ﻿$(document).ready(function () {
+    loginUser();
+
     loadUsers();
 
     // Submit Form Event
     $("#userForm").submit(addUser);
 });
+
+//login
+function loginUser() {
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    if (!user) {
+        window.location.href = "/home"; // Redirect
+    }
+}
+
 
 // ✅ API Base URL (Define Only Once)
 const apiBaseUrl = "/api/Users";

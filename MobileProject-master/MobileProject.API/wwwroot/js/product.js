@@ -1,9 +1,19 @@
 ﻿$(document).ready(function () {
+    loginUser();
+
     loadProducts();
 
     // Submit Form Event
     $("#productForm").submit(addProduct);
 });
+
+function loginUser() {
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    if (!user) {
+        window.location.href = "/home"; // Redirect
+    }
+}
+
 
 // ✅ API Base URL (Define Only Once)
 const apiBaseUrl = "/api/Products";
