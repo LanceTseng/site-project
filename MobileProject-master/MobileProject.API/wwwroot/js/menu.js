@@ -78,8 +78,11 @@ function renderCarts(cartRecords) {
         cartList.append(`<tr><td colspan="4" class="text-center">No items in the cart</td></tr>`);
         return;
     }
-
+    let itemsCount = 0;
+    let subtotal = 0;
     cartRecords.forEach(item => {
+        itemsCount += item.qty;
+        subtotal += item.total;
         let cartData = JSON.stringify(item).replace(/"/g, "&quot;");
         cartList.append(`
              <tr>
@@ -96,15 +99,20 @@ function renderCarts(cartRecords) {
                 </td>
             </tr>
         `);
-    });
+    }
+     
+    );
+
+    //update summary
+    $("#item-count").html(itemsCount);
+    $("#subtotal").html(subtotal.toLocaleString("en-CA", { style: "currency", currency: "CAD" }));
 }
 
- 
 async function addToCart() {
     try {
         const product = JSON.parse($(this).attr("data-item")); // Get product data
         const qty = parseInt($(this).closest("tr").find(".qty-input").val(), 10); // Get quantity
-        const total = (product.price || 0) * qty; 
+        const total = (product.price || 0) * qty;
         // Ensure user is logged in (assuming `user` is defined globally)
         if (!user || !user.id) {
             console.error("User is not logged in.");
@@ -112,14 +120,14 @@ async function addToCart() {
         }
 
         // Fetch existing cart record for this product
-        let cartRecords=[];
+        let cartRecords = [];
         try {
             const response = await axios.get(`/api/CartRecords/GetCartRecordByCondition?userId=${user.id}&productId=${product.id}&status=pending`);
-             cartRecords = response.data;
+            cartRecords = response.data;
         } catch (error) {
             console.error("No Data.");
         }
-      
+
 
         if (!Array.isArray(cartRecords) || cartRecords.length === 0) {
             // Create new cart record
@@ -183,7 +191,7 @@ async function removeFromCart() {
                 timer: 1500,
                 showConfirmButton: false
             })
-        } 
+        }
 
         loadCartRecords();
     } catch (error) {
