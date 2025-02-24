@@ -8,5 +8,10 @@ namespace MobileProject.API.Controllers
         {
             return View();
         }
+
+        public IActionResult PaymentSuccess()
+        {
+            return View();
+        }
     }
 }

@@ -5,6 +5,10 @@ $(document).ready(function () {
     loadProducts();
     loadCartRecords();
 
+    //card
+    $(".input-customer-name").val(user.userName);
+    $(".input-card-name").val(user.userName);
+
     // Event Listeners
     $(document).on("click", ".add-to-cart", addToCart);
     $(document).on("click", ".remove-item", removeFromCart);
@@ -15,6 +19,11 @@ $(document).ready(function () {
         timeout = setTimeout(() => {
             updateQty.call(this); // Call update function after user stops typing
         }, 500); // Delay of 500ms (adjust as needed)
+    });
+
+    $(document).on("click", ".btn-place-order", function (e) {
+        e.preventDefault();
+        placeOrder();
     });
 });
 
@@ -100,7 +109,7 @@ function renderCarts(cartRecords) {
             </tr>
         `);
     }
-     
+
     );
 
     //update summary
@@ -127,7 +136,6 @@ async function addToCart() {
         } catch (error) {
             console.error("No Data.");
         }
-
 
         if (!Array.isArray(cartRecords) || cartRecords.length === 0) {
             // Create new cart record
@@ -213,4 +221,110 @@ async function updateQty() {
     } catch (error) {
         console.error("Error fetching cart:", error);
     }
+}
+
+async function placeOrder() {
+    try {
+        const tcode = generateSecureRandomString(6);
+        const subtotal = parseFloat($("#subtotal").html().replace("$", "")) || 0; // Ensure valid number
+
+        const cardNumber = $(".input-card-num").val().trim();
+        const cvCode = $(".input-cv-code").val().trim();
+
+        // ✅ Validate Card Number
+        //4111111111111111
+        if (!isValidCardNumber(cardNumber)) {
+            Swal.fire({
+                icon: "error",
+                title: "Invalid Card Number",
+                text: "Please enter a valid credit card number.",
+            });
+            return;
+        }
+
+        // ✅ Validate CVV Code
+        if (!isValidCVV(cvCode)) {
+            Swal.fire({
+                icon: "error",
+                title: "Invalid CVV",
+                text: "CVV must be 3 or 4 digits.",
+            });
+            return;
+        }
+
+        await axios.post("/api/Orders/CreateOrder", {
+            transactionCode: tcode,
+            subtotal: subtotal,
+            date: new Date().toISOString(), // Format date correctly
+            userId: user.id,
+            status: "completed"
+        });
+
+        const cartRecordResponse = await axios.get(`/api/cartrecords/GetCartRecordViewByCondition?userId=${user.id}&status=pending`);
+        const cartRecords = cartRecordResponse.data;
+
+        if (Array.isArray(cartRecords)) {
+            for (const item of cartRecords) {
+                item.transactionCode = tcode;
+                item.status = "paid";
+                await axios.put("/api/cartrecords/UpdateCartRecord", item);
+            }
+        }
+
+        // ✅ Show Success Alert & Redirect
+        await Swal.fire({
+            icon: "success",
+            title: "Payment Successful",
+            text: `Paid successfully. Transaction Code: ${tcode}`,
+            timer: 1500,
+            showConfirmButton: false
+        });
+
+        window.location.href = "/menu/paymentsuccess"; // Redirect after success
+    } catch (error) {
+        console.error("Error placing order:", error);
+        Swal.fire({
+            icon: "error",
+            title: "Payment Failed",
+            text: "Something went wrong. Please try again.",
+        });
+    }
+}
+
+function generateSecureRandomString(length) {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let result = "";
+    const randomValues = new Uint8Array(length);
+    crypto.getRandomValues(randomValues);
+
+    for (let i = 0; i < length; i++) {
+        result += chars[randomValues[i] % chars.length];
+    }
+
+    return result;
+}
+
+function isValidCardNumber(cardNumber) {
+    cardNumber = cardNumber.replace(/\D/g, ""); // Remove non-numeric chars
+
+    if (cardNumber.length < 13 || cardNumber.length > 19) return false; // Length check
+
+    // Luhn Algorithm Implementation
+    let sum = 0;
+    let alternate = false;
+    for (let i = cardNumber.length - 1; i >= 0; i--) {
+        let n = parseInt(cardNumber[i], 10);
+        if (alternate) {
+            n *= 2;
+            if (n > 9) n -= 9;
+        }
+        sum += n;
+        alternate = !alternate;
+    }
+
+    return sum % 10 === 0; // Card is valid if divisible by 10
+}
+
+function isValidCVV(cvCode) {
+    return /^\d{3,4}$/.test(cvCode); // 3-4 digits only
 }
