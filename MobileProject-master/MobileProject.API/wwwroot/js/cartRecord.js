@@ -33,10 +33,16 @@ function setupGrid(records) {
         { field: "username", headerName: "User Name" },
         { field: "productName", headerName: "Product Name" },
         {
-            field: "price", headerName: "Price", valueFormatter: params => `$${params.value.toFixed(2)}`
+            field: "price",
+            headerName: "Price",
+            valueFormatter: params => `$${params.value.toFixed(2)}`
         },
         { field: "qty", headerName: "Quantity" },
-        { field: "total", headerName: "Total", valueFormatter: params => `$${params.value.toFixed(2)}` },
+        {
+            field: "total",
+            headerName: "Total",
+            valueFormatter: params => `$${params.value.toFixed(2)}`
+        },
         { field: "status", headerName: "Status" },
         { field: "transactionCode", headerName: "T-Code" },
         {
@@ -44,25 +50,53 @@ function setupGrid(records) {
             width: 350,
             cellRenderer: params => {
                 const div = document.createElement("div");
-                div.innerHTML = `
-                    <button class="btn btn-sm btn-primary me-2" onclick="editCart(${params.data.id})">✏ Edit</button>
-                    <button class="btn btn-sm btn-danger me-2" onclick="deleteRecord(${params.data.id})">🗑 Delete</button>
-                    <button class="btn btn-sm btn-info" onclick="viewOrderDetail('${params.data.transactionCode}')">📜 Order Detail</button>
-                `;
+
+                // Edit Button
+                const editButton = document.createElement("button");
+                editButton.classList.add("btn", "btn-sm", "btn-primary", "me-2");
+                editButton.innerHTML = "✏ Edit";
+                editButton.addEventListener("click", () => editCart(params.data.id));
+
+                // Delete Button
+                const deleteButton = document.createElement("button");
+                deleteButton.classList.add("btn", "btn-sm", "btn-danger", "me-2");
+                deleteButton.innerHTML = "🗑 Delete";
+                deleteButton.addEventListener("click", () => deleteRecord(params.data.id));
+
+                div.appendChild(editButton);
+                div.appendChild(deleteButton);
+
+                // Order Detail Button (Only if transactionCode exists)
+                if (params.data.transactionCode) {
+                    const orderDetailButton = document.createElement("button");
+                    orderDetailButton.classList.add("btn", "btn-sm", "btn-info");
+                    orderDetailButton.innerHTML = "📜 Order Detail";
+                    orderDetailButton.addEventListener("click", () => viewOrderDetail(params.data.transactionCode));
+                    div.appendChild(orderDetailButton);
+                }
+
                 return div;
             }
         }
     ];
 
-    const gridDiv = $("#cartGrid").get(0);
+    const gridDiv = document.getElementById("cartGrid");
+    if (!gridDiv) {
+        console.error("Grid container not found");
+        return;
+    }
     gridDiv.innerHTML = "";
-    gridApi = agGrid.createGrid(gridDiv, {
-        columnDefs,
+    const gridOptions = {
+        columnDefs: columnDefs,
         rowData: records,
         rowSelection: "multiple",
         pagination: true,
-        paginationPageSize: 30
-    });
+        paginationPageSize: 30,
+        domLayout: "normal"
+    };
+
+    gridApi = agGrid.createGrid(gridDiv, gridOptions);
+    gridDiv.style.height = "500px";  // ✅ Set fixed height
 }
 
 function searchGrid() {
@@ -135,7 +169,7 @@ $("#cartForm").on("submit", async function (event) {
             });
 
             order.data[0].subtotal = sum;
-    
+
 
             await axios.put(`api/Orders/UpdateOrder`, order.data[0]);
         }
@@ -172,19 +206,33 @@ function deleteRecord(cartId) {
 
 // ✅ Batch Delete Selected Records
 function deleteSelectedRecords() {
-    const selectedNodes = gridApi.getSelectedNodes();
-    const selectedIds = selectedNodes.map(node => node.data.id);
-
-    if (selectedIds.length === 0) {
-        alert("Please select at least one record to delete.");
+    if (!gridApi) return;
+    const selectedRows = gridApi.getSelectedRows();
+    if (selectedRows.length === 0) {
+        Swal.fire({ title: "No users selected!", text: "Please select users to delete.", icon: "warning" });
         return;
     }
 
-    if (!confirm(`Are you sure you want to delete ${selectedIds.length} records?`)) return;
+    Swal.fire({
+        title: `Delete ${selectedRows.length} users?`,
+        text: "This action is irreversible!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete them!"
+    }).then(result => {
+        if (result.isConfirmed) {
+            Promise.all(selectedRows.map(row => axios.delete(`${apiBaseUrl}/DeleteCartRecord/${row.id}`)))
+                .then(() => {
+                    Swal.fire("Deleted!", "Selected users have been deleted.", "success");
+                    loadCartRecords();
+                })
+                .catch(error => {
+                    console.error("Error deleting users:", error);
+                    Swal.fire("Error!", "Failed to delete users.", "error");
+                });
+        }
+    });
 
-    axios.post(`${apiBaseUrl}/BatchDeleteCart`, { ids: selectedIds })
-        .then(() => loadCartRecords())
-        .catch(error => console.error("Error deleting records:", error));
 }
 
 // ✅ Select/Unselect All Rows

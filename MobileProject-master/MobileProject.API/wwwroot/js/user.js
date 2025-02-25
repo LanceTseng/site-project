@@ -197,8 +197,7 @@ function deleteUser(id) {
 // 🔹 Batch Delete Selected Users
 function deleteSelectedUsers() {
     if (!gridApi) return;
-    console.log(gridApi);
-
+    
     const selectedRows = gridApi.getSelectedRows();
     if (selectedRows.length === 0) {
         Swal.fire({ title: "No users selected!", text: "Please select users to delete.", icon: "warning" });
