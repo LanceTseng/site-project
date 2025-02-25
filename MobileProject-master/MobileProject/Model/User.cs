@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using SQLite;
 
 namespace MobileProject.Model
 {
-    [Table("user")]
     public class User : BaseModel
     {
-        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-
-        [Unique]
         public string UserName { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
@@ -20,8 +15,6 @@ namespace MobileProject.Model
 
         public User()
         {
-            
         }
     }
-
 }

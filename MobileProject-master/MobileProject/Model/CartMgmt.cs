@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace MobileProject.Model
+﻿namespace MobileProject.Model
 {
     public class CartMgmt : BaseModel
     {
         private decimal _qty;
+
         public decimal Qty
         {
             get => _qty;
@@ -22,6 +21,7 @@ namespace MobileProject.Model
         }
 
         private decimal _price;
+
         public decimal Price
         {
             get => _price;
@@ -37,6 +37,7 @@ namespace MobileProject.Model
         }
 
         private decimal _total;
+
         public decimal Total
         {
             get => _total;
@@ -63,6 +64,7 @@ namespace MobileProject.Model
         }
 
         private Product _product;
+
         public Product Product
         {
             get => _product;
@@ -74,6 +76,7 @@ namespace MobileProject.Model
         }
 
         private CartRecord _cartRecord;
+
         public CartRecord CartRecord
         {
             get => _cartRecord;
@@ -83,7 +86,6 @@ namespace MobileProject.Model
                 OnPropertyChanged();
 
                 Qty = _cartRecord.Qty;
-
             }
         }
 

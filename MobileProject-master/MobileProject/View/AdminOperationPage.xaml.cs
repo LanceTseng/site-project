@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using MobileProject.Model;
-using MobileProject.Repository;
 using Newtonsoft.Json;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -16,25 +15,11 @@ namespace MobileProject.View
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AdminOperationPage : ContentPage
     {
-        private CartRecordRepository _cartRecordRepository;
-        private OrderRepository _orderRepository;
-        private UserRepository _userRepository;
-        private ProductRepository _productRepository;
-        private ReportRepository _reportRepository;
+       
 
         public AdminOperationPage()
         {
             InitializeComponent();
-            _cartRecordRepository = new CartRecordRepository();
-            _orderRepository = new OrderRepository();
-            _userRepository = new UserRepository();
-            _productRepository = new ProductRepository();
-            _reportRepository = new ReportRepository();
-
-            cartCurrentRecord.Text = _cartRecordRepository.GetCount().ToString();
-            orderCurrentRecord.Text = _orderRepository.GetCount().ToString();
-            userCurrentRecord.Text = _userRepository.GetCount().ToString();
-            productCurrentRecord.Text = _productRepository.GetCount().ToString();
         }
 
         private static string xamarinLocalHost = "10.0.2.2";

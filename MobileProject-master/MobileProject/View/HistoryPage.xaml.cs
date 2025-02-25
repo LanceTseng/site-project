@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using MobileProject.Helpers;
 using MobileProject.Model;
-using MobileProject.Repository;
 using MobileProject.Service.Interface;
 using MobileProject.Service;
 using MobileProject.ViewModel;

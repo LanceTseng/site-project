@@ -8,7 +8,6 @@ using MobileProject.View;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MobileProject.Model;
-using MobileProject.Repository;
 using MobileProject.Service;
 using MobileProject.Service.Interface;
 using Xamarin.Forms;

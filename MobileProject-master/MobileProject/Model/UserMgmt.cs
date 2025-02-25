@@ -4,7 +4,6 @@ namespace MobileProject.Model
 {
     public class UserMgmt : BaseModel
     {
-        
         private bool _isSelected;
         private bool _isEnabled;
         private User _user;
@@ -77,11 +76,10 @@ namespace MobileProject.Model
             "user"
         };
 
-
         public UserMgmt(User user)
         {
             this.User = user;
-  
+
             IsEnabled = false;
             IsSelected = false;
         }

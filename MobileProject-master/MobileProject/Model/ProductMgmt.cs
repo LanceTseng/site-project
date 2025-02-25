@@ -3,6 +3,7 @@
     public class ProductMgmt : BaseModel
     {
         private bool _isSelected;
+
         public bool IsSelected
         {
             get => _isSelected;
@@ -15,7 +16,9 @@
                 }
             }
         }
+
         private bool _isEnabled;
+
         public bool IsEnabled
         {
             get => _isEnabled;
@@ -48,6 +51,5 @@
             IsEnabled = false;
             IsSelected = false;
         }
-
     }
 }

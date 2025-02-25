@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Microcharts;
 using MobileProject.Model;
-using MobileProject.Repository;
 using MobileProject.Service;
 using MobileProject.Service.Interface;
 using SkiaSharp;

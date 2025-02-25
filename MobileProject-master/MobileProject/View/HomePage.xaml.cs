@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using MobileProject;
 using MobileProject.Helpers;
 using MobileProject.Model;
-using SQLite;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
