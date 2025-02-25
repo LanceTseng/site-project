@@ -54,15 +54,23 @@ function setupGrid(orders) {
         }
     ];
 
-    const gridDiv = $("#orderGrid").get(0);
+    const gridDiv = document.getElementById("orderGrid");
+    if (!gridDiv) {
+        console.error("Grid container not found");
+        return;
+    }
     gridDiv.innerHTML = "";
-    gridApi = agGrid.createGrid(gridDiv, {
-        columnDefs,
+    const gridOptions = {
+        columnDefs: columnDefs,
         rowData: orders,
         rowSelection: "multiple",
         pagination: true,
-        paginationPageSize: 30
-    });
+        paginationPageSize: 30,
+        domLayout: "normal"
+    };
+   
+    gridApi = agGrid.createGrid(gridDiv, gridOptions);
+    gridDiv.style.height = "500px";  // ✅ Set fixed height
 }
 
 // ✅ Search Orders
