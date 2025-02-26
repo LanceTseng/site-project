@@ -13,14 +13,29 @@
   </head>
   <style>
     .table-container {
-      max-height: 520px;
+      max-height: 600px;
       overflow-y: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
     }
     thead th {
       position: sticky;
       top: 0;
-      background: white;
+      background: #000000;
+      color: white;
       z-index: 10;
+    }
+    .btn-primary-add {
+      border-radius: 6px;
+      font-size: 1rem;
+      padding: 10px 15px;
+    }
+    .modal-content {
+      border-radius: 8px;
+    }
+    .form-control {
+      border-radius: 6px;
     }
   </style>
   <body>
@@ -35,12 +50,16 @@
       </h3>
 
       <!-- Add Subtask Button -->
-      <button type="button" class="btn btn-primary" id="addSubtaskButton">
+      <button
+        type="button"
+        class="btn btn-primary btn-primary-add"
+        id="addSubtaskButton"
+      >
         Add Subtask
       </button>
-      <div class="table-container">
+      <div class="table-container shadow-sm p-3 bg-white rounded">
         <!-- Subtask Table -->
-        <table class="table table-bordered mt-4" id="subtaskTable">
+        <table class="table table-hover mt-4" id="subtaskTable">
           <thead>
             <tr>
               <th>ID</th>

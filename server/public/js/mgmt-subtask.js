@@ -186,7 +186,7 @@ $(document).ready(async function () {
         hand_over_id: null,
         enabled: $("#enable").val() === "true",
       };
-
+      console.log(subtask);
       if (!subtask.child_task_name) {
         Swal.fire("Error", `Please fill in all required fields.`, "error");
         return;
