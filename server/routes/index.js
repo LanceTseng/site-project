@@ -6,6 +6,12 @@ router.get("/", (req, res) => {
   res.render("index", { title: "Home" });
 });
 
+//employee dashboard
+router.get("/employee-dashboard", (req, res) => {
+  res.render("employeeDashboard");
+});
+
+
 // Route for Login Settings
 router.get("/login", (req, res) => {
   res.render("login");
