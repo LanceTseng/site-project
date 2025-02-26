@@ -18,14 +18,18 @@
         padding: 20px;
       }
       .table-container {
-        max-height: 400px;
+        max-height: 600px;
         overflow-y: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
       }
       thead th {
         position: sticky;
-        top: 0;
-        background: white;
-        z-index: 10;
+      top: 0;
+      background: #000000;
+      color: white;
+      z-index: 10;
       }
     </style>
   </head>
@@ -56,26 +60,29 @@
         <!-- Equipment Table -->
         <div>
           <h3>Equipment List</h3>
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Eqpt Name</th>
-                <th>Code</th>
-                <th>Type</th>
-                <th>Occupied By</th>
-                <th>Occupied</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="equipment-table-body"></tbody>
-          </table>
+          <div class="table-container shadow-sm p-3 bg-white rounded">
+            <table class="table table-hover mt-4">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Eqpt Name</th>
+                  <th>Code</th>
+                  <th>Type</th>
+                  <th>Occupied By</th>
+                  <th>Occupied</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="equipment-table-body"></tbody>
+            </table>
+          </div>
         </div>
 
         <!-- Occupied Record -->
         <div>
           <h3>Occupied Record</h3>
-          <table class="table table-bordered">
+          <div class="table-container shadow-sm p-3 bg-white rounded">
+          <table class="table table-hover mt-4">
             <thead>
               <tr>
                 <th>ID</th>
@@ -88,6 +95,7 @@
             </thead>
             <tbody id="eqpt-occupied-table-body"></tbody>
           </table>
+        </div>
         </div>
       </div>
     </div>
@@ -332,11 +340,11 @@
                   disabled
                 />
                 <input
-                type="text"
-                id="return-id"
-                class="form-control"
-                disabled
-              />
+                  type="text"
+                  id="return-id"
+                  class="form-control"
+                  disabled
+                />
               </div>
 
               <div class="form-group mb-3">
@@ -362,7 +370,7 @@
                   disabled
                 />
               </div>
- 
+
               <div class="modal-footer">
                 <button
                   id="returnEqpt"
