@@ -6,7 +6,11 @@ import * as FileApi from "./services/fileServices.js";
 
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
 
+let loginUser;
+
 $(document).ready(async function () {
+  loginUser = JSON.parse(sessionStorage.getItem("user"));
+
   await displayUserTaskHeader();
 
   $("#userTaskHeaderList").on("click", ".task-row", function () {
@@ -36,7 +40,14 @@ $(document).ready(async function () {
 
 async function displayUserTaskHeader() {
   try {
-    const userParentTasks = await UserTaskViewApi.getAllUserParentTasks();
+    let userParentTasks = [];
+    if (isEqualIgnoreCase(loginUser.user_role, "hr")) {
+      userParentTasks = await UserTaskViewApi.getAllUserParentTasks();
+    } else {
+      userParentTasks = await UserTaskViewApi.getUserParentTaskByUserId(
+        loginUser.user_id
+      );
+    }
     const taskRows = await Promise.all(userParentTasks.map(buildTaskRow));
     $("#userTaskHeaderList").html(taskRows.join(""));
   } catch (error) {

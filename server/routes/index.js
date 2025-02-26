@@ -8,16 +8,16 @@ router.get("/", (req, res) => {
 
 //hr dashboard
 router.get("/hr-dashboard", (req, res) => {
-  res.render("login", { title: "HR Dashboard" });
+  res.render("hr-dashboard", { title: "HR Dashboard" });
 });
 
 //employee dashboard
 router.get("/employee-dashboard", (req, res) => {
-  res.render("employeeDashboard",{ title: "Employee Dashboard" });
+  res.render("employee-dashboard",{ title: "Employee Dashboard" });
 });
 
 router.get("/it-dashboard", (req, res) => {
-  res.render("employeeDashboard",{ title: "IT Dashboard" });
+  res.render("it-Dashboard",{ title: "IT Dashboard" });
 });
 
 
