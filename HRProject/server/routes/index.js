@@ -3,13 +3,23 @@ const router = express.Router();
 
 // Route for home page
 router.get("/", (req, res) => {
-  res.render("index", { title: "Home" });
+  res.render("login", { title: "Login" });
+});
+
+//hr dashboard
+router.get("/hr-dashboard", (req, res) => {
+  res.render("login", { title: "HR Dashboard" });
 });
 
 //employee dashboard
 router.get("/employee-dashboard", (req, res) => {
-  res.render("employeeDashboard");
+  res.render("employeeDashboard",{ title: "Employee Dashboard" });
 });
+
+router.get("/it-dashboard", (req, res) => {
+  res.render("employeeDashboard",{ title: "IT Dashboard" });
+});
+
 
 
 // Route for Login Settings

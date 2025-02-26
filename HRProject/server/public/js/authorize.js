@@ -29,8 +29,8 @@ async function handleLogin() {
     sessionStorage.setItem("user", JSON.stringify(userView));
  
     Swal.fire("Success", `Login succeess.`, "success");
-    if (isEqualIgnoreCase(userView.user_role ,"admin")) {
-        window.location.href = "/"; //home
+    if (isEqualIgnoreCase(userView.user_role ,"hr")) {
+        window.location.href = "/hr-dashbaord"; //home
         return;
     }else if (isEqualIgnoreCase(userView.user_role ,"it")){
         window.location.href = "/it-dashboard";
