@@ -11,21 +11,24 @@
     />
   </head>
   <style>
-    body {
-      background-color: #f8f9fa;
-    }
     .card {
       transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
       border-radius: 12px;
       border: none;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: rgba(0, 255, 221, 0.795);
     }
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
     .card i {
-      font-size: 2rem;
+      font-size: 3rem;
       color: #007bff;
+      margin-bottom: 10px;
     }
     .custom-btn {
       background-color: #007bff;
@@ -38,9 +41,13 @@
     .custom-btn:hover {
       background-color: #0056b3;
     }
-    .navbar, .footer {
-      background-color: #343a40;
-      color: white;
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+ 
+    }
+    .col-md-4 {
+      display: flex;
     }
   </style>
   <body>
@@ -53,7 +60,7 @@
             <i class="fas fa-tasks"></i>
             <h5 class="card-title mt-3">Task Management</h5>
             <p class="card-text">Manage tasks for maintenance activities.</p>
-            <a href="/mgmt-task" class="btn custom-btn">Go to Task</a>
+            <a href="/mgmt-task" class="btn custom-btn mt-auto">Go to Task</a>
           </div>
         </div>
 
@@ -62,7 +69,7 @@
             <i class="fas fa-tools"></i>
             <h5 class="card-title mt-3">Equipment</h5>
             <p class="card-text">View and manage maintenance equipment.</p>
-            <a href="/mgmt-equiptment" class="btn custom-btn">Go to Equipment</a>
+            <a href="/mgmt-equiptment" class="btn custom-btn mt-auto">Go to Equipment</a>
           </div>
         </div>
 
@@ -71,7 +78,7 @@
             <i class="fas fa-user-cog"></i>
             <h5 class="card-title mt-3">User/Employee</h5>
             <p class="card-text">Manage users and employees.</p>
-            <a href="/mgmt-user-employee" class="btn custom-btn">Go to User</a>
+            <a href="/mgmt-user-employee" class="btn custom-btn mt-auto">Go to User</a>
           </div>
         </div>
 
@@ -80,7 +87,7 @@
             <i class="fas fa-file-alt"></i>
             <h5 class="card-title mt-3">Documents</h5>
             <p class="card-text">View and manage maintenance documents.</p>
-            <a href="/mgmt-document" class="btn custom-btn">Go to Documents</a>
+            <a href="/mgmt-document" class="btn custom-btn mt-auto">Go to Documents</a>
           </div>
         </div>
 
@@ -89,7 +96,7 @@
             <i class="fas fa-chalkboard-teacher"></i>
             <h5 class="card-title mt-3">Training</h5>
             <p class="card-text">Access and manage training modules.</p>
-            <a href="#" class="btn custom-btn">Go to Training</a>
+            <a href="#" class="btn custom-btn mt-auto">Go to Training</a>
           </div>
         </div>
       </div>
@@ -100,6 +107,10 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
 
     <script src="/js/maintenance.js"></script>
   </body>
