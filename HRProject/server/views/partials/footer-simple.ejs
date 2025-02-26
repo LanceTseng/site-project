@@ -1,8 +1,8 @@
 <footer class="bg-dark text-white text-center py-4 mt-auto">
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       <div class="col">
-        <span id="footer"> </span>
+        <span id="footer"></span>
       </div>
     </div>
   </div>
@@ -16,21 +16,23 @@
 </script>
 <!-- Custom CSS to fix footer at the bottom -->
 <style>
-  html, body {
-    height: 100%;
-    margin: 0;
-  }
-
+ 
   body {
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
   }
 
-  .container {
+  .c {
     flex: 1;
   }
 
   footer {
+    width: 100%; /* Ensure full width */
     margin-top: auto; /* Pushes the footer to the bottom of the page */
+  }
+  .bg-dark {
+    background-color: #212529 !important; /* Ensure dark background */
   }
 </style>
