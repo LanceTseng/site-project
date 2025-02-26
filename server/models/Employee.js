@@ -26,30 +26,37 @@ const Employee = sequelize.define(
       allowNull: true,
     },
     address: {
-      type: DataTypes.STRING(45),
+      type: DataTypes.STRING(255), // Increased length for better flexibility
       allowNull: true,
     },
     phone: {
-      type: DataTypes.STRING(45),
+      type: DataTypes.STRING(20), // Phone numbers shouldn't be too long
       allowNull: true,
     },
     is_active: {
-      type: DataTypes.TINYINT,
-      allowNull: true,
-      defaultValue: 1,
+      type: DataTypes.BOOLEAN, // Boolean instead of TINYINT
+      allowNull: false,
+      defaultValue: true,
     },
-    
+    onboard_date: {
+      type: DataTypes.DATE, // Fixed incorrect DataType
+      allowNull: true,
+    },
+    offboard_date: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
     link_user_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
-    },
+    } 
   },
   {
     tableName: "b_employees",
-    timestamps: true, // Since we handle timestamps manually
-    createdAt: 'created_date',
-    updatedAt:'last_updated_date'
-  } 
+    timestamps: true,
+    createdAt:"created_date",
+    updatedAt:"last_updated_date" // Manually handling timestamps
+  }
 );
 
 module.exports = Employee;

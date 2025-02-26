@@ -158,6 +158,9 @@ $(document).ready(async function () {
       const lastName = $("#last-name").val();
       const department = $("#department").val();
       const username = `${firstName}_${lastName}`.toLowerCase();
+      const onboard_date = $("#onboardDate").val();
+      const phone = $("#phone").val();
+      const address =  $("#address").val();
 
       const newUser = await UserApi.createTask({
         username,
@@ -171,8 +174,9 @@ $(document).ready(async function () {
         last_name: lastName,
         department_id: department,
         status: 0,
-        phone: $("#phone").val(),
-        address: $("#address").val(),
+        phone: phone,
+        address:address,
+        onboard_date: onboard_date,
         is_active: true,
         link_user_id: newUser.user_id,
       });
@@ -201,6 +205,7 @@ $(document).ready(async function () {
       $("#edit-employee-id").val(employee.employee_id);
       $("#edit-department").val(employee.department_id);
       $("#edit-status").val(employee.status);
+
 
       $("#editModal").modal("show");
     } catch (error) {
