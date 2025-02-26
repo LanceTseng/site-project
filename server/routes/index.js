@@ -14,8 +14,12 @@ router.get("/employee-dashboard", (req, res) => {
 
 // Route for Login Settings
 router.get("/login", (req, res) => {
-  res.render("pages/login");
+  res.render("login");
 });
+router.get("/logout", (req, res) => {
+  res.render("logout");
+});
+
 
 router.get("/unauth", (req, res) => {
   res.render("pages/unauthorized");
