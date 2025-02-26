@@ -22,7 +22,6 @@ class UserController {
 
   async getByName(req, res) {
     try {
-      console.log(req.params.name);
       const user = await UserRepository.getByName(req.params.name);
       if (!user) return res.status(404).json({ error: 'User not found' });
       res.json(user);
