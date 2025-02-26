@@ -3,12 +3,23 @@ import { isEqualIgnoreCase } from "./utils/stringUtils.js";
 function setUpDashboard(role) {
   var dashboardLink = $("#nav-dashboard a");
   if (isEqualIgnoreCase(role, "hr")) {
-    dashboardLink.attr("href", "/admin-dashboard");
+    dashboardLink.attr("href", "/hr-dashboard");
   } else if (isEqualIgnoreCase(role, "it")) {
     dashboardLink.attr("href", "/it-dashboard");
   } else {
     dashboardLink.attr("href", "/employee-dashboard");
   }
+} 
+
+function setUpNavBrand(role){
+    var navBrand = $(".navbar-brand");
+    if (isEqualIgnoreCase(role, "hr")) {
+        navBrand.attr("href", "/hr-dashboard");
+      } else if (isEqualIgnoreCase(role, "it")) {
+        navBrand.attr("href", "/it-dashboard");
+      } else {
+        navBrand.attr("href", "/employee-dashboard");
+      }
 }
 
 function initialNavgator() {
@@ -32,6 +43,7 @@ function initialNavgator() {
   if (user) {
     btnLogout.show();
     setUpDashboard(user.user_role);
+    setUpNavBrand(user.user_role);
     report.show();
     if (isEqualIgnoreCase(user.user_role, "hr")) {
       maintenance.show();
