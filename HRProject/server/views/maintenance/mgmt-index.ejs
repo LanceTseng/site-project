@@ -10,64 +10,86 @@
       rel="stylesheet"
     />
   </head>
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .card {
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      border-radius: 12px;
+      border: none;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    .card i {
+      font-size: 2rem;
+      color: #007bff;
+    }
+    .custom-btn {
+      background-color: #007bff;
+      border: none;
+      color: white;
+      width: 100%;
+      border-radius: 8px;
+      transition: background 0.3s ease-in-out;
+    }
+    .custom-btn:hover {
+      background-color: #0056b3;
+    }
+    .navbar, .footer {
+      background-color: #343a40;
+      color: white;
+    }
+  </style>
   <body>
     <%- include('../partials/navbar') %>
 
-    <div class="container mt-4">
-      <div class="row">
+    <div class="container mt-5">
+      <div class="row g-4">
         <div class="col-md-4">
-          <div class="card" data-link="/mgmt-task">
-            <div class="card-body">
-              <h5 class="card-title">Task</h5>
-              <p class="card-text">Manage tasks for maintenance activities.</p>
-              <a href="/mgmt-task" class="btn btn-primary">Go to Task</a>
-            </div>
+          <div class="card p-4 text-center">
+            <i class="fas fa-tasks"></i>
+            <h5 class="card-title mt-3">Task Management</h5>
+            <p class="card-text">Manage tasks for maintenance activities.</p>
+            <a href="/mgmt-task" class="btn custom-btn">Go to Task</a>
           </div>
         </div>
 
         <div class="col-md-4">
-          <div class="card" data-link="/mgmt-equiptment">
-            <div class="card-body">
-              <h5 class="card-title">Equipment</h5>
-              <p class="card-text">View and manage maintenance equipment.</p>
-              <a href="/mgmt-equiptment" class="btn btn-primary"
-                >Go to Equipment</a
-              >
-            </div>
+          <div class="card p-4 text-center">
+            <i class="fas fa-tools"></i>
+            <h5 class="card-title mt-3">Equipment</h5>
+            <p class="card-text">View and manage maintenance equipment.</p>
+            <a href="/mgmt-equiptment" class="btn custom-btn">Go to Equipment</a>
           </div>
         </div>
 
         <div class="col-md-4">
-          <div class="card" data-link="/mgmt-user-employee">
-            <div class="card-body">
-              <h5 class="card-title">User/Employee</h5>
-              <p class="card-text">
-                Manage users/Employee involved in maintenance activities.
-              </p>
-              <a href="/mgmt-user-employee" class="btn btn-primary">Go to User</a>
-            </div>
+          <div class="card p-4 text-center">
+            <i class="fas fa-user-cog"></i>
+            <h5 class="card-title mt-3">User/Employee</h5>
+            <p class="card-text">Manage users and employees.</p>
+            <a href="/mgmt-user-employee" class="btn custom-btn">Go to User</a>
           </div>
         </div>
-      </div>
 
-      <div class="row">
         <div class="col-md-4">
-          <div class="card" data-link="/mgmt-document">
-            <div class="card-body">
-              <h5 class="card-title">Document</h5>
-              <p class="card-text">View and manage maintenance documents.</p>
-              <a href="/mgmt-document" class="btn btn-primary">Go to Document</a>
-            </div>
+          <div class="card p-4 text-center">
+            <i class="fas fa-file-alt"></i>
+            <h5 class="card-title mt-3">Documents</h5>
+            <p class="card-text">View and manage maintenance documents.</p>
+            <a href="/mgmt-document" class="btn custom-btn">Go to Documents</a>
           </div>
         </div>
- 
+
         <div class="col-md-4">
-          <div class="card" data-link="training.html">
-            <div class="card-body">
-              <h5 class="card-title">Training Module</h5>
-              <p class="card-text">Access and manage training modules.</p>
-              <a href="#" class="btn btn-primary">Go to Training Module</a>
-            </div>
+          <div class="card p-4 text-center">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <h5 class="card-title mt-3">Training</h5>
+            <p class="card-text">Access and manage training modules.</p>
+            <a href="#" class="btn custom-btn">Go to Training</a>
           </div>
         </div>
       </div>
