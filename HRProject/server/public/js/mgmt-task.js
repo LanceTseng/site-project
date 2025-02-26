@@ -92,6 +92,7 @@ async function saveTask() {
       task_group_id: taskGroupId,
     });
     await renderTasks();
+    Swal.fire("Success", `Add successfully!`, "success");
     closeModal();
   } catch (error) {
     console.error("Error creating task:", error);
@@ -116,6 +117,7 @@ async function editTask(taskId) {
         try {
           await ParentTaskApi.updateTask(taskId, task);
           await renderTasks();
+          Swal.fire("Success", `Edit successfully!`, "success");
           closeModal();
         } catch (error) {
           console.error("Error updating task:", error);
