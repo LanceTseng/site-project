@@ -68,9 +68,9 @@
               <th>Document</th>
               <th>Documnet Upload</th>
               <th>Device</th>
-              <th>Training Module ID</th>
-              <th>Interview ID</th>
-              <th>Survey ID</th>
+              <th>Training Module</th>
+              <th hidden>Interview</th>
+              <th>Survey/Interview</th>
               <th>Enable</th>
               <th>Actions</th>
             </tr>
@@ -155,7 +155,7 @@
                   </option>
                 </select>
               </div>
-              <div class="form-group">
+              <div class="form-group" hidden>
                 <label for="interviewId">Interview</label>
                 <select class="form-control" id="interviewId">
                   <option value="" disabled selected>
@@ -164,7 +164,7 @@
                 </select>
               </div>
               <div class="form-group">
-                <label for="surveyId">Survey</label>
+                <label for="surveyId">Survey / Interview</label>
                 <select class="form-control" id="surveyId">
                   <option value="" disabled selected>Select a survey</option>
                 </select>
