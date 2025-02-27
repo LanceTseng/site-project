@@ -1,6 +1,10 @@
 import * as EmployeeViewApi from "./services/employeeViewService.js";
 
 $(document).ready(async function () {
+
+  let loginUser = JSON.parse(sessionStorage.getItem("user"));
+  $("#employeeName").text(`${loginUser.username} - ${loginUser.user_role}`);
+
   try {
     const data = await EmployeeViewApi.getTasks();
 

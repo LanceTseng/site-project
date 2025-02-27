@@ -52,10 +52,10 @@
         <div class="col-12 col-md-4">
           <div class="card border-warning">
             <div class="card-body text-center">
-              <i class="fa-solid fa-user text-warning fa-2x mb-3"></i>
-              <h5>Personal Information</h5>
+              <i class="fa-solid fa-screwdriver-wrench text-warning fa-2x mb-3"></i>
+              <h5>Equiptment</h5>
               <a href="" class="btn btn-warning mt-2">
-                <i class="fa-solid fa-arrow-circle-right me-2"></i> Go To Profile
+                <i class="fa-solid fa-arrow-circle-right me-2"></i> Go To Equipment
               </a>
             </div>
           </div>
@@ -64,14 +64,15 @@
         <div class="col-12 col-md-4">
           <div class="card border-success">
             <div class="card-body text-center">
-              <i class="fa-solid fa-chart-line text-success fa-2x mb-3"></i>
-              <h5>Reports</h5>
+              <i class="fa-solid fa-universal-access text-success fa-2x mb-3"></i>
+              <h5>Access Provisioning</h5>
               <a href="./report" class="btn btn-success mt-2">
-                <i class="fa-solid fa-arrow-circle-right me-2"></i> View Reports
+                <i class="fa-solid fa-arrow-circle-right me-2"></i> View Access Provisioning
               </a>
             </div>
           </div>
         </div>
+        
       </div>
 
       <!-- Statistics Section -->
@@ -82,32 +83,32 @@
         <div class="col-6 col-md-3">
           <div class="card text-center bg-light">
             <div class="card-body">
-              <h3 id="processingMainTask">25</h3>
-              <p>Prossing Main Task</p>
+              <h3 id="totalEquipment">25</h3>
+              <p>Total Equipments</p>
             </div>
           </div>
         </div>
         <div class="col-6 col-md-3">
           <div class="card text-center bg-light">
             <div class="card-body">
-              <h3 id="pendingMainTask">10</h3>
-              <p>Pending Main Task</p>
+              <h3 id="occupiedEquipment">10</h3>
+              <p>Occupied Equipments</p>
             </div>
           </div>
         </div>
         <div class="col-6 col-md-3">
           <div class="card text-center bg-light">
             <div class="card-body">
-              <h3 id="tenureDays">150</h3>
-              <p>Tenure Days</p>
+              <h3 id="openTicket">150</h3>
+              <p>Open Tickets</p>
             </div>
           </div>
         </div>
         <div class="col-6 col-md-3">
           <div class="card text-center bg-light">
             <div class="card-body">
-              <h3 id="employeeStatus">15</h3>
-              <p>Employee Status</p>
+              <h3 id="todayComplete">15</h3>
+              <p>Today Close Ticket</p>
             </div>
           </div>
         </div>
@@ -124,9 +125,9 @@
                 style="position: sticky; top: 0; background: white; z-index: 10"
               >
                 <tr>
-                  <th>Task Name</th>
+                  <th>Equiptment Name</th>
                   <th>Status</th>
-                  <th>Process Rate</th>
+                  <th>Occupied By</th>
                   <th>Update Date</th>
                 </tr>
               </thead>
@@ -149,6 +150,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- Custom JavaScript -->
-    <script src="/js/employee-dashboard.js" type="module"></script>
+    <script src="/js/dashboard-it.js" type="module"></script>
   </body>
 </html>

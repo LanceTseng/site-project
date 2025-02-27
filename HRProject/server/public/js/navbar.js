@@ -48,6 +48,9 @@ function initialNavgator() {
     if (isEqualIgnoreCase(user.user_role, "hr")) {
       maintenance.show();
     }
+    if (isEqualIgnoreCase(user.user_role, "it")) {
+      maintenance.show();
+    }
   } else {
     btnLogin.show();
   }

@@ -30,12 +30,12 @@ async function handleLogin() {
  
     Swal.fire("Success", `Login succeess.`, "success");
     if (isEqualIgnoreCase(userView.user_role ,"hr")) {
-        window.location.href = "/hr-dashboard"; //home
+        window.location.href = "/dashboard-hr"; //home
         return;
     }else if (isEqualIgnoreCase(userView.user_role ,"it")){
-        window.location.href = "/it-dashboard";
+        window.location.href = "/dashboard-it";
     }else{
-        window.location.href = "/employee-dashboard";
+        window.location.href = "/dashboard-employee";
     }
  
 
