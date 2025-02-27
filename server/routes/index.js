@@ -7,17 +7,17 @@ router.get("/", (req, res) => {
 });
 
 //hr dashboard
-router.get("/hr-dashboard", (req, res) => {
-  res.render("hr-dashboard", { title: "HR Dashboard" });
+router.get("/dashboard-hr", (req, res) => {
+  res.render("dashboard-hr", { title: "HR Dashboard" });
 });
 
 //employee dashboard
-router.get("/employee-dashboard", (req, res) => {
-  res.render("employee-dashboard",{ title: "Employee Dashboard" });
+router.get("/dashboard-employee", (req, res) => {
+  res.render("dashboard-employee",{ title: "Employee Dashboard" });
 });
 
-router.get("/it-dashboard", (req, res) => {
-  res.render("it-Dashboard",{ title: "IT Dashboard" });
+router.get("/dashboard-it", (req, res) => {
+  res.render("dashboard-it",{ title: "IT Dashboard" });
 });
 
 
