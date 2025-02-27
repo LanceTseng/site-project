@@ -3,22 +3,22 @@ import { isEqualIgnoreCase } from "./utils/stringUtils.js";
 function setUpDashboard(role) {
   var dashboardLink = $("#nav-dashboard a");
   if (isEqualIgnoreCase(role, "hr")) {
-    dashboardLink.attr("href", "/hr-dashboard");
+    dashboardLink.attr("href", "/dashboard-hr");
   } else if (isEqualIgnoreCase(role, "it")) {
-    dashboardLink.attr("href", "/it-dashboard");
+    dashboardLink.attr("href", "/dashboard-it");
   } else {
-    dashboardLink.attr("href", "/employee-dashboard");
+    dashboardLink.attr("href", "/dashboard-employee");
   }
 } 
 
 function setUpNavBrand(role){
     var navBrand = $(".navbar-brand");
     if (isEqualIgnoreCase(role, "hr")) {
-        navBrand.attr("href", "/hr-dashboard");
+        navBrand.attr("href", "/dashboard-hr");
       } else if (isEqualIgnoreCase(role, "it")) {
-        navBrand.attr("href", "/it-dashboard");
+        navBrand.attr("href", "/dashboard-it");
       } else {
-        navBrand.attr("href", "/employee-dashboard");
+        navBrand.attr("href", "/dashboard-employee");
       }
 }
 

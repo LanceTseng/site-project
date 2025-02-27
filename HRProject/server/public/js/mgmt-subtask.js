@@ -138,7 +138,7 @@ $(document).ready(async function () {
             <td>${subtask.require_upload ? "Y" : "N"}</td>
             <td>${subtask.eqpt_type ?? ""}</td>
             <td>${subtask.training_module_id ?? ""}</td>
-            <td>${subtask.interview_id ?? ""}</td>
+            <td hidden>${subtask.interview_id ?? ""}</td>
             <td>${subtask.servey_name ?? ""}</td>
             <td>${subtask.enabled ? "Yes" : "No"}</td>
             <td>
