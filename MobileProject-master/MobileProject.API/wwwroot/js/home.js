@@ -1,9 +1,8 @@
 ﻿function loadLoginStatus() {
     const user = JSON.parse(sessionStorage.getItem("user"));
 
-    $(".guest-section").hide();
-    $(".user-section").hide();
-    $(".admin-section").hide();
+    $(".guest-section, .user-section, .admin-section").hide();
+
 
     if (user) {
         $(".text-login-user").html(`Welcome, ${user.userName} (${user.role})`);
@@ -41,7 +40,21 @@ function logout() {
     });
 }
 
+function preventBackNavigation() {
+    if (window.history && window.history.pushState) {
+        $(window).on('popstate', function () {
+            console.log('Back/Forward button detected, reloading...');
+            window.location.reload(); // Reload the page when back/forward is triggered
+        });
+    }
+
+    // Push an initial state to prevent back navigation
+    window.history.pushState(null, null, window.location.href);
+}
+
+
 $(document).ready(function () {
+    preventBackNavigation();
     loadLoginStatus();
 
     $(".btn-logout").click(function (event) {

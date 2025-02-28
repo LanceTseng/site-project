@@ -42,7 +42,23 @@ function processLogin(user) {
         });
     }
 }
+
+function preventBackNavigation() {
+    if (window.history && window.history.pushState) {
+        $(window).on('popstate', function () {
+            console.log('Back/Forward button detected, reloading...');
+            window.location.reload(); // Reload the page when back/forward is triggered
+        });
+    }
+
+    // Push an initial state to prevent back navigation
+    window.history.pushState(null, null, window.location.href);
+}
+
+
 $(document).ready(function () {
+    preventBackNavigation();
+
     navigateToHome();
 
     // Handle Login Form Submission
