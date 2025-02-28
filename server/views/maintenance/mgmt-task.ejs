@@ -10,25 +10,6 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <style>
-      .parent {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 20px;
-        padding: 20px;
-      }
-      .table-container {
-        max-height: 600px;
-        overflow-y: auto;
-        border-radius: 10px;
-      }
-      thead th {
-        position: sticky;
-        top: 0;
-        background: white;
-        z-index: 10;
-      }
-    </style>
   </head>
   <body>
     <!-- Navbar -->
@@ -151,21 +132,29 @@
     <script src="/js/mgmt-task.js" type="module"></script>
   </body>
 </html>
-<style>
-  body {
-    background-color: #f8f9fa;
-  }
 
+<style>
+  .parent {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
   table {
     border-collapse: collapse;
     width: 100%;
     background: white;
   }
+  .table-container {
+    max-height: 600px;
+    overflow-y: auto;
+    border-radius: 10px;
+  }
   thead th {
     position: sticky;
     top: 0;
-    background: #000000;
-    color: white;
+    background: #000000 !important;
+    color: white !important;
     z-index: 10;
   }
   tbody tr:hover {
@@ -178,7 +167,7 @@
     transition: background 0.3s ease;
   }
   .btn-modern:hover {
-    background: #00000069;
+    background: #00000069 !important;
   }
   .modal-content {
     border-radius: 12px;

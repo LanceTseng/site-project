@@ -11,24 +11,7 @@
       rel="stylesheet"
     />
   </head>
-  <style>
-    .parent {
-      display: grid;
-      grid-template-columns: 1fr 2fr 1.5fr;
-      gap: 20px;
-      padding: 20px;
-    }
-    .table-container {
-      max-height: 400px;
-      overflow-y: auto;
-    }
-    thead th {
-      position: sticky;
-      top: 0;
-      background: white;
-      z-index: 10;
-    }
-  </style>
+ 
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %>
@@ -204,3 +187,31 @@
     <script src="/js/mgmt-user-employee.js" type="module"></script>
   </body>
 </html>
+<style>
+  .parent {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1.5fr;
+    gap: 20px;
+    padding: 20px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+  }
+  .table-container {
+    max-height: 600px;
+    overflow-y: auto;
+    border-radius: 10px;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #000000 !important;
+    color: white !important;
+    z-index: 10;
+  }
+  tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>

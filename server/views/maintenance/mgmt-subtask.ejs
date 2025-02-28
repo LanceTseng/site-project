@@ -11,33 +11,7 @@
       rel="stylesheet"
     />
   </head>
-  <style>
-    .table-container {
-      max-height: 600px;
-      overflow-y: auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-    }
-    thead th {
-      position: sticky;
-      top: 0;
-      background: #000000;
-      color: white;
-      z-index: 10;
-    }
-    .btn-primary-add {
-      border-radius: 6px;
-      font-size: 1rem;
-      padding: 10px 15px;
-    }
-    .modal-content {
-      border-radius: 8px;
-    }
-    .form-control {
-      border-radius: 6px;
-    }
-  </style>
+ 
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %> <%- include('./mgmt-task-nav') %>
@@ -203,3 +177,30 @@
     <script type="module" src="/js/mgmt-subtask.js"></script>
   </body>
 </html>
+<style>
+  .table-container {
+    max-height: 600px;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #000000!important;
+    color: white!important;
+    z-index: 10;
+  }
+  .btn-primary-add {
+    border-radius: 6px;
+    font-size: 1rem;
+    padding: 10px 15px;
+  }
+  .modal-content {
+    border-radius: 8px;
+  }
+  .form-control {
+    border-radius: 6px;
+  }
+</style>
