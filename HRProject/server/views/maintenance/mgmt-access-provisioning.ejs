@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Equipment Management</title>
+    <title>Access Provisioning Management</title>
 
     <!-- Bootstrap CSS -->
     <link
@@ -14,31 +14,143 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <style>
-      .parent {
-        display: grid;
-        grid-template-columns: 1fr 2fr 1.5fr;
-        gap: 20px;
-        padding: 20px;
-      }
-      .table-container {
-        max-height: 400px;
-        overflow-y: auto;
-      }
-      thead th {
-        position: sticky;
-        top: 0;
-        background: white;
-        z-index: 10;
-      }
-    </style>
   </head>
 
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %>
-    <div class="parent"></div>
-    
+
+    <div class="parent">
+      <!-- Left: Search Filters -->
+      <div>
+        <h4>Search Filters</h4>
+        <form id="search-form">
+          <div class="form-group">
+            <label for="accessName">Access Name</label>
+            <input type="text" id="accessName" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label for="searchAccessType">Access Type</label>
+            <select id="searchAccessType" class="form-select form-control">
+              <option value="" disabled>Select a Access Type</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="searchRole">Role Name</label>
+            <select id="searchRole" class="form-select form-control">
+              <option value="" disabled>Select a Role</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+      </div>
+
+      <!-- Middle: Access Provisioning Table -->
+      <div>
+        <h4>Access Provisioning</h4>
+
+        <button type="button" class="btn btn-modern" id="addAccess">
+          <i class="fas fa-plus"></i> Create Access
+        </button>
+
+        <div class="table-container">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAll" /></th>
+                <th>Access Name</th>
+                <th>Access Description</th>
+                <th>Access Type</th>
+                <th>Role Name</th>
+                <th>Enabled</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="accessTableBody">
+              <!-- Data will be loaded dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right: Batch Enable/Disable -->
+      <div>
+        <h4>Batch Actions</h4>
+        <button id="enableSelected" class="btn btn-success">
+          Enable Selected
+        </button>
+        <button id="disableSelected" class="btn btn-danger">
+          Disable Selected
+        </button>
+      </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal fade" id="accessModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalTitle">Add Access</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="accessForm">
+              <input type="hidden" id="accessId" />
+
+              <div class="form-group">
+                <label>Access Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editAccessNameInput"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Access Description</label>
+                <textarea
+                  class="form-control"
+                  id="editAccessDescription"
+                  required
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>Access Type</label>
+                <select class="form-control" id="editAccessType">
+                  <option value="">Select Type</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Role Name</label>
+                <select class="form-control" id="editRole">
+                  <option value="">Select Role</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Enabled</label>
+                <select class="form-control" id="editEnabled">
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success" id="saveAccess">
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Footer -->
     <%- include('../partials/footer-simple') %>
 
@@ -48,8 +160,62 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/mgmt-access-provisioning.js" type="module"></script>
   </body>
 </html>
 <!-- Swal.fire("Error", `Please fill in all required fields.`, "error");
       Swal.fire("Success", `Equipment ${mode}ed successfully!`, "success");
       -->
+<style>
+  .parent {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1.5fr;
+    gap: 20px;
+    padding: 20px;
+  }
+  .table-container {
+    max-height: 600px;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #000000 !important;
+    color: white !important;
+    z-index: 10;
+  }
+  .btn-modern {
+    background: #007bff;
+    color: white;
+    border: none;
+    transition: background 0.3s ease;
+  }
+  .btn-modern:hover {
+    background: #00000069 !important;
+  }
+  /* Style for the select-all checkbox */
+  #selectAll {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #007bff; /* Bootstrap primary color */
+  }
+
+  /* Style for individual checkboxes */
+  .select-item {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #28a745; /* Bootstrap success color */
+  }
+
+  /* Add hover effect */
+  #selectAll:hover,
+  .select-item:hover {
+    transform: scale(1.1);
+    transition: 0.2s ease-in-out;
+  }
+</style>

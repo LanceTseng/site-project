@@ -13,7 +13,7 @@ const view = new View();
 // Function to get all access provisioning records
 export const getAllAccessProvisioning = async () => {
     try {
-      const response = await axiosInstance.get(`${View.accessProvisioningView}`);
+      const response = await axiosInstance.get(`${view.accessProvisioningView}`);
       return response.data;
     } catch (error) {
       console.error("Error fetching all access provisioning records:", error);
@@ -24,7 +24,7 @@ export const getAllAccessProvisioning = async () => {
   // Function to get access provisioning by ID
   export const getAccessProvisioningById = async (id) => {
     try {
-      const response = await axiosInstance.get(`${View.accessProvisioningView}${id}`);
+      const response = await axiosInstance.get(`${view.accessProvisioningView}${id}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching access provisioning with ID ${id}:`, error);
@@ -35,7 +35,7 @@ export const getAllAccessProvisioning = async () => {
   // Function to get access provisioning by Role ID
   export const getAccessProvisioningByRoleId = async (roleId) => {
     try {
-      const response = await axiosInstance.get(`${View.accessProvisioningView}role/${roleId}`);
+      const response = await axiosInstance.get(`${view.accessProvisioningView}role/${roleId}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching access provisioning with Role ID ${roleId}:`, error);
@@ -48,7 +48,7 @@ export const getAllAccessProvisioning = async () => {
 // Function to get all user access records
 export const getAllUserAccess = async () => {
     try {
-      const response = await axiosInstance.get(`${View.userAccessView}`);
+      const response = await axiosInstance.get(`${view.userAccessView}`);
       return response.data;
     } catch (error) {
       console.error("Error fetching all user access records:", error);
@@ -59,7 +59,7 @@ export const getAllUserAccess = async () => {
   // Function to get user access by user ID
   export const getUserAccessByUserId = async (userId) => {
     try {
-      const response = await axiosInstance.get(`${View.userAccessView}user/${userId}`);
+      const response = await axiosInstance.get(`${view.userAccessView}user/${userId}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching user access with User ID ${userId}:`, error);
