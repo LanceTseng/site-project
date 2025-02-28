@@ -51,7 +51,7 @@ async function loadEmployee(userId) {
   try {
     const emp = await EmployeeApi.getTaskByUserId(userId);
     if (!emp) return;
-
+    console.log(emp);
     $("#employeeId").val(emp.employee_id);
     $("#firstName").val(emp.first_name);
     $("#lastName").val(emp.last_name);
@@ -59,7 +59,7 @@ async function loadEmployee(userId) {
     $("#edit-status").val(emp.status);
     $("#address").val(emp.address);
     $("#phone").val(emp.phone);
-    $("#isActive").val(emp.is_active); // Convert Boolean to String
+    $("#isActive").val(String(emp.is_active)); // Convert Boolean to String
   } catch (error) {
     console.error("Error loading employee:", error);
   }
@@ -149,7 +149,6 @@ async function loadUser(userId) {
       Swal.fire("Error", "User not found!", "error");
       return;
     }
-
     // Fill modal fields
     $("#editUserId").val(user.user_id);
     $("#editUsername").val(user.username);
@@ -206,7 +205,7 @@ $(document).ready(async function () {
   });
 
   // Load User Data into Modal
-  $("#tbody").on("click", ".edit-user", async function () {
+  $("#userList").on("click", ".edit-user", async function () {
     loadUser($(this).data("userid"));
   });
 
@@ -214,4 +213,6 @@ $(document).ready(async function () {
   $("#saveUserChanges").on("click", async function () {
     saveUser($("#editUserId").val());
   });
+
+   
 });
