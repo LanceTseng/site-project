@@ -1,0 +1,16 @@
+Demo:
+1. Documentation Management: done
+2. Task Automation – done
+3. Training and Orientation: not done => pending 1
+4. Integration with HR Systems: done
+5. Communication Tools: – not done 
+6. Feedback Collection: done
+7. Compliance and Legal Requirements: done
+8. Welcome and Culture Building: done
+9. Exit Interviews - not done   => done 2/26
+10. Access Revocation - not done  => pending 1
+11. Access Return - done
+12. Offboarding Documentation: done
+13. Knowledge Transfer: not done => pending 1
+14. Final Payment-  not done => pending 1
+15. Exit Survey - done

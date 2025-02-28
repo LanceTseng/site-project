@@ -10,30 +10,6 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <style>
-      .parent {
-        display: grid;
-        grid-template-columns: 1fr 1.5fr 2fr;
-        gap: 20px;
-        padding: 20px;
-        margin-left: 20px;
-        margin-right: 20px;
-      }
-      .table-container {
-        max-height: 630px;
-      overflow-y: auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-      }
-      thead th {
-        position: sticky;
-      top: 0;
-      background: #000000;
-      color: white;
-      z-index: 10;
-      }
-    </style>
   </head>
   <body>
     <!-- Navbar -->
@@ -139,3 +115,27 @@
     <script src="/js/mgmt-document.js" type="module"></script>
   </body>
 </html>
+<style>
+  .parent {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 2fr;
+    gap: 20px;
+    padding: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .table-container {
+    max-height: 630px;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #000000 !important;
+    color: white !important;
+    z-index: 10;
+  }
+</style>
