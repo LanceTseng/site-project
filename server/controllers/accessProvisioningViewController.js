@@ -35,6 +35,24 @@ class AccessProvisioningViewController {
       res.status(500).json({ message: "Error fetching access provisioning by role", error });
     }
   }
+
+  async getByCondition(req, res) {
+    try {
+      const { access_name, access_type_id, access_role_id } = req.query;
+  
+      const accessProvisioning = await accessProvisioningViewRepository.getAccessProvisioningByCondition(
+        access_name,
+        access_type_id,
+        access_role_id
+      );
+      if (!accessProvisioning || accessProvisioning.length === 0) {
+        return res.status(404).json({ message: "No access provisioning records found for the condition" });
+      }
+      res.json(accessProvisioning);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching access provisioning by condition", error });
+    }
+  }
 }
 
 module.exports = new AccessProvisioningViewController();

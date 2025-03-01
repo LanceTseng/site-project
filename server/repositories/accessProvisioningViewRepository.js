@@ -17,7 +17,7 @@ class AccessProvisioningViewRepository {
   async getAccessProvisioningById(id) {
     try {
       const rows = await db.query(
-        "SELECT * FROM v_access_provisioning WHERE access_id = :userId",
+        "SELECT * FROM v_access_provisioning WHERE access_id = :id",
         {
           replacements: { id },
           type: QueryTypes.SELECT,
@@ -33,7 +33,7 @@ class AccessProvisioningViewRepository {
   async getAccessProvisioningByRoleId(roleId) {
     try {
       const rows = await db.query(
-        "SELECT * FROM v_access_provisioning WHERE access_role_id = :roleId",
+        "SELECT * FROM v_access_provisioning WHERE user_role_id = :roleId",
         {
           replacements: { roleId },
           type: QueryTypes.SELECT,
@@ -45,6 +45,31 @@ class AccessProvisioningViewRepository {
         `Error fetching user employee for employee ID ${roleId}:`,
         error
       );
+      throw error;
+    }
+  }
+
+  async getAccessProvisioningByCondition(access_name, access_type_id, access_role_id) {
+    try {
+
+      console.log(access_name, access_type_id, access_role_id);
+      const rows = await db.query(
+        `SELECT * FROM v_access_provisioning 
+         WHERE (:access_name IS NULL OR access_name LIKE :access_name) 
+         AND (:access_type_id IS NULL OR access_type_id = :access_type_id) 
+         AND (:access_role_id IS NULL OR user_role_id = :access_role_id)`,
+        {
+          replacements: {
+            access_name: access_name ? `%${access_name}%` : null, // Ensures LIKE works
+            access_type_id: access_type_id ? access_type_id :null,
+            access_role_id: access_role_id ?  access_role_id: null,
+          },
+          type: QueryTypes.SELECT,
+        }
+      );
+      return rows;
+    } catch (error) {
+      console.error("Error fetching access provisioning records:", error);
       throw error;
     }
   }

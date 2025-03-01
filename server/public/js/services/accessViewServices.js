@@ -43,7 +43,17 @@ export const getAllAccessProvisioning = async () => {
     }
   };
 
-
+  // Function to get access provisioning by condition
+  export const getAccessProvisioningByCondition = async (access_name, access_type_id, access_role_id) => {
+    try {
+      const response = await axiosInstance.get(`${view.accessProvisioningView}condition?access_name=${access_name}&access_type_id=${access_type_id}&access_role_id=${access_role_id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching access provisioning with condition ${access_name}, ${access_type_id}, ${access_role_id}:`, error);
+      throw error;
+    }
+  };
+  
 //---------------------------userAccessView
 // Function to get all user access records
 export const getAllUserAccess = async () => {
@@ -99,3 +109,4 @@ export const getAllUserAccess = async () => {
       throw error;
     }
   };
+
