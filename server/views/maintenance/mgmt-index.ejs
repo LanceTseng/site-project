@@ -10,53 +10,15 @@
       rel="stylesheet"
     />
   </head>
-  <style>
-    .card {
-      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-      border-radius: 12px;
-      border: none;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background-color: rgba(0, 255, 221, 0.795);
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-    .card i {
-      font-size: 3rem;
-      color: #001aff;
-      margin-bottom: 10px;
-    }
-    .custom-btn {
-      background-color: #092544;
-      border: none;
-      color: rgb(255, 255, 255);
-      width: 100%;
-      border-radius: 8px;
-      transition: background 0.3s ease-in-out;
-    }
-    .custom-btn:hover {
-      background-color: #e3e7eb;
-    }
-    .row {
-      display: flex;
-      flex-wrap: wrap;
  
-    }
-    .col-md-4 {
-      display: flex;
-    }
-  </style>
   <body>
     <%- include('../partials/navbar') %>
 
     <div class="container mt-5">
       <div class="row g-4">
+        
         <div class="col-md-4">
-          <div class="card p-4 text-center">
+          <div class="card p-4 text-center" data-link="/mgmt-task">
             <i class="fas fa-tasks"></i>
             <h5 class="card-title mt-3">Task Management</h5>
             <p class="card-text">Manage tasks for maintenance activities.</p>
@@ -65,45 +27,45 @@
         </div>
 
         <div class="col-md-4">
-          <div class="card p-4 text-center">
+          <div class="card p-4 text-center" data-link="/mgmt-equiptment">
             <i class="fas fa-tools"></i>
-            <h5 class="card-title mt-3">Equipment</h5>
+            <h5 class="card-title mt-3">Equipment Management</h5>
             <p class="card-text">View and manage maintenance equipment.</p>
             <a href="/mgmt-equiptment" class=" custom-btn mt-auto">Go to Equipment</a>
           </div>
         </div>
 
         <div class="col-md-4">
-          <div class="card p-4 text-center">
+          <div class="card p-4 text-center" data-link="/mgmt-user-employee">
             <i class="fas fa-user-cog"></i>
-            <h5 class="card-title mt-3">User/Employee</h5>
+            <h5 class="card-title mt-3">User/Employee Management</h5>
             <p class="card-text">Manage users and employees.</p>
             <a href="/mgmt-user-employee" class=" custom-btn mt-auto">Go to User</a>
           </div>
         </div>
 
         <div class="col-md-4">
-          <div class="card p-4 text-center">
+          <div class="card p-4 text-center" data-link="/mgmt-document">
             <i class="fas fa-file-alt"></i>
-            <h5 class="card-title mt-3">Documents</h5>
+            <h5 class="card-title mt-3">Document Management</h5>
             <p class="card-text">View and manage maintenance documents.</p>
             <a href="/mgmt-document" class=" custom-btn mt-auto">Go to Documents</a>
           </div>
         </div>
 
         <div class="col-md-4">
-          <div class="card p-4 text-center">
+          <div class="card p-4 text-center"  data-link="/mgmt-training">
             <i class="fas fa-chalkboard-teacher"></i>
-            <h5 class="card-title mt-3">Training</h5>
+            <h5 class="card-title mt-3">Training Management</h5>
             <p class="card-text">Access and manage training modules.</p>
             <a href="#" class=" custom-btn mt-auto">Go to Training</a>
           </div>
         </div>
 
         <div class="col-md-4">
-          <div class="card p-4 text-center">
+          <div class="card p-4 text-center" data-link="/mgmt-access">
             <i class="fas fa-solid fa-universal-access"></i>
-            <h5 class="card-title mt-3">Access Provisioning</h5>
+            <h5 class="card-title mt-3">Access Provisioning Management</h5>
             <p class="card-text">Access provisioning modules.</p>
             <a href="/mgmt-access" class=" custom-btn mt-auto">Go to Access Provisioning</a>
           </div>
@@ -124,3 +86,43 @@
     <script src="/js/maintenance.js"></script>
   </body>
 </html>
+<style>
+  .card {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    border-radius: 12px;
+    border: none;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: rgba(0, 255, 221, 0.658);
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  .card i {
+    font-size: 3rem;
+    color: #092544;
+    margin-bottom: 10px;
+  }
+  .custom-btn {
+    background-color: #092544;
+    border: none;
+    color: rgb(255, 255, 255);
+    width: 100%;
+    border-radius: 8px;
+    transition: background 0.3s ease-in-out;
+  }
+  .custom-btn:hover {
+    background-color: #e3e7eb;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+
+  }
+  .col-md-4 {
+    display: flex;
+  }
+</style>
