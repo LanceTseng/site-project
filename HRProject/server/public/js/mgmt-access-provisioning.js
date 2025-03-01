@@ -6,12 +6,17 @@ import * as ObjectTypeApi from "./services/objectTypeServices.js";
 async function populateDropdown(dropdownId, taskName) {
   try {
     const items = (await ObjectTypeApi.getTaskByName(taskName)) || [];
-    const options = items
-      .map(
-        (item) =>
-          `<option value="${item.object_type_item_key}">${item.object_type_item_value}</option>`
-      )
-      .join("");
+
+    // Add an empty option as the first item
+    const options =
+      `<option value="">-- Select --</option>` +
+      items
+        .map(
+          (item) =>
+            `<option value="${item.object_type_item_key}">${item.object_type_item_value}</option>`
+        )
+        .join("");
+
     $(dropdownId).html(options);
   } catch (error) {
     handleError(error, `Error populating ${taskName} dropdown`);
@@ -80,46 +85,55 @@ function AddModal() {
 }
 
 // Function to search access provisioning
-function searchAccessProvisioning() {
-  const accessName = $("#searchAccessName").val();
-  const accessType = $("#searchAccessType").val();
-  const roleName = $("#searchRole").val();
+async function searchAccess() {
+  try {
+    const accessName = $("#searchAccessName").val().trim();
+    const accessType = $("#searchAccessType").val(); // Convert empty to null
+    const roleName = $("#searchRole").val(); // Convert empty to null
 
-  axios
-    .get("/api/access-provisioning-view", {
-      params: {
-        access_name: accessName,
-        access_type_name: accessType,
-        access_role_name: roleName,
-      },
-    })
-    .then((response) => {
-      let tableBody = "";
-      response.data.forEach((item) => {
-        tableBody += `
-            <tr>
-              <td><input type="checkbox" class="select-item" data-id="${
-                item.access_id
-              }" /></td>
-              <td>${item.access_name}</td>
-              <td>${item.access_description}</td>
-              <td>${item.access_type_name}</td>
-              <td>${item.access_role_name}</td>
-              <td>${item.enabled ? "Yes" : "No"}</td>
-              <td>
-                <button class="btn btn-warning btn-sm edit-btn" data-id="${
-                  item.access_id
-                }">
-                  <i class="fas fa-edit"></i> Edit
-                </button>
-              </td>
-            </tr>`;
-      });
-      $("#accessTableBody").html(tableBody);
-    })
-    .catch((error) => {
-      console.error("Error filtering data:", error);
+    const response =
+      await AccessProvisioninViewgApi.getAccessProvisioningByCondition(
+        accessName,
+        accessType,
+        roleName
+      );
+
+    console.log(response);
+
+    if (!response || response.length === 0) {
+      $("#accessTableBody").html(
+        `<tr><td colspan="7" class="text-center">No records found.</td></tr>`
+      );
+      return;
+    }
+
+    let tableBody = "";
+    response.forEach((item) => {
+      tableBody += `
+        <tr>
+          <td><input type="checkbox" class="select-item" data-id="${
+            item.access_id
+          }" /></td>
+          <td>${item.access_name}</td>
+          <td>${item.access_description || "N/A"}</td>
+          <td>${item.access_type_name || "N/A"}</td>
+          <td>${item.access_role_name || "N/A"}</td>
+          <td>${item.enabled ? "Yes" : "No"}</td>
+          <td>
+            <button class="btn btn-warning btn-sm edit-btn" data-id="${
+              item.access_id
+            }">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+          </td>
+        </tr>`;
     });
+
+    $("#accessTableBody").html(tableBody);
+  } catch (error) {
+    console.error("Error searching access provisioning:", error);
+    Swal.fire("Error", "Failed to retrieve data. Please try again.", "error");
+  }
 }
 
 async function SaveAccess() {
@@ -238,5 +252,10 @@ $(document).ready(() => {
   });
   $("#disableSelected").on("click", function () {
     updateBatchStatus(false);
+  });
+
+  $("#searchAccess").on("click", function (e) {
+    e.preventDefault();
+    searchAccess();
   });
 });
