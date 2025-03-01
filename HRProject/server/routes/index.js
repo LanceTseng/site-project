@@ -93,6 +93,11 @@ router.get("/mgmt-access", (req, res) => {
   res.render("maintenance/mgmt-access-provisioning");
 });
 
+// Route for Task Settings
+router.get("/mgmt-user-access", (req, res) => {
+  res.render("maintenance/mgmt-user-access");
+});
+
 
 //------------------------------------------------------
 //route for report

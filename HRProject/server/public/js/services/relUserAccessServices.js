@@ -15,7 +15,21 @@ export const getAllTasks = async () => {
 // Function to get user access by composite key (userId & accessId)
 export const getTaskById = async (userId, accessId) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}${userId}/${accessId}`);
+    const response = await axiosInstance.get(`${baseURL}userid/${userId}/accessid/${accessId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching user access for userId: ${userId}, accessId: ${accessId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+// Function to get user access by composite key (userId & accessId)
+export const getTaskByUserId = async (userId) => {
+  try {
+    const response = await axiosInstance.get(`${baseURL}userid/${userId}}`);
     return response.data;
   } catch (error) {
     console.error(
