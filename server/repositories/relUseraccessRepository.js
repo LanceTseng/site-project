@@ -11,6 +11,12 @@ class RelUserAccessRepository {
     });
   }
 
+  async getByUserId(userId) {
+    return await RelUserAccess.findOne({
+      where: { user_id: userId },
+    });
+  }
+
   async create(accessData) {
     return await RelUserAccess.create(accessData);
   }

@@ -6,8 +6,10 @@ const router = express.Router();
 // Get all user accesses
 router.get("/rel-user-access", UserAccessController.getAll);
 
+router.get("/rel-user-access/userid/:userid", UserAccessController.getByUserId);
+
 // Get user access by composite key (userId & accessId)
-router.get("/rel-user-access/:userId/:accessId", UserAccessController.getById);
+router.get("/rel-user-access/userid/:userId/accessid/:accessId", UserAccessController.getById);
 
 // Create a new user access
 router.post("/rel-user-access", UserAccessController.create);

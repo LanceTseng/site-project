@@ -22,6 +22,19 @@ class UserAccessController {
       res.status(500).json({ error: "Failed to fetch user access" });
     }
   }
+  
+  async getByUserId(req, res) {
+    try {
+      const { userId } = req.params;
+      const userAccess = await relUserAccessRepository.getByUserId(userId);
+      if (!userAccess) {
+        return res.status(404).json({ error: "User access not found" });
+      }
+      res.json(userAccess);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch user access" });
+    }
+  }
 
   async create(req, res) {
     try {

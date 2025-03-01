@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Access Management</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+    <div class="parent">
+      <!-- User List -->
+      <div>
+        <h4>Users</h4>
+        <input
+          type="text"
+          id="searchUser"
+          class="form-control"
+          placeholder="Search user..."
+        />
+        <div class="table-container">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>User Id</th>
+                <th>User Name</th>
+                <th>User Role</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody">
+              <!-- Data will be loaded dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Access Provisioning List -->
+      <div>
+        <h4>Access Provisioning</h4>
+        <select id="accessType" class="form-control">
+          <option value="">Select Access Type</option>
+        </select>
+        <input
+          type="text"
+          id="searchAccess"
+          class="form-control mt-2"
+          placeholder="Search access..."
+        />
+        <div class="table-container">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" /></th>
+                  <th>Access Id</th>
+                  <th>Access Name</th>
+                  <th>Access Type</th>
+                  <th>Enabled</th>
+                </tr>
+              </thead>
+              <tbody id="accessTableBody">
+                <!-- Data will be loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        <button id="addAccess" class="btn btn-success mt-2">Add Access</button>
+        <button id="removeAccess" class="btn btn-danger mt-2">Remove Access</button>
+      </div>
+
+    
+    </div>
+    <!-- Swal.fire("Error", `Please fill in all required fields.`, "error");
+      Swal.fire("Success", `Equipment ${mode}ed successfully!`, "success");
+      -->
+    <!-- Footer -->
+    <%- include('../partials/footer-simple') %>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/mgmt-user-access.js" type="module"></script>
+  </body>
+</html>
+<style>
+  .parent {
+    display: grid;
+    grid-template-columns: 1fr 1fr ;
+    gap: 20px;
+    padding: 20px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+  }
+  .table-container {
+    max-height: 600px;
+    overflow-y: auto;
+    border-radius: 10px;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #000000 !important;
+    color: white !important;
+    z-index: 10;
+  }
+  tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
