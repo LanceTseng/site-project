@@ -1,6 +1,13 @@
 import * as EmployeeViewApi from "./services/employeeViewService.js";
+import { accessVerify } from "./utils/authVerify.js";
 
 $(document).ready(async function () {
+
+    //auth check
+    if(!accessVerify("HR Dashboard")){
+      window.location.href = "/unauth";
+      return;
+    }
 
   let loginUser = JSON.parse(sessionStorage.getItem("user"));
   $("#employeeName").text(`${loginUser.username} - ${loginUser.user_role}`);

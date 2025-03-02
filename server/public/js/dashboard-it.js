@@ -1,9 +1,17 @@
 import * as UserTaskViewApi from "./services/userTaskViewServices.js";
 import * as EquipmentViewApi from "./services/equipmentViewServices.js";
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
+import { accessVerify } from "./utils/authVerify.js";
 
 let loginUser = "";
 $(document).ready(async function () {
+
+  //auth check
+  if(!accessVerify("IT Dashboard")){
+    window.location.href = "/unauth";
+    return;
+  }
+
   loginUser = JSON.parse(sessionStorage.getItem("user"));
 
   $("#employeeName").text(`${loginUser.username} - ${loginUser.user_role}`);
@@ -50,15 +58,16 @@ $(document).ready(async function () {
           1: "bg-warning",
         };
 
-        const badgeClass =
-          statusClasses[eqpt.occupied] || "bg-secondary";
+        const badgeClass = statusClasses[eqpt.occupied] || "bg-secondary";
 
         const row = `
               <tr>
                 <td>${eqpt.equipment_name}</td>
-                <td><span class="badge ${badgeClass}">${eqpt.occupied == 1? "Y" : "N"}</span></td>
+                <td><span class="badge ${badgeClass}">${
+          eqpt.occupied == 1 ? "Y" : "N"
+        }</span></td>
                 <td>${eqpt.occupied_by_name ?? ""}</td>
-                <td>${formatDate(eqpt.last_update_date  )}</td>
+                <td>${formatDate(eqpt.last_update_date)}</td>
               </tr>`;
 
         tableBody.append(row);

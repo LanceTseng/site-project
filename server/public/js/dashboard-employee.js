@@ -1,10 +1,19 @@
 import * as UserEmployeeViewApi from "./services/userEmployeeViewServices.js";
 import * as UserTaskViewApi from "./services/userTaskViewServices.js";
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
+import { accessVerify } from "./utils/authVerify.js";
+
 
 let loginUser = "";
 
 $(document).ready(async function () {
+
+  //auth check
+  if(!accessVerify("HR Dashboard")){
+    window.location.href = "/unauth";
+    return;
+  }
+
   loginUser = JSON.parse(sessionStorage.getItem("user"));
 
   $("#employeeName").text(`${loginUser.username} - ${loginUser.user_role}`);
