@@ -113,6 +113,11 @@ router.get("/report-goal", (req, res) => {
   res.render("pages/goal");
 });
 
+router.get("/ticket", (req, res) => {
+  res.render("report/report-ticket");
+});
+
+
 //upload test
 router.get("/upload", (req, res) => {
   res.render("upload");

@@ -24,6 +24,26 @@
     <!-- Swal.fire("Error", `Please fill in all required fields.`, "error");
       Swal.fire("Success", `Equipment ${mode}ed successfully!`, "success");
       -->
+
+      <div class="table-container">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="selectAll" /></th>
+              <!-- <th>Access Name</th>
+              <th>Access Description</th>
+              <th>Access Type</th>
+              <th>Role Name</th>
+              <th>Enabled</th>
+              <th>Actions</th> -->
+            </tr>
+          </thead>
+          <tbody id="accessTableBody">
+            <!-- Data will be loaded dynamically -->
+          </tbody>
+        </table>
+      </div>
+
     <!-- Footer -->
     <%- include('../partials/footer-simple') %>
 
