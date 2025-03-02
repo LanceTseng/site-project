@@ -9,7 +9,7 @@ let loginUser = "";
 $(document).ready(async function () {
 
   //auth check
-  if(!accessVerify("HR Dashboard")){
+  if(!accessVerify("Employee Dashboard")){
     window.location.href = "/unauth";
     return;
   }
