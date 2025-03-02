@@ -10,19 +10,18 @@
       rel="stylesheet"
     />
   </head>
- 
+
   <body>
     <%- include('../partials/navbar') %>
 
     <div class="container mt-5">
       <div class="row g-4">
-        
         <div class="col-md-4">
           <div class="card p-4 text-center" data-link="/mgmt-task">
             <i class="fas fa-tasks"></i>
             <h5 class="card-title mt-3">Task Management</h5>
             <p class="card-text">Manage tasks for maintenance activities.</p>
-            <a href="/mgmt-task" class=" custom-btn mt-auto">Go to Task</a>
+            <a href="" class="custom-btn mt-auto">Go to Task</a>
           </div>
         </div>
 
@@ -31,7 +30,9 @@
             <i class="fas fa-tools"></i>
             <h5 class="card-title mt-3">Equipment Management</h5>
             <p class="card-text">View and manage maintenance equipment.</p>
-            <a href="/mgmt-equiptment" class=" custom-btn mt-auto">Go to Equipment</a>
+            <a href="/mgmt-equiptment" class="custom-btn mt-auto"
+              >Go to Equipment</a
+            >
           </div>
         </div>
 
@@ -40,7 +41,9 @@
             <i class="fas fa-user-cog"></i>
             <h5 class="card-title mt-3">User/Employee Management</h5>
             <p class="card-text">Manage users and employees.</p>
-            <a href="/mgmt-user-employee" class=" custom-btn mt-auto">Go to User</a>
+            <a href="/mgmt-user-employee" class="custom-btn mt-auto"
+              >Go to User</a
+            >
           </div>
         </div>
 
@@ -49,16 +52,18 @@
             <i class="fas fa-file-alt"></i>
             <h5 class="card-title mt-3">Document Management</h5>
             <p class="card-text">View and manage maintenance documents.</p>
-            <a href="/mgmt-document" class=" custom-btn mt-auto">Go to Documents</a>
+            <a href="/mgmt-document" class="custom-btn mt-auto"
+              >Go to Documents</a
+            >
           </div>
         </div>
 
         <div class="col-md-4">
-          <div class="card p-4 text-center"  data-link="/mgmt-training">
+          <div class="card p-4 text-center" data-link="/mgmt-training">
             <i class="fas fa-chalkboard-teacher"></i>
             <h5 class="card-title mt-3">Training Management</h5>
             <p class="card-text">Access and manage training modules.</p>
-            <a href="#" class=" custom-btn mt-auto">Go to Training</a>
+            <a href="#" class="custom-btn mt-auto">Go to Training</a>
           </div>
         </div>
 
@@ -67,16 +72,20 @@
             <i class="fas fa-solid fa-universal-access"></i>
             <h5 class="card-title mt-3">Access Provisioning Management</h5>
             <p class="card-text">Access provisioning modules.</p>
-            <a href="/mgmt-access" class=" custom-btn mt-auto">Go to Access Provisioning</a>
+            <a href="/mgmt-access" class="custom-btn mt-auto"
+              >Go to Access Provisioning</a
+            >
           </div>
         </div>
 
         <div class="col-md-4">
           <div class="card p-4 text-center" data-link="/mgmt-user-access">
-            <i class="fas fa-solid fa-user- check"></i>
+            <i class="fas fa-solid fa-user-check"></i>
             <h5 class="card-title mt-3">User Access Management</h5>
             <p class="card-text">User Access modules.</p>
-            <a href="/mgmt-user-access" class=" custom-btn mt-auto">Go to User Access</a>
+            <a href="/mgmt-user-access" class="custom-btn mt-auto"
+              >Go to User Access</a
+            >
           </div>
         </div>
       </div>
@@ -91,8 +100,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="/js/maintenance.js"></script>
+
+    <script src="/js/maintenance.js" type="module"></script>
   </body>
 </html>
 <style>
@@ -129,7 +140,6 @@
   .row {
     display: flex;
     flex-wrap: wrap;
-
   }
   .col-md-4 {
     display: flex;

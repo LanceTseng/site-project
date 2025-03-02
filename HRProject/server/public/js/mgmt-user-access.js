@@ -52,7 +52,12 @@ async function loadAccessAndUserAccess(user_id, role_id) {
       );
 
       // Set enabled status
-      let enabled = userAccessfilter.length > 0 ? "Yes" : "No";
+      //icon
+      const statusClasses = {
+        yes: `<i class="fa-solid fa-square-check fa-2xl" style="color: green;"></i>`,
+        no: `<i class="fa-solid fa-square-xmark fa-2xl" style="color: red;"></i>`,
+      };
+      let enabled = userAccessfilter.length > 0 ? statusClasses.yes: statusClasses.no;
 
       let row = `
               <tr class="access-row" data-accessid="${access.access_id}" data-userid="${user_id}">
@@ -107,8 +112,12 @@ async function updateBatchAccess(status) {
           access_id
         );
         accessExisted.enabled = status;
-        
-        await UserAccessApi.updateTask(accessExisted.user_id,accessExisted.access_id , accessExisted);
+
+        await UserAccessApi.updateTask(
+          accessExisted.user_id,
+          accessExisted.access_id,
+          accessExisted
+        );
       } catch (error) {
         await UserAccessApi.createTask({
           user_id: user_id,
