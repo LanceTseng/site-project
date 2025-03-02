@@ -25,7 +25,7 @@
         <h2 class="text-center">Search Tickets</h2>
         <form id="search-form">
           <div class="form-group">
-            <label for="searchTicket" class="font-weight-bold">Task Name</label>
+            <label for="searchTicket" class="font-weight-bold">Topic</label>
             <input
               type="text"
               id="searchTicket"
@@ -101,6 +101,19 @@
           <p id="ticketDescription" class="text-muted">[Ticket Description]</p>
         </div>
 
+        <div>
+            <h6 class="mt-4">Action</h6>
+            <button type="button" class="btn btn-warning" id="btnProcessing">
+              Processing
+            </button>
+            <button type="button" class="btn btn-success" id="btnCompleted">
+              Completed
+            </button>
+            <button type="button" class="btn btn-danger" id="btnCancel">
+              Cancel
+            </button>
+           
+        </div>
         <!-- Comment Section -->
         <h6 class="mt-4">Response</h6>
         <div id="commentsSection">

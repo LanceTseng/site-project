@@ -40,7 +40,8 @@ const formDesignRoutes = require("./routes/formDesignRoutes");
 const relUserParentTaskRoutes = require("./routes/relUserParentTaskRoutes");
 const relUserChildTaskRoutes = require("./routes/relUserChildTaskRoutes");
 const relUserFormRoutes = require("./routes/relUserFormRoutes");
-const relUserAccess = require('./routes/relUserAccessRoutes');
+const relUserAccessRoutes = require('./routes/relUserAccessRoutes');
+const ticketRoutes = require('./routes/ticketsRoutes');
 
 
 
@@ -75,9 +76,10 @@ app.use("/api", userEmployeeViewRoutes);
 app.use("/api", childTaskViewRoutes);
 app.use("/api", userFormViewRoutes);
 app.use("/api", formDesignViewRoutes);
-app.use("/api", relUserAccess);
+app.use("/api", relUserAccessRoutes);
 app.use("/api", accessProvisioningViewRoutes);
 app.use("/api", userAccesssViewRoutes);
+app.use("/api", ticketRoutes);
 
 //upload test
 const fileRoutes = require("./routes/fileRoutes");
