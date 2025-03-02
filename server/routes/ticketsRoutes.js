@@ -22,5 +22,8 @@ router.delete("/ticket-detail/:id", TicketDetailController.delete);
 //view
 router.get("/ticket-view", TicketViewController.getAllTickets);
 router.get("/ticket-view/condition", TicketViewController.getTicketsByCondition);
+router.get("/ticket-head-view", TicketViewController.getAllTicketHeadView);
+router.get("/ticket-head-view/condition", TicketViewController.getTicketHeadViewByCondition);
+
 
 module.exports = router;
