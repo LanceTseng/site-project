@@ -110,6 +110,7 @@ async function saveTask() {
     task_name: $("#taskName").val(),
     task_description: $("#taskDescription").val(),
     task_group_id: parseInt(taskGroupDropdown.val(), 10),
+    enabled: $("#taskEnabled").val()
   };
 
   if (!taskData.task_name || isNaN(taskData.task_group_id)) {
