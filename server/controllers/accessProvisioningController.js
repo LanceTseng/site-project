@@ -1,4 +1,5 @@
 const accessProvisioningRepo = require('../repositories/accessProvisioningRepository');
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class AccessProvisioningController {
   async getAll(req, res) {
@@ -7,6 +8,7 @@ class AccessProvisioningController {
       res.json(accessList);
     } catch (error) {
       res.status(500).json({ error: 'Server error' });
+      logger.error(error.message);
     }
   }
 
@@ -17,6 +19,7 @@ class AccessProvisioningController {
       res.json(access);
     } catch (error) {
       res.status(500).json({ error: 'Server error' });
+      logger.error(error.message);
     }
   }
 
@@ -27,6 +30,7 @@ class AccessProvisioningController {
       res.json(access);
     } catch (error) {
       res.status(500).json({ error: 'Server error' });
+      logger.error(error.message);
     }
   }
 
@@ -36,6 +40,7 @@ class AccessProvisioningController {
       res.status(201).json(newAccess);
     } catch (error) {
       res.status(500).json({ error: 'Server error' });
+      logger.error(error.message);
     }
   }
 
@@ -46,6 +51,7 @@ class AccessProvisioningController {
       res.json(updatedAccess);
     } catch (error) {
       res.status(500).json({ error: 'Server error' });
+      logger.error(error.message);
     }
   }
 
@@ -56,6 +62,7 @@ class AccessProvisioningController {
       res.json({ message: 'Access provisioning deleted' });
     } catch (error) {
       res.status(500).json({ error: 'Server error' });
+      logger.error(error.message);
     }
   }
 }

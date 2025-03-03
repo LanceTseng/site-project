@@ -1,4 +1,5 @@
 const accessProvisioningViewRepository = require("../repositories/accessProvisioningViewRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class AccessProvisioningViewController {
   async getAll(req, res) {
@@ -7,6 +8,7 @@ class AccessProvisioningViewController {
       res.json(accessProvisioning);
     } catch (error) {
       res.status(500).json({ message: "Error fetching access provisioning records", error });
+      logger.error(error.message);
     }
   }
 
@@ -20,6 +22,7 @@ class AccessProvisioningViewController {
       res.json(accessProvisioning);
     } catch (error) {
       res.status(500).json({ message: "Error fetching access provisioning record", error });
+      logger.error(error.message);
     }
   }
 
@@ -33,6 +36,7 @@ class AccessProvisioningViewController {
       res.json(accessProvisioning);
     } catch (error) {
       res.status(500).json({ message: "Error fetching access provisioning by role", error });
+      logger.error(error.message);
     }
   }
 
@@ -51,6 +55,7 @@ class AccessProvisioningViewController {
       res.json(accessProvisioning);
     } catch (error) {
       res.status(500).json({ message: "Error fetching access provisioning by condition", error });
+      logger.error(error.message);
     }
   }
 }

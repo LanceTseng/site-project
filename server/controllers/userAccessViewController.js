@@ -1,4 +1,5 @@
 const UserAccessViewRepository = require("../repositories/userAccessViewRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class UserAccessViewController {
   // Get all user access records
@@ -8,6 +9,7 @@ class UserAccessViewController {
       res.json(data);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch user access data." });
+      logger.error(error.message);
     }
   }
 
@@ -18,7 +20,10 @@ class UserAccessViewController {
       const data = await UserAccessViewRepository.getUserAccessByUserId(userId);
       res.json(data);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch user access by user ID." });
+      res
+        .status(500)
+        .json({ error: "Failed to fetch user access by user ID." });
+      logger.error(error.message);
     }
   }
 
@@ -26,10 +31,15 @@ class UserAccessViewController {
   async getByAccessId(req, res) {
     try {
       const { accessId } = req.params;
-      const data = await UserAccessViewRepository.getUserAccessByAccessId(accessId);
+      const data = await UserAccessViewRepository.getUserAccessByAccessId(
+        accessId
+      );
       res.json(data);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch user access by access ID." });
+      res
+        .status(500)
+        .json({ error: "Failed to fetch user access by access ID." });
+      logger.error(error.message);
     }
   }
 
@@ -40,7 +50,10 @@ class UserAccessViewController {
       const data = await UserAccessViewRepository.getUserAccessByRoleId(roleId);
       res.json(data);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch user access by role ID." });
+      res
+        .status(500)
+        .json({ error: "Failed to fetch user access by role ID." });
+      logger.error(error.message);
     }
   }
 
@@ -48,10 +61,14 @@ class UserAccessViewController {
   async getByUserName(req, res) {
     try {
       const { userName } = req.params;
-      const data = await UserAccessViewRepository.getUserAccessByUserName(userName);
+      const data = await UserAccessViewRepository.getUserAccessByUserName(
+        userName
+      );
       res.json(data);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch user access by user name." });
+      res
+        .status(500)
+        .json({ error: "Failed to fetch user access by user name." });
     }
   }
 }

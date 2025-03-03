@@ -1,4 +1,5 @@
 const UserFormRepository = require("../repositories/relUserFormRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class RelUserFormController {
   async getAll(req, res) {
@@ -7,6 +8,7 @@ class RelUserFormController {
       res.json(tasks);
     } catch (error) {
       res.status(500).json({ error: error.message });
+      logger.error(error.message);
     }
   }
 
@@ -17,6 +19,7 @@ class RelUserFormController {
       res.json(task);
     } catch (error) {
       res.status(500).json({ error: error.message });
+      logger.error(error.message);
     }
   }
 
@@ -27,9 +30,9 @@ class RelUserFormController {
       res.json(task);
     } catch (error) {
       res.status(500).json({ error: error.message });
+      logger.error(error.message);
     }
   }
-
 
   async create(req, res) {
     try {
@@ -38,6 +41,7 @@ class RelUserFormController {
       res.status(201).json(newTask);
     } catch (error) {
       res.status(500).json({ error: error.message });
+      logger.error(error.message);
     }
   }
 
@@ -52,6 +56,7 @@ class RelUserFormController {
       res.json(updatedTask);
     } catch (error) {
       res.status(500).json({ error: error.message });
+      logger.error(error.message);
     }
   }
 
@@ -62,6 +67,7 @@ class RelUserFormController {
       res.json({ message: "Task deleted" });
     } catch (error) {
       res.status(500).json({ error: error.message });
+      logger.error(error.message);
     }
   }
 }

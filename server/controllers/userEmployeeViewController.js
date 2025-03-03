@@ -1,4 +1,5 @@
 const UserEmployeeViewRepository = require("../repositories/userEmployeeViewRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class UserEmployeeViewController {
   async getAllUserEmployeeView(req, res) {
@@ -7,6 +8,7 @@ class UserEmployeeViewController {
       res.status(200).json(userEmp);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -21,6 +23,7 @@ class UserEmployeeViewController {
       res.status(200).json(userEmp);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userEmp" });
+      logger.error(error.message);
     }
   }
 
@@ -36,6 +39,7 @@ class UserEmployeeViewController {
       res.status(200).json(userEmp);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userEmp" });
+      logger.error(error.message);
     }
   }
 
@@ -51,6 +55,7 @@ class UserEmployeeViewController {
       res.status(200).json(userEmp);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userEmp" });
+      logger.error(error.message);
     }
   }
 
@@ -66,6 +71,7 @@ class UserEmployeeViewController {
       res.status(200).json(userEmp);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userEmp" });
+      logger.error(error.message);
     }
   }
 }

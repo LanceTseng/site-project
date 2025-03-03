@@ -1,6 +1,5 @@
-
-
 const TicketDetailRepository = require("../repositories/ticketDetailRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class TicketDetailController {
   async getAll(req, res) {
@@ -9,6 +8,7 @@ class TicketDetailController {
       res.json(details);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch ticket details" });
+      logger.error(error.message);
     }
   }
 
@@ -21,6 +21,7 @@ class TicketDetailController {
       res.json(detail);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch ticket detail" });
+      logger.error(error.message);
     }
   }
 
@@ -31,18 +32,23 @@ class TicketDetailController {
     } catch (error) {
       console.log(error.message);
       res.status(500).json({ error: "Failed to create ticket detail" });
+      logger.error(error.message);
     }
   }
 
   async update(req, res) {
     try {
-      const detail = await TicketDetailRepository.update(req.params.id, req.body);
+      const detail = await TicketDetailRepository.update(
+        req.params.id,
+        req.body
+      );
       if (!detail) {
         return res.status(404).json({ error: "Ticket detail not found" });
       }
       res.json(detail);
     } catch (error) {
       res.status(500).json({ error: "Failed to update ticket detail" });
+      logger.error(error.message);
     }
   }
 
@@ -55,6 +61,7 @@ class TicketDetailController {
       res.json({ message: "Ticket detail deleted" });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete ticket detail" });
+      logger.error(error.message);
     }
   }
 }
