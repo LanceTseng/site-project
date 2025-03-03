@@ -167,6 +167,8 @@ async function createTicket() {
 
   Swal.fire("Success", `Ticket created successfully!`, "success");
 
+  $("#modal-dialog").modal("hide");
+  $("#addTicketTitle, #addTicketDepartment, #addTicketDescription").val();
   loadTicketHead();
 }
 
