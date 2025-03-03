@@ -1,4 +1,5 @@
 const eqptOccupiedHisRepo = require("../repositories/eqptOccupiedHisRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class EqptOccupiedHisController {
   async getAll(req, res) {
@@ -7,6 +8,7 @@ class EqptOccupiedHisController {
       res.json(equipments);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -18,6 +20,7 @@ class EqptOccupiedHisController {
       res.json(equipment);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -31,6 +34,7 @@ class EqptOccupiedHisController {
       res.json(equipment);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -44,6 +48,7 @@ class EqptOccupiedHisController {
       res.json(equipment);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -53,6 +58,7 @@ class EqptOccupiedHisController {
       res.status(201).json(newEquipment);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -67,6 +73,7 @@ class EqptOccupiedHisController {
       res.json(updatedEquipment);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -78,6 +85,7 @@ class EqptOccupiedHisController {
       res.json({ message: "Equipment deleted" });
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 }

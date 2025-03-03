@@ -1,4 +1,5 @@
 const FormDesignViewRepository = require("../repositories/formDesignViewRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class FormDesignViewController {
   async getAllFormDesignView(req, res) {
@@ -7,6 +8,7 @@ class FormDesignViewController {
       res.status(200).json(form);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -21,6 +23,8 @@ class FormDesignViewController {
       res.status(200).json(form);
     } catch (error) {
       res.status(500).json({ error: "Error fetching form" });
+
+      logger.error(error.message);
     }
   }
 
@@ -34,6 +38,7 @@ class FormDesignViewController {
       res.status(200).json(form);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userForm" });
+      logger.error(error.message);
     }
   }
 }

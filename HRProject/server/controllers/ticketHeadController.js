@@ -1,4 +1,5 @@
 const TicketHeadRepository = require("../repositories/ticketHeadRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class TicketHeadController {
   async getAll(req, res) {
@@ -7,6 +8,7 @@ class TicketHeadController {
       res.json(tickets);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch ticket heads" });
+      logger.error(error.message);
     }
   }
 
@@ -19,6 +21,7 @@ class TicketHeadController {
       res.json(ticket);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch ticket head" });
+      logger.error(error.message);
     }
   }
 
@@ -28,6 +31,7 @@ class TicketHeadController {
       res.status(201).json(ticket);
     } catch (error) {
       res.status(500).json({ error: "Failed to create ticket head" });
+      logger.error(error.message);
     }
   }
 
@@ -40,6 +44,7 @@ class TicketHeadController {
       res.json(ticket);
     } catch (error) {
       res.status(500).json({ error: "Failed to update ticket head" });
+      logger.error(error.message);
     }
   }
 
@@ -52,6 +57,7 @@ class TicketHeadController {
       res.json({ message: "Ticket head deleted" });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete ticket head" });
+      logger.error(error.message);
     }
   }
 }

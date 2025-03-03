@@ -1,4 +1,5 @@
 const UserFormViewRepository = require("../repositories/userFormViewRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class UserFormViewController {
   async getAllUserFormView(req, res) {
@@ -7,6 +8,7 @@ class UserFormViewController {
       res.status(200).json(userForm);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -21,10 +23,10 @@ class UserFormViewController {
       res.status(200).json(userForm);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userForm" });
+      logger.error(error.message);
     }
   }
 
-  
   async getUserFormViewByLineId(req, res) {
     try {
       const userForm = await UserFormViewRepository.getUserFormByLineId(
@@ -36,6 +38,7 @@ class UserFormViewController {
       res.status(200).json(userForm);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userForm" });
+      logger.error(error.message);
     }
   }
 }

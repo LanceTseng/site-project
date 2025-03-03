@@ -1,4 +1,5 @@
 const UserTaskViewRepository = require("../repositories/userTaskViewRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class UserTaskViewController {
   async getAllUserTaskView(req, res) {
@@ -7,6 +8,7 @@ class UserTaskViewController {
       res.status(200).json(userTasks);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -21,6 +23,7 @@ class UserTaskViewController {
       res.status(200).json(userTasks);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -35,7 +38,8 @@ class UserTaskViewController {
   //     res.status(200).json(userTasks);
   //   } catch (error) {
   //     res.status(500).json({ error: "Error fetching userTasks" });
-  //   }
+  //    logger.error(error.message);//
+  // }
   // }
 
   async getUserTaskViewByHeadId(req, res) {
@@ -49,6 +53,7 @@ class UserTaskViewController {
       res.status(200).json(userTasks);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -63,6 +68,7 @@ class UserTaskViewController {
       res.status(200).json(userTasks);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -73,6 +79,7 @@ class UserTaskViewController {
       res.status(200).json(parentTasks);
     } catch (error) {
       res.status(500).json({ error: "Error fetching parentTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -86,6 +93,7 @@ class UserTaskViewController {
       res.status(200).json(parentTasks);
     } catch (error) {
       res.status(500).json({ error: "Error fetching parentTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -96,26 +104,26 @@ class UserTaskViewController {
       res.status(200).json(childTasks);
     } catch (error) {
       res.status(500).json({ error: "Error fetching childTasks" });
+      logger.error(error.message);
     }
   }
 
-
-   async getUserChildTaskViewByTaskId(req, res) {//parent id
-      try {
-        const childTasks =
-          await UserTaskViewRepository.getUserChildTaskByTaskId(
-            req.params.id
-          );
-        if (!childTasks) {
-          return res.status(404).json({ message: "UserEmployee not found" });
-        }
-   
-        res.status(200).json(childTasks);
-      } catch (error) {
-        res.status(500).json({ error: "Error fetching userEmp" });
+  async getUserChildTaskViewByTaskId(req, res) {
+    //parent id
+    try {
+      const childTasks = await UserTaskViewRepository.getUserChildTaskByTaskId(
+        req.params.id
+      );
+      if (!childTasks) {
+        return res.status(404).json({ message: "UserEmployee not found" });
       }
+
+      res.status(200).json(childTasks);
+    } catch (error) {
+      res.status(500).json({ error: "Error fetching userEmp" });
+      logger.error(error.message);
     }
-  
+  }
 }
 
 // Export an instance of the class

@@ -1,4 +1,5 @@
 const childTaskViewConreoller = require("../repositories/childTaskViewRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class UserTaskViewController {
   async getAllChildTask(req, res) {
@@ -7,6 +8,7 @@ class UserTaskViewController {
       res.json(tasks);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -19,6 +21,7 @@ class UserTaskViewController {
       res.json(task);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -31,6 +34,7 @@ class UserTaskViewController {
       res.json(task);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 }

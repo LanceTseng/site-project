@@ -1,4 +1,5 @@
 const EmployeeViewRepository = require("../repositories/employeeViewRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class EmployeeViewController {
   async getAllEmployeeView(req, res) {
@@ -7,6 +8,7 @@ class EmployeeViewController {
       res.status(200).json(employees);
     } catch (error) {
       res.status(500).json({ error: "Error fetching employees" });
+      logger.error(error.message);
     }
   }
 
@@ -20,6 +22,7 @@ class EmployeeViewController {
       res.status(200).json(employee);
     } catch (error) {
       res.status(500).json({ error: "Error fetching employee" });
+      logger.error(error.message);
     }
   }
 }

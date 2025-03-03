@@ -1,4 +1,5 @@
 const equipmentViewRepo = require("../repositories/equipmentViewRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class EquipmentViewController {
   async getAllEpuipmentView(req, res) {
@@ -7,6 +8,7 @@ class EquipmentViewController {
       res.status(200).json(equipment);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -21,6 +23,7 @@ class EquipmentViewController {
       res.status(200).json(equipment);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -35,6 +38,7 @@ class EquipmentViewController {
       res.status(200).json(equipment);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -49,6 +53,7 @@ class EquipmentViewController {
       res.status(200).json(equipment);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -63,6 +68,7 @@ class EquipmentViewController {
       res.status(200).json(equipment);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
@@ -78,15 +84,15 @@ class EquipmentViewController {
       res.status(200).json(equipment);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
     }
   }
 
   async getEqptOccupiedViewByEqptId(req, res) {
     try {
-      const userEmp =
-        await equipmentViewRepo.getEqptOccupiedByEqptId(
-          req.params.eqptid
-        );
+      const userEmp = await equipmentViewRepo.getEqptOccupiedByEqptId(
+        req.params.eqptid
+      );
       if (!userEmp) {
         return res.status(404).json({ message: "UserEmployee not found" });
       }
@@ -94,8 +100,8 @@ class EquipmentViewController {
       res.status(200).json(userEmp);
     } catch (error) {
       res.status(500).json({ error: "Error fetching userEmp" });
+      logger.error(error.message);
     }
   }
-
 }
 module.exports = new EquipmentViewController();

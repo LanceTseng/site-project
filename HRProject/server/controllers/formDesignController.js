@@ -1,4 +1,5 @@
 const formDesignRepo = require("../repositories/formDesignRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class FormDesignController {
   async getAll(req, res) {
@@ -7,6 +8,7 @@ class FormDesignController {
       res.json(forms);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -17,6 +19,7 @@ class FormDesignController {
       res.json(form);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -27,6 +30,7 @@ class FormDesignController {
       res.json(form);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -36,6 +40,7 @@ class FormDesignController {
       res.status(201).json(newForm);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -50,6 +55,7 @@ class FormDesignController {
       res.json(updatedEquipment);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -60,6 +66,7 @@ class FormDesignController {
       res.json({ message: "Form deleted" });
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 }

@@ -1,4 +1,5 @@
 const documentRepo = require("../repositories/documentRepository");
+const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class DocumentController {
   async getAll(req, res) {
@@ -7,6 +8,7 @@ class DocumentController {
       res.json(documents);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -18,6 +20,7 @@ class DocumentController {
       res.json(document);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -29,6 +32,7 @@ class DocumentController {
       res.json(document);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -39,6 +43,7 @@ class DocumentController {
     } catch (error) {
       console.error(error.message);
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -53,6 +58,7 @@ class DocumentController {
       res.json(updatedDocument);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 
@@ -63,6 +69,7 @@ class DocumentController {
       res.json({ message: "Document deleted" });
     } catch (error) {
       res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
     }
   }
 }
