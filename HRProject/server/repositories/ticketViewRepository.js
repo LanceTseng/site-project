@@ -20,7 +20,7 @@ class TicketViewRepository {
              AND (:ticket_department_id IS NULL OR ticket_department_id = :ticket_department_id) 
              AND (:ticket_status_id IS NULL OR ticket_status_id = :ticket_status_id)
              AND (:ticket_request_by_id IS NULL OR ticket_request_by_id = :ticket_request_by_id )
-             ANS (:ticket_id IS NULL OR ticket_id = :ticket_id)`,
+             AND (:ticket_id IS NULL OR ticket_id = :ticket_id)`,
         {
           replacements: {
             ticket_topic: ticket_topic ? `%${ticket_topic}%` : null, // Ensures LIKE works

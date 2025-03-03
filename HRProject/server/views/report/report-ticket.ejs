@@ -99,20 +99,26 @@
         <div class="card p-3 mb-3">
           <h5 id="ticketTitle" class="font-weight-bold">[Ticket Topic]</h5>
           <p id="ticketDescription" class="text-muted">[Ticket Description]</p>
+          <p id="ticketId" class="text-muted" hidden></p>
         </div>
 
         <div>
-            <h6 class="mt-4">Action</h6>
-            <button type="button" class="btn btn-warning" id="btnProcessing">
-              Processing
-            </button>
-            <button type="button" class="btn btn-success" id="btnCompleted">
-              Completed
-            </button>
-            <button type="button" class="btn btn-danger" id="btnCancel">
-              Cancel
-            </button>
-           
+          <h6 class="mt-4">Action</h6>
+          <button type="button" class="btn btn-info btn-update-status" data-status="1" id="btnReOpen">
+            ReOpen
+          </button>
+          <button type="button" class="btn btn-warning btn-update-status" data-status="2" id="btnProcessing">
+            Processing
+          </button>
+          <button type="button" class="btn btn-success btn-update-status" data-status="3" id="btnCompleted">
+            Completed
+          </button>
+          <button type="button" class="btn btn-danger btn-update-status" data-status="4" id="btnCancel">
+            Cancelled
+          </button>
+          <button type="button" class="btn btn-danger btn-update-status" data-status="5" id="btnReject">
+            Reject
+          </button>
         </div>
         <!-- Comment Section -->
         <h6 class="mt-4">Response</h6>
@@ -121,7 +127,7 @@
         </div>
 
         <!-- Comment Input -->
-        <div class="card p-3 mt-3">
+        <div class="card p-3 mt-3" id="response-area">
           <h6>Reply</h6>
           <textarea
             id="commentInput"
@@ -170,10 +176,10 @@
               />
             </div>
             <div class="mb-3">
-              <label for="addTicketDepoartment" class="form-label"
+              <label for="addTicketDepartment" class="form-label"
                 >Issue Department</label
               >
-              <select id="addTicketDepoartment" class="form-control" required>
+              <select id="addTicketDepartment" class="form-control" required>
                 <option value="" disabled selected>Select a Department</option>
               </select>
             </div>

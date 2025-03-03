@@ -29,7 +29,8 @@ const TicketDetail = sequelize.define(
   {
     tableName: "b_ticket_detail",
     timestamps: true,
-    createdAt:"created_date"
+    createdAt:"created_date",
+    updatedAt:"created_date"
   }
 );
 

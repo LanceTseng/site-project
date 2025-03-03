@@ -29,6 +29,7 @@ class TicketDetailController {
       const detail = await TicketDetailRepository.create(req.body);
       res.status(201).json(detail);
     } catch (error) {
+      console.log(error.message);
       res.status(500).json({ error: "Failed to create ticket detail" });
     }
   }
