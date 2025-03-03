@@ -110,6 +110,13 @@ async function loadTicketDetail(id) {
       $("#btnCancel").show();
       $("#btnReOpen").show();
     }
+    $("#response-area").hide();
+  }
+  if (
+    isEqualIgnoreCase(ticketHead.ticket_status_name, "completed") ||
+    isEqualIgnoreCase(ticketHead.ticket_status_name, "cancelled")
+  ) {
+    $("#response-area").hide();
   }
 
   //render existed response
@@ -198,8 +205,6 @@ async function responseTicket() {
       created_by: loginUser.user_id,
       reponse_order: responseOrder,
     };
-
-    console.log(responseInput);
     await TicketApi.createTicketDetail(responseInput);
 
     Swal.fire("Success", "Reply Posted!", "success");
@@ -210,6 +215,55 @@ async function responseTicket() {
     console.error("Error adding comment:", error);
     Swal.fire("Error", "Failed to add comment!", "error");
   }
+}
+
+async function searchTicket() {
+  const searchTitle = $("#searchTicket").val();
+  const searchDepartment = $("#searchDepartment").val();
+  const searchStatus = $("#searchTicketStatus").val();
+
+  let ticketHead = await TicketApi.getTicketHeadViewByCondition({
+    ticket_topic: searchTitle,
+    department_id: searchDepartment,
+    status: searchStatus,
+  });
+
+  ticketHead.sort(
+    (a, b) =>
+      new Date(b.ticket_last_updated_date) -
+      new Date(a.ticket_last_updated_date)
+  );
+
+  const statusClasses = {
+    completed: "bg-success text-white",
+    new: "bg-info",
+    processing: "bg-warning",
+    cancelled: "bg-danger text-white",
+    reject: "bg-secondary text-white",
+  };
+
+  const ticketTableBody = ticketHead
+    .map((ticket) => {
+      const statusClass =
+        statusClasses[ticket.ticket_status_name.toLowerCase()] ||
+        "bg-secondary";
+
+      return `
+                    <tr class="ticket-row" data-id="${ticket.ticket_id}">
+                        <td>${ticket.ticket_id}</td>
+                        <td>${ticket.ticket_topic}</td>
+                        <td class="badge ${statusClass} fw-bold">${ticket.ticket_status_name.toUpperCase()}</td>
+                        <td>${ticket.department_name}</td>
+                        <td>${ticket.ticket_request_by_name}</td>
+                        <td>${new Date(
+                          ticket.ticket_last_updated_date
+                        ).toLocaleDateString()}</td>
+                    </tr>
+                `;
+    })
+    .join("");
+
+  $("#ticketTableBody").html(ticketTableBody);
 }
 
 $(document).ready(async function () {
@@ -246,13 +300,13 @@ $(document).ready(async function () {
 
   // Post a Reply
   $("#postComment").click(function (e) {
-    try {
-      e.preventDefault();
+    e.preventDefault();
 
-      responseTicket();
-    } catch (error) {
-      console.error("Error adding comment:", error);
-      Swal.fire("Error", "Failed to add comment!", "error");
-    }
+    responseTicket();
+  });
+
+  $("#btnSearch").click((e) => {
+    e.preventDefault();
+    searchTicket();
   });
 });
