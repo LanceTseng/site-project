@@ -13,6 +13,7 @@ function init() {
   $("#btnCancel").hide();
   $("#btnReject").hide();
   $("#btnReOpen").hide();
+  $("#response-area").hide();
 }
 
 async function populateDropdown(dropdownId, taskName) {
@@ -36,7 +37,16 @@ async function populateDropdown(dropdownId, taskName) {
 }
 
 async function loadTicketHead() {
-  const ticketHead = await TicketApi.getAllTicketHeadView();
+  let ticketHead = [];
+
+  //only see psersonal ticket
+  if (!accessVerify("Ticket Full Access")) {
+    ticketHead = await TicketApi.getTicketHeadViewByCondition({
+      user_id: loginUser.user_id,
+    });
+  } else {
+    ticketHead = await TicketApi.getAllTicketHeadView();
+  }
 
   ticketHead.sort(
     (a, b) =>
@@ -78,6 +88,7 @@ async function loadTicketHead() {
 
 async function loadTicketDetail(id) {
   init();
+ 
   const response = await TicketApi.getTicketsByCondition({ head_id: id });
   response.sort(
     (a, b) =>
@@ -86,6 +97,7 @@ async function loadTicketDetail(id) {
   );
   const ticketHead = response[0];
 
+  $("#response-area").show();
   $("#ticketTitle").html(ticketHead.ticket_topic);
   $("#ticketDescription").html(ticketHead.ticket_description);
   $("#ticketId").html(ticketHead.ticket_id);
@@ -218,14 +230,23 @@ async function responseTicket() {
 }
 
 async function searchTicket() {
+  init();
   const searchTitle = $("#searchTicket").val();
   const searchDepartment = $("#searchDepartment").val();
   const searchStatus = $("#searchTicketStatus").val();
+  const searchUserId = accessVerify("Ticket Full Access")
+    ? ""
+    : loginUser.user_id;
+
+  if (!accessVerify("Ticket Full Access")) {
+    $("#searchDepartment").prop("disabled", true);
+  }
 
   let ticketHead = await TicketApi.getTicketHeadViewByCondition({
     ticket_topic: searchTitle,
     department_id: searchDepartment,
     status: searchStatus,
+    user_id: searchUserId,
   });
 
   ticketHead.sort(
@@ -277,6 +298,11 @@ $(document).ready(async function () {
   populateDropdown("#searchDepartment", "department");
   populateDropdown("#searchTicketStatus", "ticket_status");
   populateDropdown("#addTicketDepartment", "department");
+
+  //access
+  if (!accessVerify("Ticket Full Access")) {
+    $("#searchDepartment").prop("disabled", true);
+  }
 
   loadTicketHead();
 
