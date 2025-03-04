@@ -3,8 +3,8 @@ import * as UserPaymentApi from "./services/uesrPaymentServices.js";
 import { accessVerify } from "./utils/authVerify.js";
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
 
-function addTDTag(element) {
-  return `<td>${element}</td>`;
+function addTDTag(element, id) {
+  return `<td id="text-${id}">${element}</td>`;
 }
 
 function addDropdown(list, selectedItem) {
@@ -63,8 +63,14 @@ async function loadEmployeePayment() {
         const terminationPayField = addTDTag(
           addInputText(payment.termination_pay, "TerminationPay")
         );
-        const createdAtField = addTDTag(formatDate(payment.created_at));
-        const updatedAtField = addTDTag(formatDate(payment.updated_at));
+        const createdAtField = addTDTag(
+          formatDate(payment.created_at),
+          "createdDate"
+        );
+        const updatedAtField = addTDTag(
+          formatDate(payment.updated_at),
+          "updatedDate"
+        );
 
         // Action buttons (Edit & Save) with event binding
         const actionField = `<td>
@@ -135,9 +141,22 @@ $(document).ready(function () {
       if (paymentId == -1) {
         delete updatedPayment.id;
 
-        await UserPaymentApi.createRelUserPayment(updatedPayment);
+        const request = await UserPaymentApi.createRelUserPayment(
+          updatedPayment
+        );
+        row.find("#text-createdDate").text(formatDate(request.created_date));
+        row
+          .find("#text-updatedDate")
+          .text(formatDate(request.last_updated_date));
       } else {
-        await UserPaymentApi.updateRelUserPayment(paymentId, updatedPayment);
+        const request = await UserPaymentApi.updateRelUserPayment(
+          paymentId,
+          updatedPayment
+        );
+        console.log(request);
+        row
+          .find("#text-updatedDate")
+          .text(formatDate(request.last_updated_date));
       }
 
       Swal.fire("Success", `Payment edited successfully!`, "success");
