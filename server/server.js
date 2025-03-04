@@ -46,6 +46,7 @@ const relUserFormRoutes = require("./routes/relUserFormRoutes");
 const relUserAccessRoutes = require("./routes/relUserAccessRoutes");
 const ticketRoutes = require("./routes/ticketsRoutes");
 const relUserHandoverRoutes = require("./routes/relUserHandoverRoutes");
+const UserPaymentRoutes = require('./routes/userPaymentRoutes');
 
 const userTaskViewRoutes = require("./routes/userTaskViewRoutes");
 const userEmployeeViewRoutes = require("./routes/userEmployeeViewRoutes");
@@ -56,6 +57,7 @@ const userFormViewRoutes = require("./routes/userFormViewRoutes");
 const formDesignViewRoutes = require("./routes/formDesignViewRoutes");
 const accessProvisioningViewRoutes = require("./routes/accessProvisioningViewRoutes");
 const userAccesssViewRoutes = require("./routes/userAccessViewRoutes");
+ 
 
 app.use("/api", employeeRoutes);
 app.use("/api", accessProvisioningRoutes);
@@ -83,6 +85,7 @@ app.use("/api", accessProvisioningViewRoutes);
 app.use("/api", userAccesssViewRoutes);
 app.use("/api", ticketRoutes);
 app.use("/api", relUserHandoverRoutes);
+app.use("/api", UserPaymentRoutes);
 
 //upload test
 const fileRoutes = require("./routes/fileRoutes");

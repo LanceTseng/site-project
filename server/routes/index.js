@@ -133,7 +133,12 @@ router.get("/ticket", (req, res) => {
   res.render("report/report-ticket");
 });
 
+router.get("/payment", (req, res) => {
+  res.render("report/report-user-payment");
+});
 
+
+//------------------------------------------------------
 //upload test
 router.get("/upload", (req, res) => {
   res.render("upload");
