@@ -55,6 +55,22 @@ router.get("/form-review/:lineid?", (req, res) => {
   res.render("pages/form-review", { lineid });
 });
 
+//handover
+router.get("/form-handover", (req, res) => {
+  const { lineid } = req.params;
+  res.render("pages/form-handover", { lineid });
+});
+
+router.get("/form-handover/lineid/:lindid?", (req, res) => {
+  const { lineid } = req.params;
+  res.render("pages/form-handover", { lineid });
+});
+
+router.get("/form-handover/review/:lindid?", (req, res) => {
+  const { lineid } = req.params;
+  res.render("pages/form-handover", { lineid });
+});
+
 //--
 
 //------------------------------------------------------
