@@ -72,6 +72,7 @@ async function buildTaskRow(task) {
       <td>${task.user_name}</td>
       <td>${task.pt_name}</td>
       <td>${task.pt_desc}</td>
+    <td>${task.task_group_name}</td>
       <td>${task.pt_status_name}</td>
       <td>${
         isEqualIgnoreCase(task.pt_status_name, "completed") ? 100.0 : 0.0
@@ -96,6 +97,7 @@ async function buildTaskRow(task) {
       <td>${task.user_name}</td>
       <td>${task.pt_name}</td>
       <td>${task.pt_desc}</td>
+      <td>${task.task_group_name}</td>
       <td>${task.pt_status_name}</td>
       <td>${processRate.toFixed(2)}%</td>
       <td>${formatDate(task.pt_start_date)}</td>
