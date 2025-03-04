@@ -138,7 +138,7 @@ $(document).ready(async function () {
             <td>${subtask.require_upload ? "Y" : "N"}</td>
             <td>${subtask.eqpt_type ?? ""}</td>
             <td>${subtask.training_module_id ?? ""}</td>
-            <td hidden>${subtask.interview_id ?? ""}</td>
+            <td>${subtask.hand_over_id == 1 ? "Yes" : "No"}</td>
             <td>${subtask.servey_name ?? ""}</td>
             <td>${subtask.enabled ? "Yes" : "No"}</td>
             <td>
@@ -164,6 +164,7 @@ $(document).ready(async function () {
     $("#trainingModuleId").val("");
     $("#interviewId").val("");
     $("#surveyId").val("");
+    $("#handoverId").val("");
     $("#enable").val("true");
   }
 
@@ -183,7 +184,7 @@ $(document).ready(async function () {
         access_provisioning_id: null,
         interview_id: $("#interviewId").val() || null,
         survey_id: $("#surveyId").val() || null,
-        hand_over_id: null,
+        hand_over_id: $("#handoverId").val() || null,
         enabled: $("#enable").val() === "true",
       };
       console.log(subtask);
@@ -243,7 +244,7 @@ $(document).ready(async function () {
       $("#trainingModuleId").val(subtask.training_module_id);
       $("#interviewId").val(subtask.interview_id);
       $("#surveyId").val(subtask.survey_id);
-      //handover is
+      $("#handoverId").val(subtask.hand_over_id);
       $("#enable").val(subtask.enabled ? "true" : "false");
 
       $("#saveSubtask").data("mode", "edit"); // Set mode to "edit"

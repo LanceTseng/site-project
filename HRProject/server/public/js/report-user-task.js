@@ -450,6 +450,14 @@ function buildTaskDetailRow(detail) {
       : `${detail.survey_name}`
     : "";
 
+  const handoverLink = detail.hand_over_id
+    ? isEqualIgnoreCase(detail.ct_status_name, "processing")
+      ? `<a href="/form-handover/lineid/${detail.line_id}" target="_self">Hand Over Form</a>`
+      : isEqualIgnoreCase(detail.ct_status_name, "completed")
+      ? `<a href="/form-handover/review/${detail.line_id}" target="_self">Hand Over Form(Review)</a>`
+      : `Handover Required`
+    : "";
+
   const rowHtml = `
     <tr id="${rowId}">
       <td>${detail.ct_task_name || ""}</td>
@@ -462,7 +470,7 @@ function buildTaskDetailRow(detail) {
         detail.equipment_id ? `${detail.eqpt_name} (${detail.eqpt_code})` : ""
       }</td>
       <td>${detail.trainning_module_id || ""}</td>
-      <td>${detail.interview_id || ""}</td>
+      <td>${handoverLink}</td>
       <td>${surveyLink}</td>
       <td>${formatDate(detail.ct_start_date)}</td>
       <td>${formatDate(detail.ct_end_date)}</td>

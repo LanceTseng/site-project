@@ -11,7 +11,7 @@
       rel="stylesheet"
     />
   </head>
- 
+
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %> <%- include('./mgmt-task-nav') %>
@@ -43,7 +43,7 @@
               <th>Documnet Upload</th>
               <th>Device</th>
               <th>Training Module</th>
-              <th hidden>Interview</th>
+              <th>Handover</th>
               <th>Survey/Interview</th>
               <th>Enable</th>
               <th>Actions</th>
@@ -144,6 +144,14 @@
                 </select>
               </div>
               <div class="form-group">
+                <label for="handoverId">Handover</label>
+                <select class="form-control" id="handoverId">
+                  <option value="" disabled selected>Select a Option</option>
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+              </div>
+              <div class="form-group">
                 <label for="enable">Enable</label>
                 <select class="form-control" id="enable">
                   <option value="true">Yes</option>
@@ -188,8 +196,8 @@
   thead th {
     position: sticky;
     top: 0;
-    background: #000000!important;
-    color: white!important;
+    background: #000000 !important;
+    color: white !important;
     z-index: 10;
   }
   .btn-primary-add {
