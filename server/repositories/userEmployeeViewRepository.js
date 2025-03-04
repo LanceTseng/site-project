@@ -83,7 +83,7 @@ class UserEmployeeViewRepository {
           type: QueryTypes.SELECT,
         }
       );
-      return rows.length > 0 ? rows[0] : null;
+      return rows;
     } catch (error) {
       console.error(`Error fetching user with status "${status}":`, error);
       throw error;

@@ -36,7 +36,7 @@ $(document).ready(async function () {
     const tableBody = $("#recentActivities").empty(); // Clear existing rows
 
     const recentActivities = data
-      .filter((o) => [0, 1, 3].includes(o.status)) // Filter by status
+     
       .sort((a, b) => {
         return new Date(b.last_updated_date) - new Date(a.last_updated_date);
       });
