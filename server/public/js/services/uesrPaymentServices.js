@@ -6,7 +6,7 @@ class View {
   userPaymentView = `${baseURL}user-payment-view/`;
 }
 
-var view = View();
+var view = new View();
 
 export function createRelUserPayment(data) {
   return axiosInstance
