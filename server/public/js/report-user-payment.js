@@ -3,6 +3,26 @@ import * as UserPaymentApi from "./services/uesrPaymentServices.js";
 import { accessVerify } from "./utils/authVerify.js";
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
 
+async function populateDropdown(dropdownId, taskName) {
+  try {
+    const items = (await ObjectTypeApi.getTaskByName(taskName)) || [];
+
+    // Add an empty option as the first item
+    const options =
+      `<option value="">-- Select --</option>` +
+      items
+        .map(
+          (item) =>
+            `<option value="${item.object_type_item_key}">${item.object_type_item_value}</option>`
+        )
+        .join("");
+
+    $(dropdownId).html(options);
+  } catch (error) {
+    handleError(error, `Error populating ${taskName} dropdown`);
+  }
+}
+
 function addTDTag(element, id) {
   return `<td id="text-${id}">${element}</td>`;
 }
@@ -35,8 +55,15 @@ function addInputText(value, elementId) {
 
 async function loadEmployeePayment() {
   try {
-    const response = await UserPaymentApi.getAllUserPaymentView();
-    console.log(response);
+    const searchName = $("#searchName").val() ?? "";
+    const searchDepartment = $("#searchDepartment").val() ?? "";
+    const searchStatus = $("#searchStatus").val() ?? "";
+
+    const response = await UserPaymentApi.getUserPaymentViewByCondition({
+      name: searchName,
+      department: searchDepartment,
+      status: searchStatus,
+    });
 
     const paymentTableBody = $("#paymentTableBody");
     paymentTableBody.empty();
@@ -112,7 +139,15 @@ function editField(row) {
 }
 
 $(document).ready(function () {
+  populateDropdown("#searchDepartment", "department");
+  populateDropdown("#searchStatus", "employee_status");
+
   loadEmployeePayment();
+
+  $("#btnSearch").click((e) => {
+    e.preventDefault();
+    loadEmployeePayment();
+  });
 
   $("#paymentTableBody").on("click", ".edit-btn", function () {
     const row = $(this).closest("tr");
@@ -134,8 +169,6 @@ $(document).ready(function () {
       payment_type_id: row.find("#paymentType").val(),
     };
 
-    console.log(updatedPayment);
-
     try {
       // API call to update payment details
       if (paymentId == -1) {
@@ -153,7 +186,7 @@ $(document).ready(function () {
           paymentId,
           updatedPayment
         );
-        console.log(request);
+
         row
           .find("#text-updatedDate")
           .text(formatDate(request.last_updated_date));
