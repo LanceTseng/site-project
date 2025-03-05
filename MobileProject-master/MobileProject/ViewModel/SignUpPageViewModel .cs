@@ -147,7 +147,6 @@ namespace MobileProject.ViewModel
 
             IsBusy = true;
 
-            // Simulate signup delay (e.g., saving to a database)
             await Task.Delay(2000);
             
            await _userService.CreateUserAsync(new User()
@@ -162,8 +161,6 @@ namespace MobileProject.ViewModel
 
             IsBusy = false;
 
-            // Perform your signup logic here
-            // Example: Save data to SQLite or call an API
             await Application.Current.MainPage.DisplayAlert("Success", "Account created successfully", "OK");
             Application.Current.MainPage = new NavigationPage(new LoginPage());
         }

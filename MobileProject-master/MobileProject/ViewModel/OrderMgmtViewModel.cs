@@ -309,7 +309,7 @@ namespace MobileProject.ViewModel
             await Application.Current.MainPage.Navigation.PushPopupAsync(cartPopupPage);
         }
 
-        // Event handler to refresh data after the popup is closed
+        
         private async void OnPopupClosed(object sender, Rg.Plugins.Popup.Events.PopupNavigationEventArgs e)
         {
             // Check if the popup being closed is the one you're interested in

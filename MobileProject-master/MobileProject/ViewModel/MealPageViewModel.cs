@@ -68,7 +68,7 @@ namespace MobileProject.ViewModel
                 var transactionCode = "";
                 var cart = new CartRecord()
                 {
-                    Qty = selectedItem.Quantity, // Use the Quantity property
+                    Qty = selectedItem.Quantity,
                     Total = selectedItem.Quantity * selectedItem.Product.Price,
                     ProductId = selectedItem.Product.Id,
                     UserId = userId,
@@ -87,7 +87,7 @@ namespace MobileProject.ViewModel
                 {
                     var cartRecord = itemInCart.FirstOrDefault();
                     cartRecord.Qty += cart.Qty;
-                    cartRecord.Total = cartRecord.Qty * selectedItem.Product.Price; // Correct the typo `prodcut` to `product`
+                    cartRecord.Total = cartRecord.Qty * selectedItem.Product.Price;
                     await _cartRecordService.UpdateCartRecordAsync(cartRecord);
                 }
                 else

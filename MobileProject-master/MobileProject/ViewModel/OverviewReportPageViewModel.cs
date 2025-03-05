@@ -86,7 +86,7 @@ namespace MobileProject.ViewModel
         public BarChart ProductSalesChart
         {
             get => _productSalesChart;
-            set => SetProperty(ref _productSalesChart, value); // Notifies view of changes
+            set => SetProperty(ref _productSalesChart, value);
         }
 
         public PieChart ProductSummaryChart
@@ -132,14 +132,10 @@ namespace MobileProject.ViewModel
                     Reports.Clear();
                     return;
                 }
-
-                // Example filtering (if needed)
                 var filteredReports = allReports.ToList();
 
-                // Update the ObservableCollection efficiently
                 Reports = new ObservableCollection<Overview>(filteredReports);
 
-                // Generate Charts
                 GenerateBarChartProductSales(filteredReports);
                 GeneratePieChartProductSummary(filteredReports);
             }
@@ -163,7 +159,7 @@ namespace MobileProject.ViewModel
                 {
                     Label = g.Key,
                     ValueLabel = g.Sum(r => (float)r.TotalPrice).ToString("C"),
-                    Color = SKColor.Parse("#68B9C0") // Customize color
+                    Color = SKColor.Parse("#68B9C0")
                 })
                 .ToList();
 
@@ -172,8 +168,8 @@ namespace MobileProject.ViewModel
                 Entries = chartEntries,
                 LabelTextSize = 40,
                 BackgroundColor = SKColor.Parse("#FFFFFF"),
-                BarAreaAlpha = 128, // Semi-transparent bars for better visibility
-                MaxValue = chartEntries.Max(e => float.Parse(e.ValueLabel.Replace("$", ""))) + 10 // Avoid bar cutoff
+                BarAreaAlpha = 128,
+                MaxValue = chartEntries.Max(e => float.Parse(e.ValueLabel.Replace("$", ""))) + 10
             };
         }
 

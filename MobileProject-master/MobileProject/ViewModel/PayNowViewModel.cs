@@ -183,7 +183,7 @@ namespace MobileProject.ViewModel
             if (string.IsNullOrWhiteSpace(creditCardNumber))
                 return false;
 
-            // Regex pattern for major credit card formats (Visa, MasterCard, etc.)
+           
             var regex = new System.Text.RegularExpressions.Regex(@"^\d{16}$");
             return regex.IsMatch(creditCardNumber);
         }
