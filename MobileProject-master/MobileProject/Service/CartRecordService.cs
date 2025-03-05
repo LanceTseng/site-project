@@ -36,7 +36,7 @@ namespace MobileProject.Service
             if (productId.HasValue) query += $"productId={productId}&";
             if (!string.IsNullOrEmpty(transactionCode)) query += $"transactionCode={transactionCode}&";
 
-            query = query.TrimEnd('&'); // Remove trailing '&'
+            query = query.TrimEnd('&');
 
             return await _apiService.CallApiAsync<IEnumerable<CartRecord>>($"{BaseUrl}/GetCartRecordByCondition{query}", HttpMethod.Get);
         }
