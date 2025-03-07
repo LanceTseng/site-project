@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MobileProject;
 using MobileProject.Helpers;
 using MobileProject.Model;
+using MobileProject.ViewModel;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -19,6 +20,7 @@ namespace MobileProject.View
         public HomePage()
         {
             InitializeComponent();
+            BindingContext = new HomeViewModel();
         }
 
         protected override async void OnAppearing()

@@ -3,5 +3,21 @@
     x:Class="MobileProject.App"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-    <Application.Resources />
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="BorderColor" Value="Maroon" />
+                <Setter Property="BorderRadius" Value="50" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="TextColor" Value="Maroon" />
+                <Setter Property="WidthRequest" Value="200" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+
 </Application>

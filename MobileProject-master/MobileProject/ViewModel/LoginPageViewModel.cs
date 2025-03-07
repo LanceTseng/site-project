@@ -93,8 +93,7 @@ namespace MobileProject.ViewModel
             {
                 IsBusy = true;
                 var users = await _userService.GetUsersByConditionAsync(userName: Username, password: Password);
-                var user = users?.FirstOrDefault();
-
+                var user = users.FirstOrDefault(x=>x.UserName == Username && x.Password == Password);
                 if (user == null)
                 {
                     await DisplayErrorMessage("Invalid username or password");

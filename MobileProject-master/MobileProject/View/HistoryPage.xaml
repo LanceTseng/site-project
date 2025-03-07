@@ -82,6 +82,7 @@
 
             <!--  ListView for Orders with Height Limit  -->
             <StackLayout>
+
                 <ListView
                     x:Name="OrdersListView"
                     HeightRequest="200"
@@ -126,6 +127,7 @@
                     </ListView.Header>
 
                     <!--  Item Template  -->
+
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
@@ -175,12 +177,16 @@
                     FontSize="Medium"
                     Text="Order Details" />
 
+                <SearchBar
+                    Placeholder="Search product..."
+                    SearchCommand="{Binding FilterProductCommand}"
+                    Text="{Binding SearchText}" />
+
                 <Grid ColumnSpacing="10" RowSpacing="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
-                        <!--  Allow the CollectionView to expand  -->
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*" />
@@ -205,27 +211,30 @@
                         FontAttributes="Bold"
                         Text="Total" />
 
-                    <!--  CollectionView for Items  -->
-                    <CollectionView
+                    <!--  ListView for Items  -->
+                    <ListView
                         Grid.Row="2"
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
-                        ItemsSource="{Binding SelectedOrderDetails}">
-                        <CollectionView.ItemTemplate>
+                        HasUnevenRows="True"
+                        ItemsSource="{Binding FilteredOrderDetails}">
+                        <ListView.ItemTemplate>
                             <DataTemplate>
-                                <Grid ColumnSpacing="10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*" />
-                                        <ColumnDefinition Width="1*" />
-                                        <ColumnDefinition Width="1*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" Text="{Binding Product.Name}" />
-                                    <Label Grid.Column="1" Text="{Binding CartRecord.Qty}" />
-                                    <Label Grid.Column="2" Text="{Binding CartRecord.Total, StringFormat='${0:F2}'}" />
-                                </Grid>
+                                <ViewCell>
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0" Text="{Binding Product.Name}" />
+                                        <Label Grid.Column="1" Text="{Binding CartRecord.Qty}" />
+                                        <Label Grid.Column="2" Text="{Binding CartRecord.Total, StringFormat='${0:F2}'}" />
+                                    </Grid>
+                                </ViewCell>
                             </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </Grid>
             </StackLayout>
         </StackLayout>
