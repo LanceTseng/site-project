@@ -153,7 +153,7 @@ namespace MobileProject.ViewModel
             var allReports = await _overviewReportService.GetOverviewByConditionAsync(
                 userName: Username, role: Role, productName: ProductName, dateFrom: FromDate, dateTo: ToDate);
 
-            if (allReports == null)
+            if (allReports == null || !allReports.Any())
             {
                 ProductSalesChart = null;
                 ProductSummaryChart = null;
@@ -162,11 +162,25 @@ namespace MobileProject.ViewModel
                 return;
             }
 
-            var filteredReports = allReports.ToList();
+            // Convert to ExportOverviewReport
+            var filteredReports = allReports.Select(o => new ExportOverviewReport
+            {
+                UserName = o.UserName,
+                TransactionCode = o.TransactionCode,
+                ProductName = o.ProductName,
+                ProductPrice = o.ProductPrice,
+                Quantity = o.Quantity,
+                TotalPrice = o.TotalPrice,
+                OrderDate = o.OrderDate
+            }).ToList();
 
-            var filePath = await ExportFileHelper.ExportToExcelAsync(filteredReports);
+            // Export to Excel
+            var filePath = await ExportFileHelper.ExportToExcelAsync(filteredReports, "OverviewReport");
+
+            // Show success message if file is exported successfully
             if (!string.IsNullOrEmpty(filePath))
                 await Application.Current.MainPage.DisplayAlert("Success", $"File saved at:\n{filePath}", "OK");
+
         }
 
         private void GenerateBarChartProductSales(List<Overview> reports)

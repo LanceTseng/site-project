@@ -12,7 +12,7 @@ namespace MobileProject.Utility
 {
     public static class ExportFileHelper
     {
-        public static async Task<string> ExportToExcelAsync<T>(List<T> data)
+        public static async Task<string> ExportToExcelAsync<T>(List<T> data, string exportFileName = "ExportReport")
         {
             if (data == null || data.Count == 0)
                 return null;
@@ -47,11 +47,11 @@ namespace MobileProject.Utility
                 worksheet.Columns().AdjustToContents();
 
                 // Generate file name
-                var fileName = $"ExportedData_{DateTime.Now:yyyyMMddHHmmss}";
+                var fileName = $"{exportFileName}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
 
                 // Save to temporary path
-                var tempPath = Path.Combine(FileSystem.CacheDirectory, fileName);
-                workbook.SaveAs(tempPath);
+                var tempPath = Path.Combine(FileSystem.CacheDirectory, fileName); 
+                workbook.SaveAs(tempPath); 
 
                 // Read the file as byte array
                 byte[] fileBytes = File.ReadAllBytes(tempPath);
