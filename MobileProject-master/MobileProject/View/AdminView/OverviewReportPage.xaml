@@ -209,7 +209,6 @@
                         Text="Product Summary"
                         VerticalOptions="Start" />
 
-
                     <forms:ChartView
                         BackgroundColor="White"
                         Chart="{Binding ProductSummaryChart}"
@@ -220,5 +219,14 @@
                 </StackLayout>
             </StackLayout>
         </ScrollView>
+
     </ContentPage.Content>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Name="Export Report"
+            Command="{Binding ProcessExportReportCommand}"
+            Order="Secondary"
+            Priority="0" />
+
+    </ContentPage.ToolbarItems>
 </ContentPage>

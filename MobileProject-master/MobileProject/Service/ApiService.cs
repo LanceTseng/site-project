@@ -11,6 +11,7 @@ namespace MobileProject.Service
     {
         private readonly HttpClient _httpClient;
         private const string BaseUrl = "http://10.0.2.2:5180"; // Base URL for the API
+        //private const string BaseUrl = "http://10.0.3.2:5180"; // Base URL for the API
 
         public ApiService()
         {

@@ -47,6 +47,21 @@
                         TextColor="Maroon"
                         VerticalOptions="Center"
                         WidthRequest="200" />
+
+                    <Button
+                        x:Name="btnProfile"
+                        BackgroundColor="Transparent"
+                        BorderColor="Maroon"
+                        BorderRadius="50"
+                        BorderWidth="1"
+                        Clicked="btnProfile_Clicked"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        Text="Profile"
+                        TextColor="Maroon"
+                        VerticalOptions="Center"
+                        WidthRequest="200" />
+
                     <Button
                         x:Name="btnHistory"
                         BackgroundColor="Transparent"

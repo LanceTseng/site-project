@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MobileProject.View.ProfilePage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ContentPage.Content>
+        <StackLayout Padding="20" Spacing="15">
+            <Label
+                FontAttributes="Bold"
+                FontSize="Large"
+                HorizontalOptions="Center"
+                Text="User Profile" />
+
+            <Entry
+                x:Name="Id"
+                IsEnabled="False"
+                IsVisible="False"
+                Text="{Binding Id, Mode=TwoWay}" />
+
+            <Label FontAttributes="Bold" Text="Username" />
+            <Entry
+                x:Name="UserNameEntry"
+                IsEnabled="False"
+                Placeholder="Enter username"
+                Text="{Binding Username, Mode=TwoWay}" />
+
+            <Label FontAttributes="Bold" Text="Phone" />
+            <Entry
+                x:Name="PhoneEntry"
+                Keyboard="Telephone"
+                Placeholder="Enter phone"
+                Text="{Binding Phone, Mode=TwoWay}" />
+
+            <Label FontAttributes="Bold" Text="Email" />
+            <Entry
+                x:Name="EmailEntry"
+                Keyboard="Email"
+                Placeholder="Enter email"
+                Text="{Binding Email, Mode=TwoWay}" />
+
+            <Label FontAttributes="Bold" Text="New Password" />
+            <Entry
+                x:Name="NewPasswordEntry"
+                Placeholder="Enter New Password"
+                IsPassword="True"
+                Text="{Binding NewPassword, Mode=TwoWay}" />
+
+            <Button
+                BackgroundColor="LightSkyBlue"
+                Command="{Binding SaveProfileCommand }"
+                CornerRadius="20"
+                Text="Save"
+                TextColor="Black" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

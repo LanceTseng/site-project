@@ -34,6 +34,7 @@
             Command="{Binding LoginCommand}"
             IsEnabled="{Binding LoginCommand}"
             Text="Login" />
+        <Button Command="{Binding ForgotPasswordCommand}" Text="Forget Password?" />
         <!--<Button Clicked="btnLogin_Clicked" Text="Login" />-->
         <Label Text="Not a Member? Click the button and sign up now!" />
         <Button Command="{Binding NavigateToSignUpCommand}" Text="Sign up" />

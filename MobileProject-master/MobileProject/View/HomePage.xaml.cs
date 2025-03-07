@@ -54,11 +54,17 @@ namespace MobileProject.View
             btnLogout.IsVisible = isLoggedIn;
             btnCart.IsVisible = isLoggedIn;
             btnHistory.IsVisible = isLoggedIn;
+            btnProfile.IsVisible = isLoggedIn;
         }
 
         private void Auth(bool isAdmin)
         {
             btnAdmin.IsVisible = isAdmin;
+        }
+
+        private async void btnProfile_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new ProfilePage());
         }
 
         private async void btnMeals_Clicked(object sender, EventArgs e)

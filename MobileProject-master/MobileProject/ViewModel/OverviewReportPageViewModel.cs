@@ -9,6 +9,7 @@ using Microcharts;
 using MobileProject.Model;
 using MobileProject.Service;
 using MobileProject.Service.Interface;
+using MobileProject.Utility;
 using SkiaSharp;
 using Xamarin.Forms;
 
@@ -69,6 +70,7 @@ namespace MobileProject.ViewModel
         }
 
         public ICommand ProcessReportCommand { get; }
+        public ICommand ProcessExportReportCommand { get; }
 
         public OverviewReportPageViewModel(IOverviewReportService overviewReportService)
         {
@@ -76,6 +78,7 @@ namespace MobileProject.ViewModel
 
             Reports = new ObservableCollection<Overview>();
             ProcessReportCommand = new Command(async () => await ProcessReport());
+            ProcessExportReportCommand = new Command(async () => await ProcessExportReport());
 
             _ = LoadData();
         }
@@ -143,6 +146,27 @@ namespace MobileProject.ViewModel
             {
                 Debug.WriteLine($"Error processing report: {ex.Message}");
             }
+        }
+
+        private async Task ProcessExportReport()
+        {
+            var allReports = await _overviewReportService.GetOverviewByConditionAsync(
+                userName: Username, role: Role, productName: ProductName, dateFrom: FromDate, dateTo: ToDate);
+
+            if (allReports == null)
+            {
+                ProductSalesChart = null;
+                ProductSummaryChart = null;
+                Debug.WriteLine("No reports found.");
+                Reports.Clear();
+                return;
+            }
+
+            var filteredReports = allReports.ToList();
+
+            var filePath = await ExportFileHelper.ExportToExcelAsync(filteredReports);
+            if (!string.IsNullOrEmpty(filePath))
+                await Application.Current.MainPage.DisplayAlert("Success", $"File saved at:\n{filePath}", "OK");
         }
 
         private void GenerateBarChartProductSales(List<Overview> reports)

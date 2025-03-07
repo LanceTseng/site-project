@@ -4,8 +4,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using MobileProject.Helpers;
 using MobileProject.Model;
+using MobileProject.Service;
 using MobileProject.Service.Interface;
 using MobileProject.View;
+using MobileProject.View.AdminView;
+using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
 
 namespace MobileProject.ViewModel
@@ -49,7 +52,7 @@ namespace MobileProject.ViewModel
         }
 
         public ICommand LoginCommand { get; }
-
+        public ICommand ForgotPasswordCommand { get; }
         public ICommand NavigateToSignUpCommand { get; }
 
         public LoginPageViewModel(IUserService userService)
@@ -58,6 +61,30 @@ namespace MobileProject.ViewModel
 
             LoginCommand = new Command(async () => await OnLogin(), CanLogin);
             NavigateToSignUpCommand = new Command(async () => await NavigateToCartAsync());
+            ForgotPasswordCommand = new Command(async () => await ForgotPasswordAsync(), CanResetPassword);
+        }
+
+        private async Task ForgotPasswordAsync()
+        {
+            var users = await _userService.GetUsersByConditionAsync(userName: Username);
+            if (users == null)
+            {
+                await DisplayErrorMessage("User not existed");
+                return;
+            }
+
+            var user = users.FirstOrDefault();
+
+            var forgetPasswordPopup = new ForgetPasswordPopupPage()
+            {
+                BindingContext = new ForgetPasswordPopupViewModel(_userService, user)
+            };
+
+            // Ensure event is not subscribed multiple times
+            Rg.Plugins.Popup.Services.PopupNavigation.Instance.Popped -= OnPopupClosed;
+            Rg.Plugins.Popup.Services.PopupNavigation.Instance.Popped += OnPopupClosed;
+
+            await Application.Current.MainPage.Navigation.PushPopupAsync(forgetPasswordPopup);
         }
 
         private async Task OnLogin()
@@ -105,16 +132,31 @@ namespace MobileProject.ViewModel
 
         private void UpdateCanExecute()
         {
-            if (LoginCommand is Command command)
-            {
-                command.ChangeCanExecute();
-            }
+            (LoginCommand as Command)?.ChangeCanExecute();
+            (ForgotPasswordCommand as Command)?.ChangeCanExecute();
         }
 
         private bool CanLogin()
         {
             // Enable the button only when username and password are not empty
             return !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !IsBusy;
+        }
+
+        private bool CanResetPassword()
+        {
+            // Enable the button only when username and password are not empty
+            return !string.IsNullOrWhiteSpace(Username) && !IsBusy;
+        }
+
+        private async void OnPopupClosed(object sender, Rg.Plugins.Popup.Events.PopupNavigationEventArgs e)
+        {
+            // Check if the popup being closed is the one you're interested in
+            if (e.Page is CartPopupPage)
+            {
+                // Unsubscribe to prevent multiple calls
+                Rg.Plugins.Popup.Services.PopupNavigation.Instance.Popped -= OnPopupClosed;
+
+            }
         }
     }
 }
