@@ -51,7 +51,9 @@ async function loadCartRecords() {
         renderCarts(fetchCart.data);
     } catch (error) {
         console.error("Error fetching cart:", error);
+        renderCarts();
     }
+   
 }
 
 // 🔹 Render Product List

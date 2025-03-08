@@ -8,8 +8,17 @@
 function fetchUser(userName, password) {
     return axios.get(`/api/Users/GetUsersByCondition?userName=${userName}&password=${password}`)
         .then(response => {
-            console.log("Fetched User:", response.data[0]);
-            return response.data[0]; // Return user object
+
+            // Filter the users array based on the userName and password
+            const user = response.data.find(u => u.userName === userName && u.password === password);
+
+            if (user) {
+            
+                return user; // Return the found user object
+            } else {
+               
+                return null; // Return null if no user matches
+            }
         })
         .catch(error => {
             console.error("Error fetching user:", error);
