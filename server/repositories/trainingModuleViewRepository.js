@@ -9,7 +9,7 @@ class TrainingModuleViewRepository {
 
       if (name) {
         query +=
-          " AND training_module_name LIKE :name OR employee_last_name LIKE :name";
+          " AND training_module_name LIKE :name";
         replacements.name = `%${name}%`;
       }
       if (department) {
