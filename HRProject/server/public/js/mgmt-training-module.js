@@ -63,7 +63,7 @@ async function loadTrainingModule() {
     const response = await TrainingModuleApi.getTrainingModuleViewByCondition({
       name: searchName,
       department_id: searchDepartment,
-      enabled: searchEnabled,
+      status: searchEnabled,
     });
 
     const trainingTableBody = $("#trainingTableBody");
@@ -134,12 +134,16 @@ async function addField() {
   const trainingModuleDepartment = await ObjectTypeApi.getTaskByName(
     "training_department"
   );
-  
+
   const newRow = `
     <tr data-id="-1">
       <td>${addInputText("", "TrainingName")}</td>
       <td>${addInputText("", "TrainingDesc")}</td>
-      <td>${addDropdown(trainingModuleDepartment, null, "TrainingModuleDepartment")}</td>
+      <td>${addDropdown(
+        trainingModuleDepartment,
+        null,
+        "TrainingModuleDepartment"
+      )}</td>
       <td>${addDropdown(
         [
           { object_type_item_key: 1, object_type_item_value: "Yes" },
@@ -161,8 +165,11 @@ async function addField() {
   // Enable the new row fields for editing
   editField(lastRow);
 }
+ 
 
 $(document).ready(function () {
+
+  populateDropdown("#searchDepartment", "training_department");
   // Your code here
   loadTrainingModule();
 
@@ -213,5 +220,10 @@ $(document).ready(function () {
   $("#btnAdd").click(function (e) {
     e.preventDefault();
     addField();
+  });
+
+  $("#btnSearch").click(function (e) {
+    e.preventDefault();
+    loadTrainingModule();
   });
 });
