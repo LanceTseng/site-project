@@ -79,7 +79,7 @@ async function loadEmployeePayment() {
         const lastNameField = addTDTag(payment.employee_last_name ?? "-");
         const statusField = addTDTag(payment.employee_status_name ?? "-");
         const paymentTypeField = addTDTag(
-          addDropdown(paymentTypes, payment.payment_type_id, true)
+          addDropdown(paymentTypes, payment.payment_type_id)
         );
         const annualSalaryField = addTDTag(
           addInputText(payment.annual_salary, "AnnualSalary")
@@ -174,22 +174,22 @@ $(document).ready(function () {
       if (paymentId == -1) {
         delete updatedPayment.id;
 
-        const request = await UserPaymentApi.createRelUserPayment(
+        const response = await UserPaymentApi.createRelUserPayment(
           updatedPayment
         );
-        row.find("#text-createdDate").text(formatDate(request.created_date));
+        row.find("#text-createdDate").text(formatDate(response.created_date));
         row
           .find("#text-updatedDate")
-          .text(formatDate(request.last_updated_date));
+          .text(formatDate(response.last_updated_date));
       } else {
-        const request = await UserPaymentApi.updateRelUserPayment(
+        const response = await UserPaymentApi.updateRelUserPayment(
           paymentId,
           updatedPayment
         );
 
         row
           .find("#text-updatedDate")
-          .text(formatDate(request.last_updated_date));
+          .text(formatDate(response.last_updated_date));
       }
 
       Swal.fire("Success", `Payment edited successfully!`, "success");

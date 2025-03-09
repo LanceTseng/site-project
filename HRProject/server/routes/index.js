@@ -114,6 +114,10 @@ router.get("/mgmt-user-access", (req, res) => {
   res.render("maintenance/mgmt-user-access");
 });
 
+// Route for Task Settings
+router.get("/mgmt-training-module", (req, res) => {
+  res.render("maintenance/mgmt-training-module");
+});
 
 //------------------------------------------------------
 //route for report

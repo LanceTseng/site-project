@@ -10,7 +10,7 @@ class TrainingModuleRepository {
   }
 
   async getByName(name) {
-    return await TrainingModule.findOne({ where: { trainning_module_name: name } });
+    return await TrainingModule.findOne({ where: { training_module_name: name } });
   }
 
   async create(moduleData) {
@@ -18,12 +18,12 @@ class TrainingModuleRepository {
   }
 
   async update(id, moduleData) {
-    await TrainingModule.update(moduleData, { where: { trainning_module_id: id } });
+    await TrainingModule.update(moduleData, { where: { training_module_id: id } });
     return this.getById(id);
   }
 
   async delete(id) {
-    return await TrainingModule.destroy({ where: { trainning_module_id: id } });
+    return await TrainingModule.destroy({ where: { training_module_id: id } });
   }
 }
 
