@@ -128,6 +128,40 @@ function editField(row) {
   row.find(".save-btn").prop("disabled", false); // Enable Save button
 }
 
+async function addField() {
+  const trainingTableBody = $("#trainingTableBody");
+
+  const trainingModuleDepartment = await ObjectTypeApi.getTaskByName(
+    "training_department"
+  );
+  
+  const newRow = `
+    <tr data-id="-1">
+      <td>${addInputText("", "TrainingName")}</td>
+      <td>${addInputText("", "TrainingDesc")}</td>
+      <td>${addDropdown(trainingModuleDepartment, null, "TrainingModuleDepartment")}</td>
+      <td>${addDropdown(
+        [
+          { object_type_item_key: 1, object_type_item_value: "Yes" },
+          { object_type_item_key: 0, object_type_item_value: "No" },
+        ],
+        null,
+        "Enabled"
+      )}</td>
+      <td>
+        <button class="btn btn-secondary btn-sm mx-1 edit-btn" data-id="-1">Edit</button>
+        <button class="btn btn-primary btn-sm mx-1 save-btn" data-id="-1" disabled>Save</button>
+      </td>
+    </tr>
+  `;
+
+  trainingTableBody.append(newRow);
+  const lastRow = trainingTableBody.find("tr:last");
+
+  // Enable the new row fields for editing
+  editField(lastRow);
+}
+
 $(document).ready(function () {
   // Your code here
   loadTrainingModule();
@@ -152,10 +186,9 @@ $(document).ready(function () {
       enabled: row.find("#input-Enabled").val().trim(),
     };
 
-    console.log(updateTrainingModel);
-
     try {
       if (trainingId == -1) {
+        console.log(updateTrainingModel);
         delete updateTrainingModel.id;
 
         const response = await TrainingModuleApi.createTrainingModule(
@@ -175,5 +208,10 @@ $(document).ready(function () {
     // Disable input fields and Save button after saving
     row.find("input, select").prop("disabled", true);
     row.find(".save-btn").prop("disabled", true);
+  });
+  // Add new field when the Add button is clicked
+  $("#btnAdd").click(function (e) {
+    e.preventDefault();
+    addField();
   });
 });
