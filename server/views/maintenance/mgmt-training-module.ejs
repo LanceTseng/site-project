@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Training Module Management</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-switch-button/css/bootstrap-switch-button.min.css"
+    />
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+    <div class="parent">
+      <div class="container">
+        <h2 class="text-center">Salary Payment</h2>
+        <form id="search-form">
+          <div class="form-row align-items-end">
+            <div class="col-md-3">
+              <label for="searchName" class="font-weight-bold"
+                >Training Name</label
+              >
+              <input
+                type="text"
+                id="searchName"
+                class="form-control"
+                placeholder="Enter Training Module Name"
+              />
+            </div>
+            <div class="col-md-3">
+              <label for="searchDepartment" class="font-weight-bold"
+                >Training Module Department</label
+              >
+              <select id="searchDepartment" class="form-control">
+                <option value="" disabled selected>
+                  Select a Training Department
+                </option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="searchEmpStatus" class="font-weight-bold"
+                >Enabled</label
+              >
+              <select id="searchEnabled" class="form-control">
+                <option value="" selected>All</option>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <button
+                type="submit"
+                class="btn btn-primary btn-block"
+                id="btnSearch"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-3">
+        <button
+          type="button"
+          class="btn btn-outline-success btn-block"
+          id="btnAdd"
+        >
+          Create Training Module
+        </button>
+      </div>
+      <div class="table-container">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Training Module Name</th>
+              <th>Training Module Description</th>
+              <th>Training Module Group</th>
+              <th>Enabled</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="trainingTableBody">
+            <!-- Data will be loaded dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Swal.fire("Error", `Please fill in all required fields.`, "error");
+      Swal.fire("Success", `Equipment ${mode}ed successfully!`, "success");
+      -->
+
+    <!-- Footer -->
+    <%- include('../partials/footer-simple') %>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Switch Button (Required for toggle switches) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+    <!-- Bootstrap Switch Button (Required for toggle switches) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-switch-button/js/bootstrap-switch-button.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/mgmt-training-module.js" type="module"></script>
+  </body>
+</html>
+<style>
+  .parent {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+  }
+  .table-container {
+    max-height: 600px;
+    overflow-y: auto;
+    border-radius: 10px;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #000000 !important;
+    color: white !important;
+    z-index: 10;
+  }
+  tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  .slow .switch-group {
+    transition: left 0.7s;
+    -webkit-transition: left 0.7s;
+  }
+  .fast .switch-group {
+    transition: left 0.1s;
+    -webkit-transition: left 0.1s;
+  }
+  .quick .switch-group {
+    transition: none;
+    -webkit-transition: none;
+  }
+</style>
