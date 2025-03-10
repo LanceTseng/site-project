@@ -47,6 +47,7 @@ const relUserAccessRoutes = require("./routes/relUserAccessRoutes");
 const ticketRoutes = require("./routes/ticketsRoutes");
 const relUserHandoverRoutes = require("./routes/relUserHandoverRoutes");
 const UserPaymentRoutes = require('./routes/userPaymentRoutes');
+const relUserTrainingRoutes = require('./routes/relUserTrainingRoutes');
 
 const userTaskViewRoutes = require("./routes/userTaskViewRoutes");
 const userEmployeeViewRoutes = require("./routes/userEmployeeViewRoutes");
@@ -86,6 +87,7 @@ app.use("/api", userAccesssViewRoutes);
 app.use("/api", ticketRoutes);
 app.use("/api", relUserHandoverRoutes);
 app.use("/api", UserPaymentRoutes);
+app.use("/api", relUserTrainingRoutes);
 
 //upload test
 const fileRoutes = require("./routes/fileRoutes");
