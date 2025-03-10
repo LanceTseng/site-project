@@ -3,70 +3,55 @@ import axiosInstance from "/js/utils/axiosInstance.js"; // Adjust if needed
 const baseURL = "api/";
 
 class View {
-  userTraining = `${baseURL}user-task-view/`;
-  userTrainingView = `${baseURL}user-parent-task-view/`;
+  userTraining = `${baseURL}user-training/`;
+  userTrainingView = `${baseURL}user-training-view/`;
 }
 
-export async function createUserTraining(data) {
+var view = new View();
+export const createUserTraining = async (data) => {
   try {
-    const response = await axiosInstance.post(`${baseURL}user-task-view`, data);
+    const response = await axiosInstance.post(view.userTraining, data);
     return response.data;
   } catch (error) {
     console.error("Error creating user training:", error);
     throw error;
   }
-}
+};
 
-export async function findUserTrainingById(id) {
+export const findUserTrainingById = async (id) => {
   try {
-    const response = await axiosInstance.get(`${baseURL}user-task-view/${id}`);
+    const response = await axiosInstance.get(`${view.userTraining}${id}`);
     return response.data;
   } catch (error) {
-    console.error("Error finding user training by ID:", error);
+    console.error(`Error finding user training with ID ${id}:`, error);
     throw error;
   }
-}
+};
 
-export async function updateUserTraining(id, data) {
+export const updateUserTraining = async (id, data) => {
   try {
-    const response = await axiosInstance.put(
-      `${baseURL}user-task-view/${id}`,
-      data
-    );
+    const response = await axiosInstance.put(`${view.userTraining}${id}`, data);
     return response.data;
   } catch (error) {
-    console.error("Error updating user training:", error);
+    console.error(`Error updating user training with ID ${id}:`, error);
     throw error;
   }
-}
+};
 
-export async function deleteUserTraining(id) {
+export const deleteUserTraining = async (id) => {
   try {
-    const response = await axiosInstance.delete(
-      `${baseURL}user-task-view/${id}`
-    );
+    const response = await axiosInstance.delete(`${view.userTraining}${id}`);
     return response.data;
   } catch (error) {
-    console.error("Error deleting user training:", error);
+    console.error(`Error deleting user training with ID ${id}:`, error);
     throw error;
   }
-}
+};
 
-export async function findAllUserTrainings() {
-  try {
-    const response = await axiosInstance.get(`${baseURL}user-task-view`);
-    return response.data;
-  } catch (error) {
-    console.error("Error finding all user trainings:", error);
-    throw error;
-  }
-}
-
-//view
-export async function getTrainingModuleViewByCondition(condition) {
+export const getTrainingModuleViewByCondition = async (condition) => {
   try {
     const response = await axiosInstance.get(
-      `${baseURL}user-training-view/condition`,
+      `${view.userTrainingView}condition`,
       {
         params: condition,
       }
@@ -76,4 +61,4 @@ export async function getTrainingModuleViewByCondition(condition) {
     console.error("Error getting training module view by condition:", error);
     throw error;
   }
-}
+};
