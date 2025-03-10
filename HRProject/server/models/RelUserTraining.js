@@ -25,6 +25,10 @@ const RelUserTraining = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    link_user_childtask_id:{
+        type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     start_date: {
       type: DataTypes.DATE,
       allowNull: true,

@@ -133,14 +133,17 @@ router.get("/report-goal", (req, res) => {
   res.render("pages/goal");
 });
 
-router.get("/ticket", (req, res) => {
+router.get("/report-ticket", (req, res) => {
   res.render("report/report-ticket");
 });
 
-router.get("/payment", (req, res) => {
+router.get("/report-payment", (req, res) => {
   res.render("report/report-user-payment");
 });
 
+router.get("/report-training", (req, res) => {
+  res.render("report/report-user-training");
+});
 
 //------------------------------------------------------
 //upload test
