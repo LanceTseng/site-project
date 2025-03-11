@@ -3,7 +3,7 @@ import axiosInstance from "/js/utils/axiosInstance.js"; // Adjust if needed
 const baseURL = "api/";
 
 class View {
-  userTraining = `${baseURL}user-training/`;
+  userTraining = `${baseURL}rel-user-training/`;
   userTrainingView = `${baseURL}user-training-view/`;
 }
 
