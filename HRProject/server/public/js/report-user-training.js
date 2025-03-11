@@ -36,6 +36,7 @@ async function loadUserTraining() {
     const searchTrainingName = $("#searchTrainingName").val();
     const searchDepartment = $("#searchDepartment").val();
     const searchStatus = $("#searchStatus").val();
+ 
 
     const response = await UserTrainingApi.getTrainingModuleViewByCondition({
       training_name: searchTrainingName,
@@ -122,6 +123,7 @@ async function updateTrainingStatus(trainingId, updateStatusName) {
     uesrTraining.status = getStatusByName(updateStatusName).id;
     await UserTrainingApi.updateUserTraining(uesrTraining.id, uesrTraining);
     Swal.fire("Success", `Status updated successfully!`, "success");
+    loadUserTraining();
   } catch (error) {
     console.log(error.message);
     Swal.fire("Error", error.message, "error");
@@ -176,6 +178,12 @@ $(document).ready(async function () {
 
   populateDropdown("#searchDepartment", "training_department");
   populateDropdown("#searchStatus", "training_status");
+
+ 
+  if(!accessVerify("Training Full Access")){
+    $("#searchUserName").val(loginUser.username);
+    $("#searchUserName").prop("disabled", true);
+}
 
   await loadUserTraining();
   await fetchStatuType();
