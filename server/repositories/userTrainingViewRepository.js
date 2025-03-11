@@ -17,9 +17,9 @@ class UserTrainingViewRepository {
         replacements.training_name = `%${training_name}%`;
       }
       if (user_name) {
-        query += " AND user_name LIKE :user_name";
-        replacements.user_name = `%${training_name}%`;
-      }
+        query += " AND user_name COLLATE utf8mb4_unicode_ci LIKE :user_name";
+        replacements.user_name = `%${user_name}%`;
+    }
       if (department) {
         query += " AND training_department_id = :department";
         replacements.department = department;
