@@ -9,6 +9,10 @@ class TrainingModuleRepository {
     return await TrainingModule.findByPk(id);
   }
 
+  async getByDepartmentId(id) {
+    return await TrainingModule.findAll({ where: { training_department_id: id } });
+  }
+
   async getByName(name) {
     return await TrainingModule.findOne({ where: { training_module_name: name } });
   }

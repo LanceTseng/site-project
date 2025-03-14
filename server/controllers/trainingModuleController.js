@@ -23,6 +23,18 @@ class TrainingModuleController {
     }
   }
 
+  async getByDepartmentId(req, res) {
+    try {
+      const module = await trainingModuleRepo.getByDepartmentId(req.params.id);
+      if (!module) return res.status(404).json({ error: "Module not found" });
+      res.json(module);
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
+    }
+  }
+
+
   async getByName(req, res) {
     try {
       const module = await trainingModuleRepo.getByName(req.params.name);

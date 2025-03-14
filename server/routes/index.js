@@ -145,6 +145,10 @@ router.get("/report-training", (req, res) => {
   res.render("report/report-user-training");
 });
 
+router.get("/report-training/lineid/:lineid/trainingdeptid/:deptid/userid/:userid", (req, res) => {
+  res.render("report/report-user-training");
+});
+
 //------------------------------------------------------
 //upload test
 router.get("/upload", (req, res) => {

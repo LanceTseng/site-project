@@ -6,6 +6,26 @@ import * as ChildTaskView from "./services/chilsTaskViewServices.js";
 import * as FormDesignViewApi from "./services/formDesignViewServices.js";
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
 
+async function populateDropdown(dropdownId, taskName) {
+  try {
+    const items = (await ObjectTypeApi.getTaskByName(taskName)) || [];
+
+    // Add an empty option as the first item
+    const options =
+      `<option value="">-- Select --</option>` +
+      items
+        .map(
+          (item) =>
+            `<option value="${item.object_type_item_key}">${item.object_type_item_value}</option>`
+        )
+        .join("");
+
+    $(dropdownId).html(options);
+  } catch (error) {
+    handleError(error, `Error populating ${taskName} dropdown`);
+  }
+}
+
 $(document).ready(async function () {
   const taskId = window.location.pathname.split("/").pop();
 
@@ -35,62 +55,6 @@ $(document).ready(async function () {
     });
   }
 
-  // Populate Device Type Dropdown
-  async function populateDeviceTypeDropdown() {
-    const $deviceDropdown = $("#deviceId");
-    $deviceDropdown.empty(); // Clear existing options
-
-    // Add the default "Select" option
-    $deviceDropdown.append(
-      `<option value="" disabled selected>Select a device type</option>`
-    );
-
-    // Filter only the "Equipment" object types and populate dropdown
-    const equipment_types = await ObjectTypeApi.getTaskByName("equipment_type");
-    equipment_types.forEach((device) => {
-      $deviceDropdown.append(
-        `<option value="${device.object_type_item_key}">${device.object_type_item_value}</option>`
-      );
-    });
-  }
-
-  // Populate Training Module Dropdown
-  function populateTrainingModuleDropdown() {
-    const $trainingDropdown = $("#trainingModuleId");
-    $trainingDropdown.empty();
-
-    // Add default option
-    $trainingDropdown.append(
-      `<option value="" disabled selected>Select a training module</option>`
-    );
-    const training_modules = [];
-    // Populate options from training_modules array
-    training_modules.forEach((module) => {
-      $trainingDropdown.append(
-        `<option value="${module.id}">${module.training_name}</option>`
-      );
-    });
-  }
-
-  // Populate Interview Dropdown
-  function populateInterviewDropdown() {
-    const $interviewDropdown = $("#interviewId");
-    $interviewDropdown.empty();
-
-    // Add default option
-    $interviewDropdown.append(
-      `<option value="" disabled selected>Select an interview</option>`
-    );
-
-    const interviews = [];
-    // Populate options from interviews array
-    interviews.forEach((interview) => {
-      $interviewDropdown.append(
-        `<option value="${interview.id}">${interview.interview_name}</option>`
-      );
-    });
-  }
-
   // Populate Survey Dropdown
   async function populateSurveyDropdown() {
     const $surveyDropdown = $("#surveyId");
@@ -103,6 +67,7 @@ $(document).ready(async function () {
 
     const surveys =
       await FormDesignViewApi.getFormDesignViewFormTypeByFormTypeId();
+      console.log("survey:"+surveys);
     // Populate options from surveys array
     surveys.forEach((survey) => {
       $surveyDropdown.append(
@@ -137,7 +102,7 @@ $(document).ready(async function () {
             <td>${subtask.document_name ?? ""}</td>
             <td>${subtask.require_upload ? "Y" : "N"}</td>
             <td>${subtask.eqpt_type ?? ""}</td>
-            <td>${subtask.training_module_id ?? ""}</td>
+            <td>${subtask.training_module_dept_name ?? ""}</td>
             <td>${subtask.hand_over_id == 1 ? "Yes" : "No"}</td>
             <td>${subtask.servey_name ?? ""}</td>
             <td>${subtask.enabled ? "Yes" : "No"}</td>
@@ -232,8 +197,6 @@ $(document).ready(async function () {
     const subtaskId = $(this).data("id");
     const subtask = await ChildTaskView.getChildTaskById(subtaskId);
 
-    console.log(subtask);
-
     if (subtask) {
       $("#subtaskId").val(subtask.child_task_id);
       $("#subtaskName").val(subtask.child_task_name);
@@ -263,8 +226,10 @@ $(document).ready(async function () {
   await populateTaskName();
   await populateTable();
   await populateDocumentDropdown();
-  await populateDeviceTypeDropdown();
-  await populateTrainingModuleDropdown();
-  await populateInterviewDropdown();
+  // await populateInterviewDropdown();
   await populateSurveyDropdown();
+
+  //polulate dropdown
+  populateDropdown("#deviceId", "equipment_type");
+  populateDropdown("#trainingModuleId", "training_department");
 });
