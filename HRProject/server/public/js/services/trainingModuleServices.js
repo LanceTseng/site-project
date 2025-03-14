@@ -28,6 +28,17 @@ export const getTrainingModuleById = async (id) => {
   }
 };
 
+export const getTrainingModuleByDepartmentId = async (id) => {
+  try {
+    const response = await axiosInstance.get(`${view.trainingModule}/department/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching training module with id ${id}:`, error);
+    throw error;
+  }
+};
+
+
 export const createTrainingModule = async (data) => {
   try {
     const response = await axiosInstance.post(`${view.trainingModule}`, data);

@@ -6,7 +6,8 @@ class UserTrainingViewRepository {
     training_name,
     user_name,
     department,
-    status
+    status,
+    user_childtask_id
   ) {
     try {
       let query = "SELECT * FROM v_user_training WHERE 1=1";
@@ -27,6 +28,10 @@ class UserTrainingViewRepository {
       if (status) {
         query += " AND status = :status";
         replacements.status = status;
+      }
+      if (user_childtask_id) {
+        query += " AND user_ct_line_id = :user_childtask_id";
+        replacements.user_childtask_id = user_childtask_id;
       }
 
       const userTraining = await db.query(query, {

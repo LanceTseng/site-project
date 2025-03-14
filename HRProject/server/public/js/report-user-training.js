@@ -36,13 +36,14 @@ async function loadUserTraining() {
     const searchTrainingName = $("#searchTrainingName").val();
     const searchDepartment = $("#searchDepartment").val();
     const searchStatus = $("#searchStatus").val();
- 
+    const searchLineId = $("#searchLineId").val();
 
     const response = await UserTrainingApi.getTrainingModuleViewByCondition({
       training_name: searchTrainingName,
       user_name: searchUserName,
       department: searchDepartment,
       status: searchStatus,
+      user_childtask_id: searchLineId,
     }); // Ensure it's awaited
 
     const trainingTableBody = $("#trainingTableBody");
@@ -169,21 +170,76 @@ function getDepartmetByName(name) {
   const department = trainingDepartment.find(
     (item) => item.name.toLowerCase() == name.toLowerCase()
   );
-  console.log(department);
   return department ?? null; // Return the ID or null if not found
 }
+
+async function navigateFromUserTask() {
+  //navigate from user task
+  const pathParts = window.location.pathname.split("/"); // Split by "/"
+
+  // Find dynamic parameters based on your URL structure
+  const lineIdIndex = pathParts.indexOf("lineid") + 1; // Get index after 'form'
+  const trainingDeptIdIndex = pathParts.indexOf("trainingdeptid") + 1; // Get index after 'lineid'
+  const userIdIndex = pathParts.indexOf("userid") + 1;
+
+  // Extract formId and lineId safely
+  const lindId = lineIdIndex > 0 ? pathParts[lineIdIndex] : null;
+  const trainingDeptId =
+    trainingDeptIdIndex > 0 ? pathParts[trainingDeptIdIndex] : null;
+  const userId = userIdIndex > 0 ? pathParts[userIdIndex] : null;
+
+  $("#searchDepartment").val(trainingDeptId);
+  $("#searchLineId").val(lindId);
+
+  if (lindId != null && trainingDeptId != null && userId == loginUser.user_id) {
+    initUserTraining(lindId, trainingDeptId);
+  }
+}
+
+async function initUserTraining(line_id, trainingDeptId) {
+  try {
+    // Check if user training already exists
+    const userTrainingExist =
+      await UserTrainingApi.getTrainingModuleViewByCondition({
+        user_childtask_id: line_id,
+      });
+
+    if (userTrainingExist.length > 0) return;
+
+    // Fetch training modules by department
+    const trainingModules =
+      await TrainingModuleApi.getTrainingModuleByDepartmentId(trainingDeptId);
+    if (!trainingModules || trainingModules.length === 0) return; // Avoid unnecessary iterations
+
+    // Loop over training modules and create user training
+    for (const module of trainingModules) {
+      await UserTrainingApi.createUserTraining({
+        user_id: loginUser.user_id,
+        training_module_id: module.training_module_id,
+        status: 1,
+        link_user_childtask_id: line_id,
+      });
+    }
+    await loadUserTraining();
+  } catch (error) {
+    console.error("Error initializing user training:", error);
+  }
+}
+
+//-----------------------------
 
 $(document).ready(async function () {
   loginUser = JSON.parse(sessionStorage.getItem("user"));
 
+  await navigateFromUserTask();
+
   populateDropdown("#searchDepartment", "training_department");
   populateDropdown("#searchStatus", "training_status");
 
- 
-  if(!accessVerify("Training Full Access")){
+  if (!accessVerify("Training Full Access")) {
     $("#searchUserName").val(loginUser.username);
     $("#searchUserName").prop("disabled", true);
-}
+  }
 
   await loadUserTraining();
   await fetchStatuType();
@@ -191,6 +247,7 @@ $(document).ready(async function () {
 
   $("#processQuery").click(function (e) {
     e.preventDefault();
+    $("#searchLineId").val("");
     loadUserTraining();
   });
 

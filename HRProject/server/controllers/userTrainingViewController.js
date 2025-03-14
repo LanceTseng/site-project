@@ -4,12 +4,13 @@ const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 class UserTrainingViewController {
     async getTrainingModuleViewByCondition(req, res) {
         try {
-            const { training_name, user_name, department, status } = req.query;
+            const { training_name, user_name, department, status, user_childtask_id } = req.query;
             const userTraining = await UserTrainingViewRepository.geTrainingModuleViewByCondition(
                 training_name,
                 user_name,
                 department,
-                status
+                status,
+                user_childtask_id
             );
             res.status(200).json(userTraining);
         } catch (error) {

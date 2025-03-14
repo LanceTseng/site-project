@@ -2,6 +2,8 @@ import * as UserTaskViewApi from "./services/userTaskViewServices.js";
 import * as UserParentTaskApi from "./services/relUserParentTaskServices.js";
 import * as UserChildTaskApi from "./services/relUserChildTaskServices.js";
 import * as DocumentApi from "./services/documentServices.js";
+import * as TrainingModuleApi from "./services/trainingModuleServices.js";
+import * as userTrainingServices from "./services/userTrainingServices.js";
 import * as FileApi from "./services/fileServices.js";
 
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
@@ -423,6 +425,8 @@ function updateDocumentLink(documentId, documentCellId, documentName) {
       console.error("Error updating document link:", error);
     });
 }
+//complete require check function => depend on maintain
+
 function buildTaskDetailRow(detail) {
   const fileUrl = detail.document_path || "";
   const filename = fileUrl
@@ -458,8 +462,18 @@ function buildTaskDetailRow(detail) {
       : `Handover Required`
     : "";
 
+  // buildUserTrainingModule(detail.line_id, detail.training_department_id);
+  const TrainingLink = detail.training_module_id
+  ? isEqualIgnoreCase(detail.ct_status_name, "processing")
+    ? `<a href="/report-training/lineid/${detail.line_id}/trainingdeptid/${detail.training_module_id}/userid/${detail.user_id}" target="_self">${detail.training_module_dept_name}</a>`
+    : isEqualIgnoreCase(detail.ct_status_name, "completed")
+    ? `<a href="/report-training" target="_self">${detail.training_module_dept_name}(Report)</a>`
+    : `${detail.training_module_dept_name}`
+  : "";
+
   const rowHtml = `
     <tr id="${rowId}">
+      <td>${detail.line_id || ""}</td>
       <td>${detail.ct_task_name || ""}</td>
       <td>${detail.ct_desc || ""}</td>
       <td>${detail.ct_status_name || ""}</td>
@@ -469,7 +483,7 @@ function buildTaskDetailRow(detail) {
       <td>${
         detail.equipment_id ? `${detail.eqpt_name} (${detail.eqpt_code})` : ""
       }</td>
-      <td>${detail.trainning_module_id || ""}</td>
+      <td>${TrainingLink}</td>
       <td>${handoverLink}</td>
       <td>${surveyLink}</td>
       <td>${formatDate(detail.ct_start_date)}</td>
