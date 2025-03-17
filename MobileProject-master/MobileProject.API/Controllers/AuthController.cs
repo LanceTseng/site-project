@@ -16,5 +16,9 @@ namespace MobileProject.API.Controllers
             return View();
         }
 
+        public IActionResult ResetPassword()
+        {
+            return View();
+        }
     }
 }
