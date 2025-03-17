@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿ 
+$(document).ready(function () {
     loginUser();
 
     loadUsers();
@@ -14,7 +15,6 @@ function loginUser() {
         window.location.href = "/home"; // Redirect
     }
 }
-
 
 // ✅ API Base URL (Define Only Once)
 const apiBaseUrl = "/api/Users";
@@ -197,7 +197,7 @@ function deleteUser(id) {
 // 🔹 Batch Delete Selected Users
 function deleteSelectedUsers() {
     if (!gridApi) return;
-    
+
     const selectedRows = gridApi.getSelectedRows();
     if (selectedRows.length === 0) {
         Swal.fire({ title: "No users selected!", text: "Please select users to delete.", icon: "warning" });
@@ -223,6 +223,34 @@ function deleteSelectedUsers() {
                 });
         }
     });
+}
+
+function exportUser() {
+    if (!gridApi) {
+        console.error("AG Grid is not initialized.");
+        return;
+    }
+
+    // Get all row data
+    const rowData = [];
+    gridApi.forEachNode(node => rowData.push(node.data));
+
+    if (rowData.length === 0) {
+        Swal.fire("No Data", "There is no data to export!", "warning");
+        return;
+    }
+
+    // Convert JSON data to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(rowData);
+
+    // Create a new workbook and append the worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
+
+    // Generate an Excel file and download it
+    XLSX.writeFile(workbook, "Users.xlsx");
+
+    
 }
 
 // 🔹 Select All / Unselect All
