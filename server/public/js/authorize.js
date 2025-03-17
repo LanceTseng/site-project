@@ -17,6 +17,7 @@ async function handleLogin() {
 
     if (user.password !== password) {
       Swal.fire("Error", `Password is incorrect.`, "error");
+      return;
     }
 
     const userView = await UserEmployeeViewApi.getUserEmployeeByUserId(
