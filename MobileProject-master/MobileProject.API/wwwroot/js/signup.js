@@ -17,6 +17,24 @@ async function isValidUserName(username) {
     }
 }
 
+async function isExistedEmail(email) {
+    try {
+        // Fetch existing users (assuming API returns an array)
+        const response = await axios.get("/api/Users/GetAllUsers");
+        const existingUsers = response.data;
+        // Ensure existingUsers is an array before calling includes
+        if (Array.isArray(existingUsers)) {
+            return existingUsers.some(user => user.email == email);
+        } else {
+            console.error("Error: existingUsers is not an array", existingUsers);
+            return false;
+        }
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        return false;
+    }
+}
+
 // Function to validate password strength
 function isValidPassword(password) {
     const regex = /^(?=.*[A-Z]).{8,}$/; // At least 8 chars, 1 uppercase
@@ -43,10 +61,10 @@ async function signup() {
     const password = $("#Password").val().trim();
 
     // Username check
-    if (await isValidUserName(username)) {
-        Swal.fire("Error", "User already exists.", "error");
-        return;
-    }
+    //if (await isValidUserName(username)) {
+    //    Swal.fire("Error", "User already exists.", "error");
+    //    return;
+    //}
 
     // Password validation
     if (!isValidPassword(password)) {
@@ -57,6 +75,11 @@ async function signup() {
     // Email validation
     if (!isValidEmail(email)) {
         Swal.fire("Error", "Please enter a valid email address.", "error");
+        return;
+    }
+
+    if (await isExistedEmail(email)) {
+        Swal.fire("Error", "Email already exists.", "error");
         return;
     }
 

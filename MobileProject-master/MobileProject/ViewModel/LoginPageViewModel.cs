@@ -17,6 +17,7 @@ namespace MobileProject.ViewModel
     {
         private string _username;
         private string _password;
+        private string _email;
         private bool _isBusy;
 
         private readonly IUserService _userService;
@@ -30,6 +31,17 @@ namespace MobileProject.ViewModel
                 UpdateCanExecute();
             }
         }
+
+        public string Email
+        {
+            get => _email;
+            set
+            {
+                SetProperty(ref _email, value);
+                UpdateCanExecute();
+            }
+        }
+
 
         public string Password
         {
@@ -66,7 +78,7 @@ namespace MobileProject.ViewModel
 
         private async Task ForgotPasswordAsync()
         {
-            var users = await _userService.GetUsersByConditionAsync(userName: Username);
+            var users = await _userService.GetUsersByConditionAsync(email: Email);
             if (users == null)
             {
                 await DisplayErrorMessage("User not existed");
@@ -92,11 +104,11 @@ namespace MobileProject.ViewModel
             try
             {
                 IsBusy = true;
-                var users = await _userService.GetUsersByConditionAsync(userName: Username, password: Password);
-                var user = users.FirstOrDefault(x=>x.UserName == Username && x.Password == Password);
+                var users = await _userService.GetUsersByConditionAsync(email: Email, password: Password);
+                var user = users.FirstOrDefault(x=>x.Email == Email && x.Password == Password);
                 if (user == null)
                 {
-                    await DisplayErrorMessage("Invalid username or password");
+                    await DisplayErrorMessage("Invalid email or password");
                     return;
                 }
 
@@ -138,13 +150,13 @@ namespace MobileProject.ViewModel
         private bool CanLogin()
         {
             // Enable the button only when username and password are not empty
-            return !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password) && !IsBusy;
+            return !string.IsNullOrWhiteSpace(Email) && !string.IsNullOrWhiteSpace(Password) && !IsBusy;
         }
 
         private bool CanResetPassword()
         {
             // Enable the button only when username and password are not empty
-            return !string.IsNullOrWhiteSpace(Username) && !IsBusy;
+            return !string.IsNullOrWhiteSpace(Email) && !IsBusy;
         }
 
         private async void OnPopupClosed(object sender, Rg.Plugins.Popup.Events.PopupNavigationEventArgs e)

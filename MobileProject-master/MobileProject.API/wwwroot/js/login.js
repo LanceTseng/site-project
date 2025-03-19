@@ -5,12 +5,12 @@
     }
 }
 
-function fetchUser(userName, password) {
-    return axios.get(`/api/Users/GetUsersByCondition?userName=${userName}&password=${password}`)
+function fetchUser(email, password) {
+    return axios.get(`/api/Users/GetUsersByCondition?email=${email}&password=${password}`)
         .then(response => {
 
             // Filter the users array based on the userName and password
-            const user = response.data.find(u => u.userName === userName && u.password === password);
+            const user = response.data.find(u => u.email === email && u.password === password);
 
             if (user) {
             
@@ -74,11 +74,11 @@ $(document).ready(function () {
     $(".btn-login").click(async function (event) {
         event.preventDefault(); // Prevent default form submission
 
-        let userName = $("#UserName").val().trim();
+        let email = $("#Email").val().trim();
         let password = $("#Password").val().trim();
 
         // Simple validation
-        if (!userName || !password) {
+        if (!email || !password) {
             Swal.fire({
                 icon: "warning",
                 title: "Validation Error",
@@ -88,7 +88,7 @@ $(document).ready(function () {
         }
 
         // Fetch user and process login
-        const user = await fetchUser(userName, password);
+        const user = await fetchUser(email, password);
         processLogin(user);
     });
 });

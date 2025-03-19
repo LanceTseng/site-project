@@ -135,6 +135,13 @@ namespace MobileProject.ViewModel
                 return;
             }
 
+            if (await IsExistedEmail(Email))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Email existed.", "OK");
+                return;
+            }
+
+
             if (!IsValidPhone(Phone))
             {
                 await Application.Current.MainPage.DisplayAlert(
@@ -186,6 +193,13 @@ namespace MobileProject.ViewModel
         private async Task<bool> IsValidUserName(string userName)
         {
             var userExisted = await _userService.GetUsersByConditionAsync(userName:userName);
+
+            return (userExisted != null);
+        }
+
+        private async Task<bool> IsExistedEmail(string email)
+        {
+            var userExisted = await _userService.GetUsersByConditionAsync(email: email);
 
             return (userExisted != null);
         }

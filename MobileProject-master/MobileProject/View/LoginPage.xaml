@@ -24,8 +24,8 @@
 
         <Entry
             Keyboard="Default"
-            Placeholder="Username"
-            Text="{Binding Username}" />
+            Placeholder="Email"
+            Text="{Binding Email}" />
         <Entry
             IsPassword="True"
             Placeholder="Password"

@@ -1,8 +1,25 @@
-﻿function fetchUser(userName, password) {
+﻿function fetchUser(userName) {
     return axios.get(`/api/Users/GetUsersByCondition?userName=${userName}`)
         .then(response => {
             // Filter the users array based on the userName and password
             const user = response.data.find(u => u.userName === userName);
+
+            if (user) {
+                return user; // Return the found user object
+            } else {
+                return null; // Return null if no user matches
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching user:", error);
+            return null; // Return null in case of error
+        });
+}
+function fetchUserByEmail(email) {
+    return axios.get(`/api/Users/GetUsersByCondition?email=${email}`)
+        .then(response => {
+            // Filter the users array based on the userName and password
+            const user = response.data.find(u => u.email === email);
 
             if (user) {
                 return user; // Return the found user object
@@ -21,10 +38,10 @@ function isValidPassword(password) {
 }
 
 async function handleResetPassword() {
-    let userName = $("#UserName").val().trim();
+    let email = $("#Email").val().trim();
     let newPassword = $("#NewPassword").val().trim();
 
-    if (!userName || !newPassword) {
+    if (!email || !newPassword) {
         Swal.fire({
             icon: "warning",
             title: "Validation Error",
@@ -33,7 +50,7 @@ async function handleResetPassword() {
         return;
     }
 
-    var user = await fetchUser(userName);
+    var user = await fetchUserByEmail(email);
     if (!user) {
         Swal.fire("Error", "User not found.", "error");
         return;
