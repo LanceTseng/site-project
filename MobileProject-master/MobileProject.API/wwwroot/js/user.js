@@ -96,7 +96,7 @@ function searchGrid() {
         })
         .catch(error => {
             console.error("Error loading users:", error);
-            setupGrid([])
+            setupGrid([]);
         });
 }
 
