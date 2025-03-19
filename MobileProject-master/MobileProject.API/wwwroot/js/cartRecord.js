@@ -114,7 +114,10 @@ function searchGrid() {
         .then(response => {
             setupGrid(response.data);  // ✅ First-time setup
         })
-        .catch(error => console.error("Error loading users:", error));
+        .catch(error => {
+            console.error("Error loading users:", error);
+            setupGrid([]); 
+        });
 }
 
 function resetFilters() {

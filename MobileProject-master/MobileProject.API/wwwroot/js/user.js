@@ -1,4 +1,4 @@
-﻿ 
+﻿
 $(document).ready(function () {
     loginUser();
 
@@ -63,6 +63,7 @@ function setupGrid(users) {
     }
 
     gridDiv.innerHTML = "";
+
     // ✅ Store gridOptions globally
     const gridOptions = {
         columnDefs: columnDefs,
@@ -93,7 +94,10 @@ function searchGrid() {
         .then(response => {
             setupGrid(response.data);  // ✅ First-time setup
         })
-        .catch(error => console.error("Error loading users:", error));
+        .catch(error => {
+            console.error("Error loading users:", error);
+            setupGrid([])
+        });
 }
 
 // 🔹 Reset Search Filters
@@ -103,7 +107,7 @@ function resetFilters() {
 }
 
 // 🔹 Open Modal for Create/Edit User
-function openModal(user = null) {
+function openModal(user) {
     $("#userModal").modal("show");
 
     if (user) {
@@ -250,7 +254,7 @@ function exportUser() {
     // Generate an Excel file and download it
     XLSX.writeFile(workbook, "Users.xlsx");
 
-    
+
 }
 
 // 🔹 Select All / Unselect All

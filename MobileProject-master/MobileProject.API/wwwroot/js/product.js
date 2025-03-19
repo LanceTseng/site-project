@@ -95,8 +95,7 @@ function searchGrid() {
             setupGrid(response.data);  // ✅ First-time setup
         })
         .catch(error => {
-            const gridDiv = document.getElementById("productGrid");
-            gridDiv.innerHTML = "No Data Found";
+            setupGrid([]);
             console.error("Error loading products:", error)
         })
 

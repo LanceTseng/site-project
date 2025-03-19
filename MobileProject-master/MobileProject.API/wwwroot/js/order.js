@@ -93,7 +93,10 @@ function searchOrders() {
 
     axios.get(`${apiBaseUrl}/GetOrderViewByCondition${query}`)
         .then(response => setupGrid(response.data))
-        .catch(error => console.error("Error searching orders:", error));
+        .catch(error => {
+            console.error("Error searching orders:", error);
+            setupGrid([]);
+        });
 }
 
 function resetFilters() {
