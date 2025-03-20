@@ -5,13 +5,17 @@ import * as DocumentApi from "./services/documentServices.js";
 import * as TrainingModuleApi from "./services/trainingModuleServices.js";
 import * as userTrainingServices from "./services/userTrainingServices.js";
 import * as FileApi from "./services/fileServices.js";
+import * as ObjectTypeApi from "./services/objectTypeServices.js";
 
 import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
+import { accessVerify } from "./utils/authVerify.js";
 
 let loginUser;
 
 $(document).ready(async function () {
   loginUser = JSON.parse(sessionStorage.getItem("user"));
+
+  populateDropdown("#taskGroupFilter", "task_group");
 
   await displayUserTaskHeader();
 
@@ -38,18 +42,53 @@ $(document).ready(async function () {
   $("#userTaskDetailList").on("click", ".upload-file-btn", function () {
     handleChildTaskFileUpload($(this).data("id"));
   });
+
+  $("#processQuery").on("click", async function () {
+    displayUserTaskHeader();
+  });
 });
+
+async function populateDropdown(dropdownId, taskName) {
+  try {
+    const items = (await ObjectTypeApi.getTaskByName(taskName)) || [];
+
+    // Add an empty option as the first item
+    const options =
+      `<option value="">-- Select --</option>` +
+      items
+        .map(
+          (item) =>
+            `<option value="${item.object_type_item_key}">${item.object_type_item_value}</option>`
+        )
+        .join("");
+
+    $(dropdownId).html(options);
+  } catch (error) {
+    handleError(error, `Error populating ${taskName} dropdown`);
+  }
+}
 
 async function displayUserTaskHeader() {
   try {
+    //condition
+    const taskName = $("#taskFilter").val();
+    const userName = $("#userFilter").val();
+    const taskGroupId = $("#taskGroupFilter").val();
+    const userId = loginUser.user_id;
     let userParentTasks = [];
-    if (isEqualIgnoreCase(loginUser.user_role, "hr")) {
-      userParentTasks = await UserTaskViewApi.getAllUserParentTasks();
-    } else {
-      userParentTasks = await UserTaskViewApi.getUserParentTaskByUserId(
-        loginUser.user_id
-      );
+    let filterParams = { taskName, userName, taskGroupId };
+
+    //access check
+    if (!accessVerify("User Task Access All")) {
+      filterParams.userId = userId;
     }
+    userParentTasks = await UserTaskViewApi.getUserParentTaskByCondition({
+      taskName: filterParams.taskName,
+      userName: filterParams.userName,
+      taskGroupId: filterParams.taskGroupId,
+      userId: filterParams.userId,
+    });
+
     const taskRows = await Promise.all(userParentTasks.map(buildTaskRow));
     $("#userTaskHeaderList").html(taskRows.join(""));
   } catch (error) {
@@ -463,13 +502,13 @@ function buildTaskDetailRow(detail) {
     : "";
 
   // buildUserTrainingModule(detail.line_id, detail.training_department_id);
-  const TrainingLink = detail.training_module_id
-  ? isEqualIgnoreCase(detail.ct_status_name, "processing")
-    ? `<a href="/report-training/lineid/${detail.line_id}/trainingdeptid/${detail.training_module_id}/userid/${detail.user_id}" target="_self">${detail.training_module_dept_name}</a>`
-    : isEqualIgnoreCase(detail.ct_status_name, "completed")
-    ? `<a href="/report-training" target="_self">${detail.training_module_dept_name}(Report)</a>`
-    : `${detail.training_module_dept_name}`
-  : "";
+  const trainingLink = detail.training_module_id
+    ? isEqualIgnoreCase(detail.ct_status_name, "processing")
+      ? `<a href="/report-training/lineid/${detail.line_id}/trainingdeptid/${detail.training_module_id}/userid/${detail.user_id}" target="_self">${detail.training_module_dept_name}</a>`
+      : isEqualIgnoreCase(detail.ct_status_name, "completed")
+      ? `<a href="/report-training" target="_self">${detail.training_module_dept_name}(Report)</a>`
+      : `${detail.training_module_dept_name}`
+    : "";
 
   const rowHtml = `
     <tr id="${rowId}">
@@ -483,7 +522,7 @@ function buildTaskDetailRow(detail) {
       <td>${
         detail.equipment_id ? `${detail.eqpt_name} (${detail.eqpt_code})` : ""
       }</td>
-      <td>${TrainingLink}</td>
+      <td>${trainingLink}</td>
       <td>${handoverLink}</td>
       <td>${surveyLink}</td>
       <td>${formatDate(detail.ct_start_date)}</td>

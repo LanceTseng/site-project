@@ -54,6 +54,17 @@ export const getUserTaskByLineId = async (id) => {
   }
 };
 
+export const getUserParentTaskByCondition = async (condition) => {
+  try {
+    const response = await axiosInstance.get(`${view.parentTask}condition`, {
+      params: condition,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching user task with ID ${id}:`, error);
+    throw error;
+  }
+};
 
 // Function to get all parent tasks
 export const getAllUserParentTasks = async () => {

@@ -72,6 +72,26 @@ class UserTaskViewController {
     }
   }
 
+  async getUserTaskViewByCondition(req, res) {
+    try {
+      const { taskName, userName, taskGroupId, userId } = req.query;
+      const userTasks =
+        await UserTaskViewRepository.getUserParentTaskByCondition(
+          taskName,
+          userName,
+          taskGroupId,
+          userId
+        );
+      if (!userTasks) {
+        return res.status(404).json({ message: "UserTask not found" });
+      }
+      res.status(200).json(userTasks);
+    } catch (error) {
+      res.status(500).json({ error: "Error fetching userTasks" });
+      logger.error(error.message);
+    }
+  }
+
   //v_user_parent_task
   async getAllUserParentTaskView(req, res) {
     try {

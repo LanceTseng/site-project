@@ -74,12 +74,18 @@ class UserTaskViewRepository {
    */
   async getUserParentTaskByUserId(userId) {
     try {
-      return await db.query("SELECT * FROM v_user_parent_task WHERE user_id = ?", {
-        type: QueryTypes.SELECT,
-        replacements: [userId],
-      });
+      return await db.query(
+        "SELECT * FROM v_user_parent_task WHERE user_id = ?",
+        {
+          type: QueryTypes.SELECT,
+          replacements: [userId],
+        }
+      );
     } catch (error) {
-      console.error(`Error fetching parent tasks for user ID ${userId}:`, error);
+      console.error(
+        `Error fetching parent tasks for user ID ${userId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -103,12 +109,53 @@ class UserTaskViewRepository {
    */
   async getUserChildTaskByTaskId(taskId) {
     try {
-      return await db.query("SELECT * FROM v_user_child_task WHERE user_parenttask_id = ?", {
-        type: QueryTypes.SELECT,
-        replacements: [taskId],
-      });
+      return await db.query(
+        "SELECT * FROM v_user_child_task WHERE user_parenttask_id = ?",
+        {
+          type: QueryTypes.SELECT,
+          replacements: [taskId],
+        }
+      );
     } catch (error) {
-      console.error(`Error fetching child tasks for parent task ID ${taskId}:`, error);
+      console.error(
+        `Error fetching child tasks for parent task ID ${taskId}:`,
+        error
+      );
+      throw error;
+    }
+  }
+
+  async getUserParentTaskByCondition(taskName, userName, taskGroupId, userId) {
+    try {
+      let query = "SELECT * FROM v_user_parent_task WHERE 1=1";
+      const replacements = {};
+
+      if (taskName) {
+        query += " AND pt_name COLLATE utf8mb4_unicode_ci  LIKE :taskName";
+        replacements.taskName = `%${taskName}%`;
+      }
+      if (userName) {
+        query += " AND user_name COLLATE utf8mb4_unicode_ci LIKE :userName";
+        replacements.userName = `%${userName}%`;
+      }
+
+      if (taskGroupId) {
+        query += " AND task_group_id = :taskGroupId";
+        replacements.taskGroupId = taskGroupId;
+      }
+
+      if (userId) {
+        query += " AND user_id = :userId";
+        replacements.userId = userId;
+      }
+
+      const userParentTask = await db.query(query, {
+        type: QueryTypes.SELECT,
+        replacements: replacements,
+      });
+      return userParentTask;
+    } catch (error) {
+      console.error("Error fetching user parent tasks by condition: ", error);
       throw error;
     }
   }
