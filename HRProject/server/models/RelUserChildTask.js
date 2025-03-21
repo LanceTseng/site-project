@@ -33,7 +33,7 @@ const RelUserChildTask = sequelize.define(
       type: DataTypes.TINYINT,
       allowNull: true,
     },
-    trainning_module_id: {
+    training_module_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },

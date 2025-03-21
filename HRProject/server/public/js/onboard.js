@@ -80,6 +80,8 @@ $(document).ready(async function () {
           parent.task_id
         );
 
+        console.log(childTasks);
+
         const countChildTasks =
           childTasks.filter((t) => Boolean(t.enabled))?.length || 0;
 
@@ -102,7 +104,7 @@ $(document).ready(async function () {
                 document_path: "",
                 require_upload: child.require_upload || 0,
                 equipment_type_id: child.equipment_type_id || null,
-                training_module_id: child.training_module_id || null,
+                training_module_id: child.training_module_id || null,   //link to training_module_dept_name
                 access_provisioning_id: child.access_provisioning_id || null,
                 interview_id: child.interview_id || null,
                 survey_id: child.survey_id || null,
