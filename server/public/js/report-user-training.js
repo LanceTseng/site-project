@@ -183,20 +183,20 @@ async function navigateFromUserTask() {
   const userIdIndex = pathParts.indexOf("userid") + 1;
 
   // Extract formId and lineId safely
-  const lindId = lineIdIndex > 0 ? pathParts[lineIdIndex] : null;
+  const lineId = lineIdIndex > 0 ? pathParts[lineIdIndex] : null;
   const trainingDeptId =
     trainingDeptIdIndex > 0 ? pathParts[trainingDeptIdIndex] : null;
   const userId = userIdIndex > 0 ? pathParts[userIdIndex] : null;
 
   $("#searchDepartment").val(trainingDeptId);
-  $("#searchLineId").val(lindId);
+  $("#searchLineId").val(lineId);
 
-  if (lindId != null && trainingDeptId != null && userId == loginUser.user_id) {
-    initUserTraining(lindId, trainingDeptId);
+  if ((lineId != null && trainingDeptId != null && userId == loginUser.user_id) || accessVerify("Training Full Access")) {
+    initUserTraining(lineId, trainingDeptId, userId);
   }
 }
 
-async function initUserTraining(line_id, trainingDeptId) {
+async function initUserTraining(line_id, trainingDeptId, userId) {
   try {
     // Check if user training already exists
     const userTrainingExist =
@@ -214,7 +214,7 @@ async function initUserTraining(line_id, trainingDeptId) {
     // Loop over training modules and create user training
     for (const module of trainingModules) {
       await UserTrainingApi.createUserTraining({
-        user_id: loginUser.user_id,
+        user_id: userId,
         training_module_id: module.training_module_id,
         status: 1,
         link_user_childtask_id: line_id,
