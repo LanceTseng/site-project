@@ -68,7 +68,7 @@ function setupGrid(orders) {
         paginationPageSize: 30,
         domLayout: "normal"
     };
-   
+
     gridApi = agGrid.createGrid(gridDiv, gridOptions);
     gridDiv.style.height = "500px";  // ✅ Set fixed height
 }
@@ -195,12 +195,36 @@ function closeOrderDetailModal() {
 }
 
 // ✅ Delete Order
-function deleteOrder(orderId) {
-    if (!confirm("Are you sure you want to delete this order?")) return;
+function deleteOrder(orderId = null) {
+    if (!gridApi) return;
 
-    axios.delete(`${apiBaseUrl}/DeleteOrder/${orderId}`)
-        .then(() => loadOrders())
-        .catch(error => console.error("Error deleting order:", error));
+    let selectedRows = gridApi.getSelectedRows();
+    if (selectedRows.length === 0) {
+        Swal.fire({ title: "No row selected!", text: "Please select row to delete.", icon: "warning" });
+        return;
+    }
+  
+    Swal.fire({
+        title: `Delete ${selectedRows.length} order(s)?`,
+        text: "This action is irreversible!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete them!"
+    }).then(result => {
+        if (result.isConfirmed) {
+            Promise.all(selectedRows.map(row =>
+                axios.delete(`${apiBaseUrl}/DeleteOrder/${row.id}`)
+            ))
+                .then(() => {
+                    Swal.fire("Deleted!", "Selected order(s) have been deleted.", "success");
+                    loadOrders(); // Refresh the grid
+                })
+                .catch(error => {
+                    console.error("Error deleting orders:", error);
+                    Swal.fire("Error!", "Failed to delete orders.", "error");
+                });
+        }
+    });
 }
 
 // ✅ Close Modal

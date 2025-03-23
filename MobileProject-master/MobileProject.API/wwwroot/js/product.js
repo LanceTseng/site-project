@@ -14,7 +14,6 @@ function loginUser() {
     }
 }
 
-
 // ✅ API Base URL (Define Only Once)
 const apiBaseUrl = "/api/Products";
 let gridApi = null;
@@ -28,14 +27,13 @@ function loadProducts() {
 
 // 🔹 Initialize AG Grid
 function setupGrid(products) {
-
     const columnDefs = [
         { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
         { field: "id", headerName: "ID", width: 70 },
         { field: "name", headerName: "Name" },
         { field: "description", headerName: "Description" },
         { field: "price", headerName: "Price", valueFormatter: params => `$${params.value.toFixed(2)}` },
-        { field: "date", headerName: "Date Added", valueFormatter: params => new Date(params.value).toLocaleString() },
+        { field: "date", headerName: "Date Added", valueFormatter: params => formatDate_YYYYMMDD(params.value) },
         {
             field: "image",
             headerName: "Image",
@@ -64,7 +62,6 @@ function setupGrid(products) {
         return;
     }
     gridDiv.innerHTML = "";
-
 
     // ✅ Store gridOptions globally
     const gridOptions = {
@@ -98,7 +95,6 @@ function searchGrid() {
             setupGrid([]);
             console.error("Error loading products:", error)
         })
-
 }
 function resetFilters() {
     $("#searchName, #searchMinPrice, #searchMaxPrice, #searchDate").val("");
@@ -107,13 +103,12 @@ function resetFilters() {
 // 🔹 Open Modal for Create/Edit Product
 function openModal(product = null) {
     $("#productModal").modal("show");
-
     if (product) {
         $("#productId").val(product.id);
         $("#productName").val(product.name);
         $("#productDescription").val(product.description);
         $("#productPrice").val(product.price);
-        $("#productDate").val(new Date(product.date).toISOString().slice(0, 16));
+        $("#productDate").val(formatDate_YYYYMMDD(product.date));
         $("#productImage").val(product.image);
     } else {
         $("#productForm")[0].reset();
@@ -231,4 +226,14 @@ function toggleSelectAll() {
 
     const allSelected = gridApi.getSelectedRows().length > 0;
     gridApi.forEachNode(node => node.setSelected(!allSelected));
+}
+
+function formatDate_YYYYMMDD(date) {
+    if (!date) return "";
+
+    // Convert Date object to YYYY-MM-DD format
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return ""; // Handle invalid dates
+
+    return d.toISOString().split("T")[0];
 }
