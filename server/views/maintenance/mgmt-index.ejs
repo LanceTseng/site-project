@@ -9,139 +9,86 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
-  </head>
-
-  <body>
-    <%- include('../partials/navbar') %>
-
-    <div class="container mt-5">
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-link="/mgmt-task">
-            <i class="fas fa-tasks"></i>
-            <h5 class="card-title mt-3">Task Management</h5>
-            <p class="card-text">Manage tasks for maintenance activities.</p>
-            <a href="" class="custom-btn mt-auto">Go to Task</a>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-link="/mgmt-equiptment">
-            <i class="fas fa-tools"></i>
-            <h5 class="card-title mt-3">Equipment Management</h5>
-            <p class="card-text">View and manage maintenance equipment.</p>
-            <a href="" class="custom-btn mt-auto"
-              >Go to Equipment</a
-            >
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-link="/mgmt-user-employee">
-            <i class="fas fa-user-cog"></i>
-            <h5 class="card-title mt-3">User/Employee Management</h5>
-            <p class="card-text">Manage users and employees.</p>
-            <a href="" class="custom-btn mt-auto"
-              >Go to User</a
-            >
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-link="/mgmt-document">
-            <i class="fas fa-file-alt"></i>
-            <h5 class="card-title mt-3">Document Management</h5>
-            <p class="card-text">View and manage maintenance documents.</p>
-            <a href="" class="custom-btn mt-auto"
-              >Go to Documents</a
-            >
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-link="/mgmt-training-module">
-            <i class="fas fa-chalkboard-teacher"></i>
-            <h5 class="card-title mt-3">Training Management</h5>
-            <p class="card-text">Access and manage training modules.</p>
-            <a href="" class="custom-btn mt-auto">Go to Training</a>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-link="/mgmt-access">
-            <i class="fas fa-solid fa-universal-access"></i>
-            <h5 class="card-title mt-3">Access Provisioning Management</h5>
-            <p class="card-text">Access provisioning modules.</p>
-            <a href="" class="custom-btn mt-auto"
-              >Go to Access Provisioning</a
-            >
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card p-4 text-center" data-link="/mgmt-user-access">
-            <i class="fas fa-solid fa-user-check"></i>
-            <h5 class="card-title mt-3">User Access Management</h5>
-            <p class="card-text">User Access modules.</p>
-            <a href="" class="custom-btn mt-auto"
-              >Go to User Access</a
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <%- include('../partials/footer-simple') %>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <style>
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
 
+      .col-md-4 {
+        display: flex;
+        justify-content: center;
+      }
+
+      .card {
+        width: 420px; /* Set a fixed width */
+        height: 220px; /* Set a fixed height to make it square */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        text-align: center;
+        border-radius: 12px;
+        border: none;
+        background-color: rgba(0, 255, 221, 0.658);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .card i {
+        font-size: 3rem;
+        color: #092544;
+      }
+
+      .card-title {
+        font-size: 1rem;
+        font-weight: bold;
+      }
+
+      .card-text {
+        font-size: 0.9rem;
+        flex-grow: 1; /* Allows text to expand evenly */
+      }
+
+      .custom-btn {
+        background-color: #092544;
+        border: none;
+        color: white;
+        width: 100%;
+        border-radius: 8px;
+        transition: background 0.3s ease-in-out;
+        margin-top: auto; /* Pushes the button to the bottom */
+      }
+
+      .custom-btn:hover {
+        background-color: #e3e7eb;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container mt-5">
+      <div class="row g-4" id="menu-container"></div>
+    </div>
+
+    <%- include('../partials/footer-simple') %>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="/js/maintenance.js" type="module"></script>
   </body>
 </html>
-<style>
-  .card {
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    border-radius: 12px;
-    border: none;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background-color: rgba(0, 255, 221, 0.658);
-  }
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
-  .card i {
-    font-size: 3rem;
-    color: #092544;
-    margin-bottom: 10px;
-  }
-  .custom-btn {
-    background-color: #092544;
-    border: none;
-    color: rgb(255, 255, 255);
-    width: 100%;
-    border-radius: 8px;
-    transition: background 0.3s ease-in-out;
-  }
-  .custom-btn:hover {
-    background-color: #e3e7eb;
-  }
-  .row {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .col-md-4 {
-    display: flex;
-  }
-</style>
