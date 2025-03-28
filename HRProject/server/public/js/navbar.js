@@ -54,6 +54,8 @@ function initialNavgator() {
   } else {
     btnLogin.show();
   }
+
+  $("#login-user").html(`Hello, ${user.username}(${user.user_role})`);
 }
 
 function handleLogout() {

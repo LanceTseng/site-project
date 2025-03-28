@@ -41,7 +41,7 @@
         box-shadow: none;
       }
       .btn-login {
-        background:  #3cd350;
+        background: #3cd350;
         color: #000000 !important;
         padding: 8px 16px;
         border-radius: 8px;
@@ -52,15 +52,15 @@
         color: #000000 !important;
       }
 
-      .btn-logout{
+      .btn-logout {
         background: #dd3232;
-        color: #ffffff!important;
+        color: #ffffff !important;
         padding: 8px 16px;
         border-radius: 8px;
         transition: 0.3s ease-in-out;
       }
       .btn-logout:hover {
-        background: #ff0000; 
+        background: #ff0000;
         color: #ffffff !important;
       }
       /* Ensure content is not hidden behind the navbar */
@@ -87,6 +87,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
+            <li class="nav-item" id="nav-username">
+              <p class="nav-link" >
+                   <strong><span id="login-user">Hello, Guest</span></strong>
+              <p>
+          </li>
             <li class="nav-item" id="nav-login">
               <a class="nav-link btn-login" href="/login">
                 <i class="fas fa-user me-2"></i>Login
@@ -98,9 +103,9 @@
               </a>
             </li>
             <li class="nav-item" id="nav-dashboard">
-                <a class="nav-link" href="">
-                  <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                </a>           
+              <a class="nav-link" href="">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+              </a>
             </li>
             <li class="nav-item" id="nav-report">
               <a class="nav-link" href="/report">
