@@ -48,36 +48,39 @@
       <!-- Access Provisioning List -->
       <div>
         <h4>Access Provisioning</h4>
-        <select id="accessType" class="form-control">
+        <select id="searchAccessType" class="form-control">
           <option value="">Select Access Type</option>
+          <option value="feature">Feature</option>
+          <option value="menu">Menu</option>
+          <option value="access">Access</option>
         </select>
         <input
           type="text"
-          id="searchAccess"
+          id="searchAccessName"
           class="form-control mt-2"
           placeholder="Search access..."
         />
         <div class="table-container">
-            <table class="table table-striped table-hover">
-              <thead>
-                <tr>
-                    <th><input type="checkbox" id="selectAll" /></th>
-                  <th>Access Id</th>
-                  <th>Access Name</th>
-                  <th>Access Type</th>
-                  <th>Enabled</th>
-                </tr>
-              </thead>
-              <tbody id="accessTableBody">
-                <!-- Data will be loaded dynamically -->
-              </tbody>
-            </table>
-          </div>
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAll" /></th>
+                <th>Access Id</th>
+                <th>Access Name</th>
+                <th>Access Type</th>
+                <th>Enabled</th>
+              </tr>
+            </thead>
+            <tbody id="accessTableBody">
+              <!-- Data will be loaded dynamically -->
+            </tbody>
+          </table>
+        </div>
         <button id="addAccess" class="btn btn-success mt-2">Add Access</button>
-        <button id="removeAccess" class="btn btn-danger mt-2">Remove Access</button>
+        <button id="removeAccess" class="btn btn-danger mt-2">
+          Remove Access
+        </button>
       </div>
-
-    
     </div>
     <!-- Swal.fire("Error", `Please fill in all required fields.`, "error");
       Swal.fire("Success", `Equipment ${mode}ed successfully!`, "success");
@@ -97,7 +100,7 @@
 <style>
   .parent {
     display: grid;
-    grid-template-columns: 1fr 1fr ;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
     padding: 20px;
   }
