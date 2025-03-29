@@ -57,7 +57,8 @@ async function loadAccessAndUserAccess(user_id, role_id) {
         yes: `<i class="fa-solid fa-square-check fa-2xl" style="color: green;"></i>`,
         no: `<i class="fa-solid fa-square-xmark fa-2xl" style="color: red;"></i>`,
       };
-      let enabled = userAccessfilter.length > 0 ? statusClasses.yes: statusClasses.no;
+      let enabled =
+        userAccessfilter.length > 0 ? statusClasses.yes : statusClasses.no;
 
       let row = `
               <tr class="access-row" data-accessid="${access.access_id}" data-userid="${user_id}">
@@ -157,5 +158,28 @@ $(document).ready(function () {
   $("#removeAccess").on("click", function (e) {
     e.preventDefault();
     updateBatchAccess(false);
+  });
+
+  $("#searchUser").on("input", function () {
+    const searchTerm = $(this).val().toLowerCase();
+    $("#userTableBody tr").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
+    });
+  });
+
+  $("#searchAccessType").on("change", function () {
+    const selectedType = $(this).val().toLowerCase();
+    $("#accessTableBody tr").filter(function () {
+      const accessType = $(this).find("td:nth-child(4)").text().toLowerCase();
+      $(this).toggle(selectedType === "" || accessType === selectedType);
+    });
+  });
+
+  $("#searchAccessName").on("input", function () {
+    const searchTerm = $(this).val().toLowerCase();
+    $("#accessTableBody tr").filter(function () {
+      const accessName = $(this).find("td:nth-child(3)").text().toLowerCase();
+      $(this).toggle(accessName.indexOf(searchTerm) > -1);
+    });
   });
 });
