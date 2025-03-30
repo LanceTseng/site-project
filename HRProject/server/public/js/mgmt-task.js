@@ -28,70 +28,64 @@ async function updateTask(taskId, taskData) {
 }
 
 // DOM Elements
-const taskTableBody = $("#taskTable tbody");
+// const taskTableBody = $("#taskTable tbody");
 const taskGroupDropdown = $("#taskGroupId");
 const taskModal = $("#taskModal");
 const saveTaskButton = $("#saveTask");
 
-// 🟢 Populate Task Groups Dropdown
-async function populateTaskGroups() {
-  taskGroupDropdown
-    .empty()
-    .append('<option value="" disabled selected>Select a Group</option>');
-
+async function populateDropdown(dropdownId, objectName) {
   try {
-    const taskGroups = await fetchTaskGroups();
-    taskGroups.forEach(({ object_type_item_key, object_type_item_value }) => {
-      taskGroupDropdown.append(
-        `<option value="${object_type_item_key}">${object_type_item_value}</option>`
-      );
-    });
+    const items = (await ObjectTypeApi.getTaskByName(objectName)) || [];
+
+    // Add an empty option as the first item
+    const options =
+      `<option value="">-- Select --</option>` +
+      items
+        .map(
+          (item) =>
+            `<option value="${item.object_type_item_key}">${item.object_type_item_value}</option>`
+        )
+        .join("");
+
+    $(dropdownId).html(options);
   } catch (error) {
-    console.error("Error loading task groups:", error);
+    handleError(error, `Error populating ${taskName} dropdown`);
   }
 }
 
 // 🟢 Render Task List in Table
 async function renderTasks() {
+  const taskTableBody = $("#taskTableBody");
   taskTableBody.empty();
 
   try {
-    const [tasks, taskGroups] = await Promise.all([
-      fetchTasks(),
-      fetchTaskGroups(),
-    ]);
-    const taskGroupMap = new Map(
-      taskGroups.map((g) => [g.object_type_item_key, g.object_type_item_value])
-    );
+    const filterTaskGroup = $("#filterTaskGroup").val();
+    const tasks = await ParentTaskApi.getParentTaskViewByCondition({
+      task_group_id: filterTaskGroup,
+    });
 
-    tasks.forEach(
-      ({
-        task_id,
-        task_name,
-        task_description,
-        task_group_id,
-        created_date,
-        last_updated_date,
-        enabled,
-      }) => {
-        taskTableBody.append(`
-        <tr data-id="${task_id}">
-          <td>${task_id}</td>
-          <td>${task_name}</td>
-          <td>${task_description}</td>
-          <td>${taskGroupMap.get(task_group_id) || "Unknown Group"}</td>
-          <td hidden>${task_group_id}</td>
-          <td>${enabled == 1 ? "Yes" : "No"}</td>
-          <td>${formatDate(created_date)}</td>
-          <td>${formatDate(last_updated_date)}</td>
-          <td>
-            <button class="btn btn-info btn-sm edit-task" data-id="${task_id}">Edit</button>
-            <a href="/mgmt-subtask/${task_id}" class="btn btn-primary btn-sm">Add Subtask</a>
-          </td>
-        </tr>
-      `);
-      }
-    );
+    tasks.forEach((task) => {
+      const row = `
+      <tr>
+         <td>${task.task_id}</td>
+        <td>${task.task_name}</td>
+        <td>${task.task_description}</td>
+        <td>${task.task_group}</td>
+         <td>${task.enabled == 1 ? "Yes" : "No"}</td>
+        <td>${formatDate(task.created_date)}</td>
+          <td>${formatDate(task.last_updated_date)}</td>
+        <td>
+        <button class="btn btn-sm btn-info edit-task" data-id="${
+          task.task_id
+        }">Edit</button>
+         <button class="btn btn-sm btn-warning add-task" data-id="${
+           task.task_id
+         }">Add Subtask</button>
+        </td>
+      </tr>
+      `;
+      taskTableBody.append(row);
+    });
   } catch (error) {
     console.error("Error rendering tasks:", error);
   }
@@ -110,7 +104,7 @@ async function saveTask() {
     task_name: $("#taskName").val(),
     task_description: $("#taskDescription").val(),
     task_group_id: parseInt(taskGroupDropdown.val(), 10),
-    enabled: $("#taskEnabled").val()
+    enabled: $("#taskEnabled").val(),
   };
 
   if (!taskData.task_name || isNaN(taskData.task_group_id)) {
@@ -160,7 +154,9 @@ function closeModal() {
 
 // 🟢 Event Listeners
 $(document).ready(() => {
-  populateTaskGroups();
+  populateDropdown("#filterTaskGroup", "task_group");
+  populateDropdown("#taskGroupId", "task_group");
+
   renderTasks();
 
   // Handle Save Task Click
@@ -169,5 +165,10 @@ $(document).ready(() => {
   // Event Delegation for Edit Button
   $(document).on("click", ".edit-task", function () {
     editTask($(this).data("id"));
+  });
+
+  // Handle Filter Task Group Change
+  $("#filterTaskGroup").change(async () => {
+    await renderTasks();
   });
 });

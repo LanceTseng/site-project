@@ -92,8 +92,8 @@ router.get("/mgmt-subtask/:taskId", (req, res) => {
 });
 
 // Route for Task Settings
-router.get("/mgmt-equiptment", (req, res) => {
-  res.render("maintenance/mgmt-equiptment");
+router.get("/mgmt-equipment", (req, res) => {
+  res.render("maintenance/mgmt-equipment");
 });
 
 router.get("/mgmt-user-employee", (req, res) => {

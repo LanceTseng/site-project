@@ -13,45 +13,54 @@
   </head>
   <body>
     <!-- Navbar -->
-    <%- include('../partials/navbar') %> <%- include('./mgmt-task-nav') %>
+    <%- include('../partials/navbar') %>
 
     <!-- Content -->
-    <div class="container mt-4">
-      <div class="d-flex justify-content-between align-items-center">
-        <h3 class="mb-3">Task List</h3>
-        <button
-          type="button"
-          class="btn btn-modern"
-          data-bs-toggle="modal"
-          data-bs-target="#taskModal"
-        >
-          <i class="fas fa-plus"></i> Create Task
-        </button>
+    <div class="parent">
+      <div class="container mt-4">
+        <h3 class="mb-3">Task Filter</h3>
+        <div class="form-group">
+          <label class="form-label" for="filterTaskGroup">Task Group</label>
+          <select class="form-control" id="filterTaskGroup">
+            <option value="" selected>Select an Option</option>
+          </select>
+        </div>
       </div>
+      <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <h3 class="mb-3">Task List</h3>
+          <button
+            type="button"
+            class="btn btn-modern"
+            data-bs-toggle="modal"
+            data-bs-target="#taskModal"
+          >
+            <i class="fas fa-plus"></i> Create Task
+          </button>
+        </div>
 
-      <!-- Task Table -->
-      <div class="table-container shadow-sm p-3 bg-white rounded">
-        <table class="table table-hover" id="taskTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Task Name</th>
-              <th>Task Description</th>
-              <th>Task Group</th>
-              <th hidden>group_id</th>
-              <th>Enabled</th>
-              <th>Created Date</th>
-              <th>Last Updated Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Data will be dynamically populated here -->
-          </tbody>
-        </table>
+        <!-- Task Table -->
+        <div class="table-container shadow-sm p-3 bg-white rounded">
+          <table class="table table-hover" id="taskTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Task Name</th>
+                <th>Task Description</th>
+                <th>Task Group</th>
+                <th>Enabled</th>
+                <th>Created Date</th>
+                <th>Last Updated Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="taskTableBody">
+              <!-- Data will be dynamically populated here -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-
     <!-- Task Modal -->
     <div
       class="modal fade"
@@ -148,7 +157,7 @@
 <style>
   .parent {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 0.5fr 2fr;
     gap: 20px;
     padding: 20px;
   }

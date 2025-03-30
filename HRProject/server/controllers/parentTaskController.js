@@ -1,4 +1,5 @@
 const parentTaskRepo = require("../repositories/parentTaskRepository");
+const parentTaskViewRepo = require("../repositories/parentTaskViewRespository");
 const { logger } = require("../middlewares/loggerMiddleware"); // Import logger
 
 class ParentTaskController {
@@ -61,6 +62,20 @@ class ParentTaskController {
       const result = await parentTaskRepo.delete(req.params.id);
       if (!result) return res.status(404).json({ error: "Task not found" });
       res.json({ message: "Task deleted" });
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
+      logger.error(error.message);
+    }
+  }
+
+  async getParentTasksViewByCondition(req, res) {
+    try {
+      const { task_group_id } = req.query;
+      const result = await parentTaskViewRepo.geTrainingModuleViewByCondition(
+        task_group_id
+      );
+      if (!result) return res.status(404).json({ error: "Task not found" });
+      res.status(200).json(result);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
       logger.error(error.message);
