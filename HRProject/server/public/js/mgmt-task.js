@@ -2,19 +2,9 @@ import * as ParentTaskApi from "./services/parentTaskServices.js";
 import * as ObjectTypeApi from "./services/objectTypeServices.js";
 import { formatDate } from "./utils/stringUtils.js";
 
-// Fetch all tasks
-async function fetchTasks() {
-  return await ParentTaskApi.getTasks();
-}
-
 // Fetch task by ID
 async function fetchTaskById(taskId) {
   return await ParentTaskApi.getTaskById(taskId);
-}
-
-// Fetch task groups
-async function fetchTaskGroups() {
-  return await ObjectTypeApi.getTaskByName("task_group");
 }
 
 // Create a new task
@@ -78,9 +68,9 @@ async function renderTasks() {
         <button class="btn btn-sm btn-info edit-task" data-id="${
           task.task_id
         }">Edit</button>
-         <button class="btn btn-sm btn-warning add-task" data-id="${
+         <a href="/mgmt-subtask/${
            task.task_id
-         }">Add Subtask</button>
+         }" class="btn btn-warning btn-sm">Add Subtask</a>
         </td>
       </tr>
       `;
@@ -163,8 +153,13 @@ $(document).ready(() => {
   saveTaskButton.click(saveTask);
 
   // Event Delegation for Edit Button
-  $(document).on("click", ".edit-task", function () {
+  $("#taskTableBody").on("click", ".edit-task", function () {
     editTask($(this).data("id"));
+  });
+
+  $(".create-btn").click(function () {
+    resetTaskForm();
+    taskModal.modal("show");
   });
 
   // Handle Filter Task Group Change
