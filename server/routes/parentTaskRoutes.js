@@ -10,4 +10,9 @@ router.post("/parent-tasks", ParentTaskController.create);
 router.put("/parent-tasks/:id", ParentTaskController.update);
 router.delete("/parent-tasks/:id", ParentTaskController.delete);
 
+router.get(
+  "/parent-tasks-view/condition?",
+  ParentTaskController.getParentTasksViewByCondition
+);
+
 module.exports = router;
