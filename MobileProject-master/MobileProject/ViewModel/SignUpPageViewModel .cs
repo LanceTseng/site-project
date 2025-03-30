@@ -93,7 +93,7 @@ namespace MobileProject.ViewModel
 
         public ICommand SignUpCommand { get; }
 
-        public SignUpPageViewModel( IUserService userService)
+        public SignUpPageViewModel(IUserService userService)
         {
             _userService = userService;
 
@@ -155,8 +155,8 @@ namespace MobileProject.ViewModel
             IsBusy = true;
 
             await Task.Delay(2000);
-            
-           await _userService.CreateUserAsync(new User()
+
+            await _userService.CreateUserAsync(new User()
             {
                 UserName = Username,
                 Password = Password,
@@ -187,21 +187,25 @@ namespace MobileProject.ViewModel
             if (SignUpCommand is Command command)
             {
                 command.ChangeCanExecute();
-            }   
+            }
         }
 
         private async Task<bool> IsValidUserName(string userName)
         {
-            var userExisted = await _userService.GetUsersByConditionAsync(userName:userName);
+            var users = await _userService.GetUsersByConditionAsync(userName: userName);
+
+            var userExisted = users.FirstOrDefault(x => x.UserName == userName);
 
             return (userExisted != null);
         }
 
         private async Task<bool> IsExistedEmail(string email)
         {
-            var userExisted = await _userService.GetUsersByConditionAsync(email: email);
+            var userEmails = await _userService.GetUsersByConditionAsync(email: email);
 
-            return (userExisted != null);
+            var existedEmail = userEmails.FirstOrDefault(x => x.Email == email);
+
+            return (existedEmail != null);
         }
 
         private bool IsValidPassword(string password)
