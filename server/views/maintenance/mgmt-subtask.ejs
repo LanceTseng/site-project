@@ -14,23 +14,32 @@
 
   <body>
     <!-- Navbar -->
-    <%- include('../partials/navbar') %> <%- include('./mgmt-task-nav') %>
+    <%- include('../partials/navbar') %>
 
     <!-- Content -->
     <div class="container mt-4">
-      <h3>
-        Subtask List -
-        <span id="taskName"></span>
-      </h3>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Subtasks for: <span id="taskName"></span></h2>
 
-      <!-- Add Subtask Button -->
-      <button
-        type="button"
-        class="btn btn-primary btn-primary-add"
-        id="addSubtaskButton"
-      >
-        Add Subtask
-      </button>
+        <div class="d-flex gap-2">
+          <button
+            type="button"
+            class="btn btn-dark btn-primary-add shadow-sm"
+            id="addSubtaskButton"
+          >
+            Add Subtask
+          </button>
+
+          <a
+            href="/mgmt-task"
+            class="btn btn-secondary back-btn btn-primary-add shadow-sm"
+            id="backToTaskBtn"
+          >
+            Back to Task
+          </a>
+        </div>
+      </div>
+
       <div class="table-container shadow-sm p-3 bg-white rounded">
         <!-- Subtask Table -->
         <table class="table table-hover mt-4" id="subtaskTable">
@@ -53,7 +62,7 @@
         </table>
       </div>
     </div>
-    <!-- Add Subtask Modal -->
+    <!-- Add/Edit Subtask Modal -->
     <div
       class="modal fade"
       id="addSubtaskModal"
@@ -62,28 +71,27 @@
       aria-labelledby="addSubtaskModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
+      <div class="modal-dialog modal-lg" role="document">
+        <!-- Optional: modal-lg for wider modal -->
+        <div class="modal-content shadow">
           <div class="modal-header">
             <h5 class="modal-title" id="addSubtaskModalLabel">Add Subtask</h5>
             <button
               type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
           </div>
           <div class="modal-body">
             <form id="addSubtaskForm">
-              <!-- Fields -->
-              <div class="form-group" hidden>
-                <label for="subtaskId">Subtask Id</label>
-                <input type="text" class="form-control" id="subtaskId" />
-              </div>
-              <div class="form-group">
-                <label for="subtaskName">Subtask Name</label>
+              <!-- Hidden Subtask ID -->
+              <input type="hidden" id="subtaskId" />
+
+              <!-- Subtask Name -->
+              <div class="form-group mb-3">
+                <label for="subtaskName"
+                  >Subtask Name <span class="text-danger">*</span></label
+                >
                 <input
                   type="text"
                   class="form-control"
@@ -91,8 +99,12 @@
                   required
                 />
               </div>
-              <div class="form-group">
-                <label for="subtaskDescription">Description</label>
+
+              <!-- Description -->
+              <div class="form-group mb-3">
+                <label for="subtaskDescription"
+                  >Description <span class="text-danger">*</span></label
+                >
                 <textarea
                   class="form-control"
                   id="subtaskDescription"
@@ -100,72 +112,119 @@
                   required
                 ></textarea>
               </div>
-              <div class="form-group">
-                <label for="fileRequirement">File Requirement</label>
-                <select class="form-control" id="fileRequirement" disabled>
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
-                </select>
+
+              <!-- Row for related items -->
+              <div class="row">
+                <div class="col-md-6">
+                  <!-- Document Template -->
+                  <div class="form-group mb-3">
+                    <label for="documentId">Document Template</label>
+                    <select class="form-control" id="documentId">
+                      <option value="" selected>None</option>
+                      <!-- Allow None -->
+                      <!-- Options populated by JS -->
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <!-- File Requirement (Upload Required) -->
+                  <div class="form-group mb-3">
+                    <label for="fileRequirement"
+                      >Document Upload Required?</label
+                    >
+                    <select class="form-control" id="fileRequirement">
+                      <option value="0">No</option>
+                      <option value="1">Yes</option>
+                    </select>
+                    <small class="form-text text-muted"
+                      >Does the user need to upload a file for this step?</small
+                    >
+                  </div>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="documentId">Document</label>
-                <select class="form-control" id="documentId" required>
-                  <option value="" disabled selected>Select a document</option>
-                </select>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <!-- Device Type -->
+                  <div class="form-group mb-3">
+                    <label for="deviceId">Device Type</label>
+                    <select class="form-control" id="deviceId">
+                      <option value="" selected>None</option>
+                      <!-- Allow None -->
+                      <!-- Options populated by JS -->
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <!-- Training Module -->
+                  <div class="form-group mb-3">
+                    <label for="trainingModuleId">Training Module</label>
+                    <select class="form-control" id="trainingModuleId">
+                      <option value="" selected>None</option>
+                      <!-- Allow None -->
+                      <!-- Options populated by JS -->
+                    </select>
+                  </div>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="deviceId">Device Type</label>
-                <select class="form-control" id="deviceId" required>
-                  <option value="" disabled selected>
-                    Select a device type
-                  </option>
-                </select>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <!-- Survey / Interview -->
+                  <div class="form-group mb-3">
+                    <label for="surveyId">Survey / Interview</label>
+                    <select class="form-control" id="surveyId">
+                      <option value="" selected>None</option>
+                      <!-- Allow None -->
+                      <!-- Options populated by JS -->
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <!-- Handover -->
+                  <div class="form-group mb-3">
+                    <label for="handoverId">Handover Required?</label>
+                    <select class="form-control" id="handoverId">
+                      <option value="0">No</option>
+                      <option value="1">Yes</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="trainingModuleId">Training Module</label>
-                <select class="form-control" id="trainingModuleId">
-                  <option value="" disabled selected>
-                    Select a training module
-                  </option>
-                </select>
-              </div>
-              <div class="form-group" hidden>
-                <label for="interviewId">Interview</label>
-                <select class="form-control" id="interviewId">
-                  <option value="" disabled selected>
-                    Select an interview
-                  </option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="surveyId">Survey / Interview</label>
-                <select class="form-control" id="surveyId">
-                  <option value="" disabled selected>Select a survey</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="handoverId">Handover</label>
-                <select class="form-control" id="handoverId">
-                  <option value="" disabled selected>Select a Option</option>
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="enable">Enable</label>
-                <select class="form-control" id="enable">
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
-                </select>
+
+              <!-- Hidden Interview ID (If needed specifically, otherwise handled by Survey/Interview dropdown) -->
+              <input type="hidden" id="interviewId" />
+              <!--
+          <div class="form-group mb-3" hidden>
+            <label for="interviewId">Interview</label>
+            <select class="form-control" id="interviewId">
+              <option value="" disabled selected>Select an interview</option>
+            </select>
+          </div>
+          -->
+
+              <div class="row">
+                <div class="col-md-6">
+                  <!-- Enable -->
+                  <div class="form-group mb-3">
+                    <label for="enable">Enable Subtask?</label>
+                    <select class="form-control" id="enable">
+                      <option value="true">Yes</option>
+                      <option value="false">No</option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" data-dismiss="modal">
-              Close
-            </button>
-            <button class="btn btn-primary" id="saveSubtask" data-mode="">
-              Save
+            <button
+              type="button"
+              class="btn btn-dark"
+              id="saveSubtask"
+              data-mode=""
+            >
+              Save Subtask
             </button>
           </div>
         </div>
@@ -210,5 +269,8 @@
   }
   .form-control {
     border-radius: 6px;
+  }
+  #taskName {
+    color: darkslategray;
   }
 </style>
