@@ -10,73 +10,177 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <!-- Font Awesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <style>
+      /* Sticky header using Bootstrap's dark theme */
+      .table thead.thead-dark th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        /* Background/color handled by thead-dark */
+      }
+
+      /* Container for fixed height scrolling table */
+      .table-container {
+        max-height: 550px; /* Adjust as needed */
+        overflow-y: auto;
+      }
+
+      /* Style for highlighted row */
+      .table-hover tbody tr:hover {
+        cursor: pointer; /* Indicate rows are clickable */
+      }
+      .table tbody tr.table-active {
+        background-color: #cfe2ff; /* Example highlight color */
+      }
+
+      /* Preview area styling */
+      #previewCard .card-body {
+        display: flex;
+        flex-direction: column;
+        height: 600px; /* Match desired iframe height + padding */
+      }
+      #documentPreview {
+        flex-grow: 1; /* Allow iframe to fill available space */
+        border: none; /* Remove default iframe border */
+        width: 100%;
+        background-color: #f8f9fa; /* Light background for empty state */
+      }
+      #previewPlaceholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        text-align: center;
+        color: #6c757d; /* Bootstrap text-muted color */
+      }
+    </style>
   </head>
+
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %>
-    <div class="mt-4 container">
+
+    <div class="container-fluid mt-4">
       <h2>Document Management</h2>
-      <button class="btn btn-primary mb-3" id="addDocumentBtn">
-        Add Document
-      </button>
+
+      <!-- Controls Row -->
+      <div class="row mb-3 align-items-end">
+        <div class="col-md-5 col-lg-4">
+          <label for="searchField">Search Documents</label>
+          <input
+            type="text"
+            id="searchField"
+            class="form-control"
+            placeholder="Enter document name or path..."
+          />
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-secondary btn-block" id="searchBtn">
+            <i class="fas fa-search"></i> Search
+          </button>
+        </div>
+        <div class="col-md-3 ml-auto">
+          <!-- Push Add button to the right -->
+          <button
+            class="btn btn-dark btn-block"
+            id="addDocumentBtn"
+            data-toggle="modal"
+            data-target="#documentModal"
+          >
+            <i class="fas fa-plus"></i> Add Document
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Content Row -->
+      <div class="row">
+        <!-- Document List Column -->
+        <div class="col-lg-7 mb-4 mb-lg-0">
+          <div class="card shadow-sm">
+            <div class="card-header">
+              <h5 class="mb-0">Document List</h5>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive table-container">
+                <table class="table table-hover mb-0">
+                  <!-- Use thead-dark for styling -->
+                  <thead class="thead-dark">
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <!-- Path column might be hidden or less prominent if long -->
+                      <!-- <th class="d-none d-xl-table-cell">Path</th> -->
+                      <th>Requires Upload</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="documentTableBody">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer text-muted" id="documentListFooter">
+              Select a document to preview.
+            </div>
+          </div>
+        </div>
+
+        <!-- Document Preview Column -->
+        <div class="col-lg-5">
+          <div class="card shadow-sm" id="previewCard">
+            <div class="card-header">
+              <h5 class="mb-0">Document Preview</h5>
+            </div>
+            <div class="card-body p-2">
+              <!-- Reduced padding for iframe fit -->
+              <!-- Placeholder shown initially -->
+              <div id="previewPlaceholder">
+                <i class="fas fa-file-alt fa-3x mr-2 text-muted"></i> Select a
+                document from the list to preview it here.
+              </div>
+              <!-- Iframe for preview, hidden initially -->
+              <iframe id="documentPreview" style="display: none"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Main Content Row -->
     </div>
-    <div class="parent">
-      <!-- 🔍 Search Section -->
-      <div class="container">
-        <h5>Search Documents</h5>
-        <input
-          type="text"
-          id="searchField"
-          class="form-control"
-          placeholder="Enter document name"
-        />
-        <button class="btn btn-secondary mt-2" id="searchBtn">Search</button>
-      </div>
+    <!-- End Container -->
 
-      <!-- 📊 Document Table -->
-      <div class="table-container shadow-sm p-3 bg-white rounded">
-        <table class="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Path</th>
-              <th>Require Upload</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="documentTableBody">
-            <!-- Table Rows Will Be Generated Here -->
-          </tbody>
-        </table>
-      </div>
-
-      <!-- 📄 Document Preview Section -->
-      <div>
-        <h5>Document Preview</h5>
-        <iframe
-          id="documentPreview"
-          style="width: 100%; height: 630px"
-          frameborder="0"
-        ></iframe>
-      </div>
-    </div>
-
-    <!-- add/edit modal -->
-    <div class="modal fade" id="documentModal" tabindex="-1" aria-hidden="true">
+    <!-- Add/Edit Document Modal -->
+    <div
+      class="modal fade"
+      id="documentModal"
+      tabindex="-1"
+      aria-labelledby="documentModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="modalTitle">Add Document</h5>
-            <button type="button" class="close" data-dismiss="modal">
-              &times;
+            <h5 class="modal-title" id="documentModalLabel">Add Document</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
             </button>
           </div>
           <div class="modal-body">
             <form id="documentForm">
               <input type="hidden" id="documentId" />
               <div class="form-group">
-                <label>Document Name</label>
+                <label for="documentName">Document Name</label>
                 <input
                   type="text"
                   class="form-control"
@@ -85,18 +189,51 @@
                 />
               </div>
               <div class="form-group">
-                <label>Require Upload</label>
-                <select class="form-control" id="requireUpload">
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
+                <label for="requireUpload">Requires Upload?</label>
+                <!-- Use custom-select for BS4 styling -->
+                <select class="form-control custom-select" id="requireUpload">
+                  <option value="true">Yes</option>
+                  <!-- Use boolean strings -->
+                  <option value="false" selected>No</option>
+                  <!-- Default to No? -->
                 </select>
               </div>
-              <div class="modal-footer">
-                <button id="saveDocument" type="submit" class="btn btn-success">
-                  Save
-                </button>
+              <!-- Add File Upload Input for 'Add' mode (conditionally show with JS) -->
+              <div
+                class="form-group"
+                id="fileUploadGroup"
+                style="display: none"
+              >
+                <label for="documentFile">Document File</label>
+                <input
+                  type="file"
+                  class="form-control-file"
+                  id="documentFile"
+                />
+                <small class="form-text text-muted"
+                  >Required when adding a new document.</small
+                >
               </div>
             </form>
+            <!-- End Form Tag Here -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <!-- Submit button triggers form submission -->
+            <button
+              type="submit"
+              class="btn btn-dark"
+              id="saveDocument"
+              form="documentForm"
+            >
+              Save Document
+            </button>
           </div>
         </div>
       </div>
@@ -115,27 +252,4 @@
     <script src="/js/mgmt-document.js" type="module"></script>
   </body>
 </html>
-<style>
-  .parent {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr 2fr;
-    gap: 20px;
-    padding: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
-  }
-  .table-container {
-    max-height: 630px;
-    overflow-y: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-  }
-  thead th {
-    position: sticky;
-    top: 0;
-    background: #000000 !important;
-    color: white !important;
-    z-index: 10;
-  }
-</style>
+
