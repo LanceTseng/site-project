@@ -142,16 +142,17 @@ async function loadEqpt() {
         <td>${item.occupied_by_name || ""}</td>
         <td>${item.occupied ? "Yes" : "No"}</td>
         <td>
-          <button class="btn btn-info btn-sm edit-btn" data-mode="edit" data-id="${
-            item.equipment_id
-          }">
-            Edit
-          </button>
+     
           ${
             item.occupied == "0"
-              ? `<button class="btn btn-sm btn-danger assign-btn" data-id="${item.equipment_id}">Assign</button>`
+              ? `<button class="btn btn-sm btn-success assign-btn" data-id="${item.equipment_id}">Assign</button>`
               : `<button class="btn btn-sm btn-warning return-btn" data-id="${item.equipment_id}">Return</button>`
           }
+               <button class="btn btn-info btn-sm edit-btn" data-mode="edit" data-id="${
+                 item.equipment_id
+               }">
+            Edit
+          </button>
         </td>
       </tr>
     `
