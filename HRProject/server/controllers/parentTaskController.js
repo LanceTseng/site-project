@@ -70,9 +70,9 @@ class ParentTaskController {
 
   async getParentTasksViewByCondition(req, res) {
     try {
-      const { task_group_id } = req.query;
+      const { task_group_id, enabled } = req.query;
       const result = await parentTaskViewRepo.geTrainingModuleViewByCondition(
-        task_group_id
+        task_group_id,enabled
       );
       if (!result) return res.status(404).json({ error: "Task not found" });
       res.status(200).json(result);

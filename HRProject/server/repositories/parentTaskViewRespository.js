@@ -2,7 +2,7 @@ const { QueryTypes } = require("sequelize");
 const db = require("../config/database"); // Ensure your database connection is imported
 
 class ParentTaskViewRepository {
-  async geTrainingModuleViewByCondition(task_group_id) {
+  async geTrainingModuleViewByCondition(task_group_id, enabled) {
     try {
       let query = "SELECT * FROM v_parent_tasks WHERE 1=1";
       const replacements = {};
@@ -10,6 +10,11 @@ class ParentTaskViewRepository {
       if (task_group_id) {
         query += " AND task_group_id = :task_group_id";
         replacements.task_group_id = task_group_id;
+      }
+
+      if (enabled) {
+        query += " AND enabled = :enabled";
+        replacements.enabled = enabled;
       }
 
       const parentTasks = await db.query(query, {

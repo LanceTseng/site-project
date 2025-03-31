@@ -3,60 +3,152 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Task Setting</title>
+    <title>Task Setting Management</title>
 
     <!-- Bootstrap CSS -->
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <style>
+      /* Sticky header using Bootstrap's dark theme */
+      .table thead.thead-dark th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #343a40; /* Explicit dark background */
+        color: white;
+        vertical-align: middle;
+      }
+
+      /* Table container scroll */
+      .table-container {
+        max-height: 650px; /* Adjusted height */
+        overflow-y: auto;
+        position: relative; /* Needed for sticky header */
+      }
+
+      /* Center content in specific columns */
+      .table th.text-center,
+      .table td.text-center {
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      /* Ensure labels have consistent bottom margin */
+      .form-group label {
+        margin-bottom: 0.3rem;
+        font-weight: 500;
+      }
+      .modal-content {
+        border-radius: 12px; /* Keep custom modal radius */
+      }
+      /* Ensure close button in modal header is styled reasonably */
+      .modal-header .close {
+        padding: 1rem;
+        margin: -1rem -1rem -1rem auto;
+        font-size: 1.5rem;
+      }
+    </style>
   </head>
+
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %>
 
-    <!-- Content -->
-    <div class="parent">
-      <div class="container mt-4">
-        <h3 class="mb-3">Task Filter</h3>
-        <div class="form-group">
-          <label class="form-label" for="filterTaskGroup">Task Group</label>
-          <select class="form-control" id="filterTaskGroup">
-            <option value="" selected>Select an Option</option>
-          </select>
+    <div class="container-fluid mt-4">
+      <h2 class="text-center mb-4">Task Setting Management</h2>
+
+      <!-- Filter Card -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-filter mr-2"></i>Filter Tasks</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="col-md-4">
+              <label for="filterTaskGroup">Filter by Task Group</label>
+              <select
+                class="form-control form-control-sm custom-select"
+                id="filterTaskGroup"
+              >
+                <option value="" selected>All Task Groups</option>
+                <!-- Populate via JS -->
+              </select>
+            </div>
+            <!-- Optional: Add more filters like Enabled status or Name search -->
+            <div class="col-md-4">
+              <label for="filterEnabled">Filter by Status</label>
+              <select
+                class="form-control form-control-sm custom-select"
+                id="filterEnabled"
+              >
+                <option value="" selected>All</option>
+                <option value="1">Enabled</option>
+                <option value="0">Disabled</option>
+              </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <button
+                type="button"
+                id="applyFilterBtn"
+                class="btn btn-secondary btn-sm btn-block"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center">
-          <h3 class="mb-3">Task List</h3>
-          <button type="button" class="btn btn-dark create-btn">
-            <i class="fas fa-plus"></i> Create Task
+
+      <!-- Task List Card -->
+      <div class="card shadow-sm">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0"><i class="fas fa-tasks mr-2"></i>Task List</h5>
+          <button
+            type="button"
+            class="btn btn-dark btn-sm create-btn"
+            data-toggle="modal"
+            data-target="#taskModal"
+          >
+            <i class="fas fa-plus mr-1"></i> Create Task
           </button>
         </div>
-
-        <!-- Task Table -->
-        <div class="table-container shadow-sm p-3 bg-white rounded">
-          <table class="table table-hover" id="taskTable">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Task Name</th>
-                <th>Task Description</th>
-                <th>Task Group</th>
-                <th>Enabled</th>
-                <th>Created Date</th>
-                <th>Last Updated Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="taskTableBody">
-              <!-- Data will be dynamically populated here -->
-            </tbody>
-          </table>
+        <div class="card-body p-0">
+          <div class="table-responsive table-container">
+            <table class="table table-hover mb-0" id="taskTable">
+              <thead class="thead-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>Task Name</th>
+                  <th>Description</th>
+                  <th>Task Group</th>
+                  <th class="text-center">Enabled</th>
+                  <th>Created</th>
+                  <th>Last Updated</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="taskTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer text-muted" id="tableFooter">
+          Loading tasks...
         </div>
       </div>
     </div>
-    <!-- Task Modal -->
+    <!-- End Container -->
+
+    <!-- Task Add/Edit Modal -->
     <div
       class="modal fade"
       id="taskModal"
@@ -68,16 +160,25 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="taskModalLabel">Create Task</h5>
+            <!-- Correct BS4 close button -->
             <button
               type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
           </div>
           <div class="modal-body">
             <form id="taskForm">
-              <div class="mb-3">
-                <label for="taskName" class="form-label">Task Name</label>
+              <!-- Hidden input for ID during edit -->
+              <input type="hidden" id="taskId" />
+
+              <div class="form-group">
+                <label for="taskName"
+                  >Task Name <span class="text-danger">*</span></label
+                >
                 <input
                   type="text"
                   class="form-control"
@@ -86,54 +187,67 @@
                 />
               </div>
 
-              <div class="mb-3">
-                <label for="taskDescription" class="form-label"
-                  >Task Description</label
-                >
+              <div class="form-group">
+                <label for="taskDescription">Description</label>
                 <textarea
                   class="form-control"
                   id="taskDescription"
                   rows="3"
-                  required
                 ></textarea>
               </div>
 
-              <div class="mb-3">
-                <label for="taskGroupId" class="form-label">Task Group</label>
+              <div class="form-group">
+                <label for="taskGroupId"
+                  >Task Group <span class="text-danger">*</span></label
+                >
                 <select
-                  class="form-select form-control"
+                  class="form-control custom-select"
                   id="taskGroupId"
                   required
-                ></select>
+                >
+                  <option value="" disabled selected>Select a Group</option>
+                  <!-- Populate via JS -->
+                </select>
               </div>
-              <div class="mb-3">
-                <label for="taskEnabled" class="form-label">Task Enabled</label>
+
+              <div class="form-group">
+                <label for="taskEnabled">Enabled</label>
                 <select
-                  class="form-select form-control"
+                  class="form-control custom-select"
                   id="taskEnabled"
                   required
                 >
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
+                  <option value="true">Yes</option>
+                  <!-- Use boolean strings -->
+                  <option value="false" selected>No</option>
                 </select>
               </div>
             </form>
+            <!-- End Form Tag Here -->
           </div>
           <div class="modal-footer">
+            <!-- Correct BS4 dismiss attribute -->
             <button
               type="button"
               class="btn btn-secondary"
-              data-bs-dismiss="modal"
+              data-dismiss="modal"
             >
               Close
             </button>
-            <button type="button" class="btn btn-modern" id="saveTask">
+            <!-- Use standard Bootstrap primary button, link to form with 'form' attribute -->
+            <button
+              type="submit"
+              class="btn btn-primary"
+              id="saveTask"
+              form="taskForm"
+            >
               Save Task
             </button>
           </div>
         </div>
       </div>
     </div>
+
     <!-- Footer -->
     <%- include('../partials/footer-simple') %>
 
@@ -148,44 +262,3 @@
     <script src="/js/mgmt-task.js" type="module"></script>
   </body>
 </html>
-
-<style>
-  .parent {
-    display: grid;
-    grid-template-columns: 0.5fr 2fr;
-    gap: 20px;
-    padding: 20px;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    background: white;
-  }
-  .table-container {
-    max-height: 700px;
-    overflow-y: auto;
-    border-radius: 10px;
-  }
-  thead th {
-    position: sticky;
-    top: 0;
-    background: #000000 !important;
-    color: white !important;
-    z-index: 10;
-  }
-  tbody tr:hover {
-    background-color: #f1f1f1;
-  }
-  .btn-modern {
-    background: #007bff;
-    color: white;
-    border: none;
-    transition: background 0.3s ease;
-  }
-  .btn-modern:hover {
-    background: #00000069 !important;
-  }
-  .modal-content {
-    border-radius: 12px;
-  }
-</style>
