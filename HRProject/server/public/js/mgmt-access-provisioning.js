@@ -10,7 +10,6 @@ const tableFooter = $("#tableFooter");
 const searchForm = $("#search-form");
 const searchAccessNameInput = $("#searchAccessName");
 const searchAccessTypeSelect = $("#searchAccessType");
-const searchRoleSelect = $("#searchRole");
 const addAccessBtn = $("#addAccess"); // Button in table card header
 const accessModal = $("#accessModal");
 const accessForm = $("#accessForm");
@@ -19,7 +18,6 @@ const accessIdInput = $("#accessId");
 const editAccessNameInput = $("#editAccessNameInput");
 const editAccessDescription = $("#editAccessDescription");
 const editAccessTypeSelect = $("#editAccessType");
-const editRoleSelect = $("#editRole");
 const editEnabledSelect = $("#editEnabled");
 const saveAccessBtn = $("#saveAccess");
 
@@ -114,7 +112,6 @@ function renderAccessList(accessItems) {
             <td>${item.access_name || "N/A"}</td>
             <td>${item.access_description || ""}</td>
             <td>${item.access_type_name || "N/A"}</td>
-            <td>${item.access_role_name || "N/A"}</td>
             <td class="text-center"><span class="badge ${badgeClass}">${badgeText}</span></td>
             <td class="text-center">
               <button class="btn btn-warning btn-sm edit-btn" title="Edit Access"
@@ -152,14 +149,11 @@ async function loadAccessProvisioning(searchParams = {}) {
   try {
     let data;
     // Check if search params are provided
-    if (
-      searchParams &&
-      (searchParams.name || searchParams.typeId || searchParams.roleId)
-    ) {
+    if (searchParams && (searchParams.name || searchParams.typeId)) {
       data = await AccessProvisioningViewApi.getAccessProvisioningByCondition(
         searchParams.name || "",
         searchParams.typeId || "",
-        searchParams.roleId || ""
+        ""
       );
     } else {
       // Fetch all if no search params
@@ -199,7 +193,6 @@ async function handleModalOpen(event) {
         editAccessNameInput.val(data.access_name);
         editAccessDescription.val(data.access_description);
         editAccessTypeSelect.val(data.access_type_id); // Assumes ID matches value
-        editRoleSelect.val(data.access_role_id); // Assumes ID matches value
         // Convert boolean/number 'enabled' to string 'true'/'false' for the select
         editEnabledSelect.val(
           String(data.enabled === true || data.enabled === 1).toLowerCase()
@@ -231,20 +224,15 @@ async function handleFormSubmit(event) {
     access_name: editAccessNameInput.val().trim(),
     access_description: editAccessDescription.val().trim(),
     access_type_id: editAccessTypeSelect.val(),
-    access_role_id: editRoleSelect.val(),
     // Convert string 'true'/'false' from select back to boolean for API
     enabled: editEnabledSelect.val() === "true",
   };
 
   // Basic Validation
-  if (
-    !accessData.access_name ||
-    !accessData.access_type_id ||
-    !accessData.access_role_id
-  ) {
+  if (!accessData.access_name || !accessData.access_type_id) {
     Swal.fire(
       "Validation Error",
-      "Access Name, Type, and Role are required.",
+      "Access Name and Type are required.",
       "warning"
     );
     return;
@@ -360,9 +348,7 @@ async function handleBatchUpdate(enableStatus) {
 // --- Event Listeners Setup ---
 $(document).ready(() => {
   // Populate Dropdowns
-  populateDropdown("#searchRole", "user_role", "All Roles");
   populateDropdown("#searchAccessType", "access_type", "All Types");
-  populateDropdown("#editRole", "user_role", "Select Role");
   populateDropdown("#editAccessType", "access_type", "Select Type");
 
   // Initial Load
@@ -373,8 +359,7 @@ $(document).ready(() => {
     e.preventDefault();
     const searchParams = {
       name: searchAccessNameInput.val().trim(),
-      typeId: searchAccessTypeSelect.val() || null, // Send null if empty
-      roleId: searchRoleSelect.val() || null, // Send null if empty
+      typeId: searchAccessTypeSelect.val() || null,
     };
     loadAccessProvisioning(searchParams);
   });
