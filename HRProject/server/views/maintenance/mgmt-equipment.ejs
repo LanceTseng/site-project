@@ -10,26 +10,43 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <!-- Font Awesome for Icons (Example) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
     <style>
-      .parent {
-        display: grid;
-        grid-template-columns: 0.5fr 1.5fr 2fr;
-        gap: 20px;
-        padding: 20px;
-      }
+      /* Keep specific table container styles */
       .table-container {
-        max-height: 600px;
+        max-height: 585px; /* Adjusted slightly */
         overflow-y: auto;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
+        /* Shadow/border already applied via Bootstrap utilities */
       }
-      thead th {
+
+      /* Sticky header using Bootstrap's sticky-top utility */
+      .table thead th {
         position: sticky;
         top: 0;
-        background: #000000 !important;
-        color: white !important;
         z-index: 10;
+        /* Use Bootstrap's dark theme */
+      }
+
+      /* Style for highlighted row */
+      .table-hover tbody tr:hover {
+        cursor: pointer; /* Indicate rows are clickable */
+      }
+      .table tbody tr.table-active {
+        background-color: #cfe2ff; /* Example highlight color */
+      }
+
+      /* Ensure modals don't overlap navbar if navbar is fixed */
+      body {
+        /* padding-top: 56px; */ /* Adjust if using fixed-top navbar */
+      }
+
+      /* Adjust modal z-index if needed relative to sticky header */
+      .modal {
+        z-index: 1050; /* Default BS4 modal z-index */
       }
     </style>
   </head>
@@ -38,69 +55,108 @@
     <!-- Navbar -->
     <%- include('../partials/navbar') %>
 
-    <div class="mt-4">
-      <h2>Equipment Management</h2>
-      <div class="parent">
-        <!-- Search Section -->
-        <div>
+    <div class="container-fluid mt-4">
+      <h2>Asset Management</h2>
+
+      <!-- Controls Row -->
+      <div class="row mb-3 align-items-end">
+        <div class="col-md-4">
+          <label for="search-field">Search by Name</label>
           <input
             type="text"
             id="search-field"
-            class="form-control mb-2"
-            placeholder="Search by name"
+            class="form-control"
+            placeholder="Enter name..."
           />
-
-          <button id="search-btn" class="btn btn-primary w-100">Search</button>
-          <p></p>
-          <button id="new-equipment-btn" class="btn btn-success w-100">
-            Add New Equipment
+        </div>
+        <div class="col-md-2">
+          <button id="search-btn" class="btn btn-primary btn-block">
+            <i class="fas fa-search"></i> Search
           </button>
         </div>
+        <div class="col-md-2 ml-auto">
+          <!-- Push to the right -->
+          <button id="new-equipment-btn" class="btn btn-success btn-block">
+            <i class="fas fa-plus"></i> Add New
+          </button>
+        </div>
+      </div>
 
-        <!-- Equipment Table -->
-        <div>
-          <h3>Equipment List</h3>
-          <div class="table-container shadow-sm p-3 bg-white rounded">
-            <table class="table table-hover mt-4">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Eqpt Name</th>
-                  <th>Code</th>
-                  <th>Type</th>
-                  <th>Occupied By</th>
-                  <th>Occupied</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="equipment-table-body"></tbody>
-            </table>
+      <!-- Main Content Row -->
+      <div class="row">
+        <!-- Equipment List Column -->
+        <div class="col-lg-7 mb-4 mb-lg-0">
+          <!-- Card for better visual grouping -->
+          <div class="card shadow-sm">
+            <div class="card-header">
+              <h4 class="mb-0">Asset List</h4>
+            </div>
+            <div class="card-body p-0">
+              <!-- Remove padding for table fit -->
+              <div class="table-responsive table-container">
+                <table class="table table-hover mb-0">
+                  <!-- Removed mt-4, mb-0 -->
+                  <thead class="thead-dark">
+                    <!-- Use Bootstrap dark header -->
+                    <tr>
+                      <th>ID</th>
+                      <th>Eqpt Name</th>
+                      <th>Code</th>
+                      <th>Type</th>
+                      <th>Occupied By</th>
+                      <th>Occupied</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="equipment-table-body"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Occupied Record -->
-        <div>
-          <h3>Occupied Record</h3>
-          <div class="table-container shadow-sm p-3 bg-white rounded">
-            <table class="table table-hover mt-4">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Occupied Name</th>
-                  <th>Occupied Date</th>
-                  <th>Occupied Task</th>
-                  <th>Released Date</th>
-                  <th>Released Task</th>
-                </tr>
-              </thead>
-              <tbody id="eqpt-occupied-table-body"></tbody>
-            </table>
+        <!-- Occupied Record Column -->
+        <div class="col-lg-5">
+          <!-- Card for better visual grouping -->
+          <div class="card shadow-sm">
+            <div class="card-header">
+              <h4 class="mb-0">
+                Occupied Record
+                <small class="text-muted" id="selected-equipment-name"
+                  >(Select equipment)</small
+                >
+              </h4>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive table-container">
+                <table class="table table-hover mb-0">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th>ID</th>
+                      <th>Occupied Name</th>
+                      <th>Occupied Date</th>
+                      <th>Occupied Task</th>
+                      <th>Released Date</th>
+                      <th>Released Task</th>
+                    </tr>
+                  </thead>
+                  <tbody id="eqpt-occupied-table-body">
+                    <!-- JS will populate based on selection -->
+                    <tr>
+                      <td colspan="6" class="text-center text-muted">
+                        Select an item from the Equipment List to view records.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Edit/New Modal -->
+    <!-- Edit/New Modal (Keep structure, ensure BS4 classes) -->
     <div
       class="modal fade"
       id="edit-modal"
@@ -112,19 +168,19 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="editModalLabel">Edit Equipment</h5>
+            <!-- Ensure you have BS4 close button if needed, or use data-dismiss -->
             <button
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
-              aria-label="Close"
             ></button>
           </div>
           <div class="modal-body">
             <form id="edit-form">
               <input type="hidden" id="edit-id" />
-
-              <div class="form-group mb-3">
-                <label for="edit-name" class="form-label">Name</label>
+              <!-- Using form-group for BS4 structure -->
+              <div class="form-group">
+                <label for="edit-name">Name</label>
                 <input
                   type="text"
                   id="edit-name"
@@ -132,9 +188,8 @@
                   required
                 />
               </div>
-
-              <div class="form-group mb-3">
-                <label for="edit-code" class="form-label">Equipment Code</label>
+              <div class="form-group">
+                <label for="edit-code">Equipment Code</label>
                 <input
                   type="text"
                   id="edit-code"
@@ -142,19 +197,27 @@
                   required
                 />
               </div>
-
-              <div class="form-group mb-3">
-                <label for="edit-type" class="form-label">Equipment Type</label>
-                <select id="edit-type" class="form-select form-control">
-                  <option value="" disabled>Select a Type</option>
+              <div class="form-group">
+                <label for="edit-type">Equipment Type</label>
+                <!-- Use form-control for BS4 selects -->
+                <select id="edit-type" class="form-control custom-select">
+                  <option value="" disabled selected>Select a Type</option>
+                  <!-- Populate options via JS -->
                 </select>
               </div>
-
               <div class="modal-footer">
+                <!-- Removed w-100, let modal footer handle alignment -->
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
                 <button
                   id="saveEqpt"
                   type="submit"
-                  class="btn btn-success w-100 submit-btn"
+                  class="btn btn-success submit-btn"
                 >
                   Save
                 </button>
@@ -165,7 +228,7 @@
       </div>
     </div>
 
-    <!-- Assign Modal -->
+    <!-- Assign Modal (Similar BS4 structure check) -->
     <div
       class="modal fade"
       id="assign-modal"
@@ -181,72 +244,38 @@
               type="button"
               class="btn-close"
               data-bs-dismiss="modal"
-              aria-label="Close"
             ></button>
           </div>
           <div class="modal-body">
             <form id="assign-form">
-              <div class="form-group mb-3">
-                <label for="assign-name" class="form-label">Assign To</label>
-                <select
-                  id="assign-name"
-                  class="form-select form-control"
-                  required
-                >
-                  <option value="" disabled>Select a User</option>
-                </select>
-              </div>
+              <!-- Hidden fields first -->
+              <input type="hidden" id="assign-eqpt-id" />
+              <input type="hidden" id="assign-eqpt-typeid" />
 
-              <div class="form-group mb-3">
-                <label for="assign-task" class="form-label">Relate Task</label>
-                <select id="assign-task" class="form-select form-control">
-                  <option value="" disabled>Select a Task</option>
-                </select>
+              <!-- Display details about the equipment being assigned -->
+              <h6>Equipment Details</h6>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="assign-eqpt-name">Name</label>
+                  <input
+                    type="text"
+                    id="assign-eqpt-name"
+                    class="form-control"
+                    disabled
+                  />
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="assign-eqpt-code">Code</label>
+                  <input
+                    type="text"
+                    id="assign-eqpt-code"
+                    class="form-control"
+                    disabled
+                  />
+                </div>
               </div>
-
-              <div class="form-group mb-3" hidden>
-                <input
-                  type="text"
-                  id="assign-eqpt-id"
-                  class="form-control"
-                  disabled
-                />
-                <input
-                  type="text"
-                  id="assign-eqpt-typeid"
-                  class="form-control"
-                  disabled
-                />
-              </div>
-
-              <div class="form-group mb-3">
-                <label for="assign-eqpt-code" class="form-label"
-                  >Equipment Code</label
-                >
-                <input
-                  type="text"
-                  id="assign-eqpt-code"
-                  class="form-control"
-                  disabled
-                />
-              </div>
-
-              <div class="form-group mb-3">
-                <label for="assign-eqpt-name" class="form-label"
-                  >Equipment Name</label
-                >
-                <input
-                  type="text"
-                  id="assign-eqpt-name"
-                  class="form-control"
-                  disabled
-                />
-              </div>
-
-              <div class="form-group mb-3">
-                <label for="assign-eqpt-type" class="form-label"
-                  >Equipment Type</label
-                >
+              <div class="form-group">
+                <label for="assign-eqpt-type">Type</label>
                 <input
                   type="text"
                   id="assign-eqpt-type"
@@ -254,12 +283,40 @@
                   disabled
                 />
               </div>
+              <hr />
+              <!-- Assignment fields -->
+              <h6>Assign To</h6>
+              <div class="form-group">
+                <label for="assign-name">User</label>
+                <select
+                  id="assign-name"
+                  class="form-control custom-select"
+                  required
+                >
+                  <option value="" disabled selected>Select a User</option>
+                  <!-- Populate options via JS -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="assign-task">Relate Task (Optional)</label>
+                <select id="assign-task" class="form-control custom-select">
+                  <option value="" selected>Select a Task (Optional)</option>
+                  <!-- Populate options via JS -->
+                </select>
+              </div>
 
               <div class="modal-footer">
                 <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
                   id="assignEqpt"
                   type="submit"
-                  class="btn btn-success w-100 submit-btn"
+                  class="btn btn-success submit-btn"
                 >
                   Assign
                 </button>
@@ -270,12 +327,12 @@
       </div>
     </div>
 
-    <!-- Retrun Modal -->
+    <!-- Return Modal (Similar BS4 structure check) -->
     <div
       class="modal fade"
       id="return-modal"
       tabindex="-1"
-      aria-labelledby="assignModalLabel"
+      aria-labelledby="returnModalLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog">
@@ -284,15 +341,49 @@
             <h5 class="modal-title" id="returnModalLabel">Return Equipment</h5>
             <button
               type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
+              class="close"
+              data-dismiss="modal"
               aria-label="Close"
-            ></button>
+            >
+              <span aria-hidden="true">×</span>
+            </button>
           </div>
           <div class="modal-body">
             <form id="return-form">
-              <div class="form-group mb-3">
-                <label for="return-name" class="form-label">Return From</label>
+              <!-- Hidden fields -->
+              <input type="hidden" id="return-user-id" />
+              <input type="hidden" id="return-eqpt-id" />
+              <input type="hidden" id="return-eqpt-typeid" />
+              <input type="hidden" id="return-id" />
+              <!-- Occupation Record ID? -->
+
+              <!-- Display details about the equipment being returned -->
+              <h6>Equipment Details</h6>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="return-eqpt-name">Name</label>
+                  <input
+                    type="text"
+                    id="return-eqpt-name"
+                    class="form-control"
+                    disabled
+                  />
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="return-eqpt-code">Code</label>
+                  <input
+                    type="text"
+                    id="return-eqpt-code"
+                    class="form-control"
+                    disabled
+                  />
+                </div>
+              </div>
+              <hr />
+              <!-- Return details -->
+              <h6>Return Information</h6>
+              <div class="form-group">
+                <label for="return-name">Return From</label>
                 <input
                   type="text"
                   id="return-name"
@@ -300,18 +391,8 @@
                   disabled
                 />
               </div>
-
-              <div class="form-group mb-3">
-                <label for="return-task" class="form-label">Relate Task</label>
-                <select id="return-task" class="form-select form-control">
-                  <option value="" disabled>Select a Task</option>
-                </select>
-              </div>
-
-              <div class="form-group mb-3">
-                <label for="return-assign-date" class="form-label"
-                  >Assigned Date</label
-                >
+              <div class="form-group">
+                <label for="return-assign-date">Assigned Date</label>
                 <input
                   type="text"
                   id="return-assign-date"
@@ -319,63 +400,26 @@
                   disabled
                 />
               </div>
-
-              <div class="form-group mb-3" hidden>
-                <input
-                  type="text"
-                  id="return-user-id"
-                  class="form-control"
-                  disabled
-                />
-                <input
-                  type="text"
-                  id="return-eqpt-id"
-                  class="form-control"
-                  disabled
-                />
-                <input
-                  type="text"
-                  id="return-eqpt-typeid"
-                  class="form-control"
-                  disabled
-                />
-                <input
-                  type="text"
-                  id="return-id"
-                  class="form-control"
-                  disabled
-                />
-              </div>
-
-              <div class="form-group mb-3">
-                <label for="return-eqpt-code" class="form-label"
-                  >Equipment Code</label
-                >
-                <input
-                  type="text"
-                  id="return-eqpt-code"
-                  class="form-control"
-                  disabled
-                />
-              </div>
-
-              <div class="form-group mb-3">
-                <label for="return-eqpt-name" class="form-label"
-                  >Equipment Name</label
-                >
-                <input
-                  type="text"
-                  id="return-eqpt-name"
-                  class="form-control"
-                  disabled
-                />
+              <div class="form-group">
+                <label for="return-task">Relate Task (Optional)</label>
+                <select id="return-task" class="form-control custom-select">
+                  <option value="" selected>Select a Task (Optional)</option>
+                  <!-- Populate options via JS -->
+                </select>
               </div>
 
               <div class="modal-footer">
                 <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
                   id="returnEqpt"
                   type="submit"
-                  class="btn btn-success w-100 submit-btn"
+                  class="btn btn-success submit-btn"
                 >
                   Return
                 </button>
@@ -388,13 +432,18 @@
 
     <!-- Footer -->
     <%- include('../partials/footer-simple') %>
-  </body>
-  <!-- Bootstrap JS and dependencies -->
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <script src="/js/mgmt-equipment.js" type="module"></script>
+    <!-- Bootstrap JS and dependencies -->
+    <!-- IMPORTANT: Bootstrap 4 requires jQuery and Popper.js - Load jQuery FIRST -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <!-- Note: BS4 actually often bundled Popper v1, but v2 might work -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Axios, SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Your Custom JS -->
+    <script src="/js/mgmt-equipment.js" type="module"></script>
+  </body>
 </html>
