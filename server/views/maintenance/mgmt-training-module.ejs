@@ -10,96 +10,151 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <!-- Bootstrap 4 Toggle CSS (Choose this one) -->
     <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-switch-button/css/bootstrap-switch-button.min.css"
     />
+    <!-- Remove Bootstrap Switch Button CSS -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-switch-button/css/bootstrap-switch-button.min.css" /> -->
+
+    <style>
+      /* Sticky header using Bootstrap's dark theme */
+      .table thead.thead-dark th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        /* Background/color handled by thead-dark */
+      }
+
+      /* Container for fixed height scrolling table */
+      .table-container {
+        max-height: 600px; /* Adjust as needed */
+        overflow-y: auto;
+      }
+
+      /* Ensure toggles align nicely in table cells */
+      .table td .toggle {
+        margin-bottom: 0; /* Remove default bottom margin */
+        vertical-align: middle;
+      }
+
+      /* Adjust alignment for controls row */
+      .controls-row > .col-md-3:last-child {
+        align-self: flex-end; /* Align button to bottom */
+        margin-bottom: 1rem; /* Add space below button if needed */
+      }
+    </style>
   </head>
 
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %>
-    <div class="parent">
-      <div class="container">
-        <h2 class="text-center">Training Module Management</h2>
-        <form id="search-form">
-          <div class="form-row align-items-end">
-            <div class="col-md-3">
-              <label for="searchName" class="font-weight-bold"
-                >Training Name</label
-              >
-              <input
-                type="text"
-                id="searchName"
-                class="form-control"
-                placeholder="Enter Training Module Name"
-              />
+
+    <div class="container-fluid mt-4">
+      <h2 class="text-center mb-4">Training Module Management</h2>
+
+      <!-- Search Criteria Card -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-search mr-2"></i>Search Criteria
+          </h5>
+        </div>
+        <div class="card-body">
+          <form id="search-form">
+            <div class="form-row align-items-end">
+              <div class="col-md-3 mb-2">
+                <label for="searchName">Training Name</label>
+                <input
+                  type="text"
+                  id="searchName"
+                  class="form-control form-control-sm"
+                  placeholder="Enter name..."
+                />
+              </div>
+              <div class="col-md-3 mb-2">
+                <label for="searchDepartment">Department</label>
+                <select
+                  id="searchDepartment"
+                  class="form-control form-control-sm custom-select"
+                >
+                  <option value="" selected>All Departments</option>
+                  <!-- Populate via JS -->
+                </select>
+              </div>
+              <div class="col-md-2 mb-2">
+                <label for="searchEnabled">Enabled</label>
+                <select
+                  id="searchEnabled"
+                  class="form-control form-control-sm custom-select"
+                >
+                  <option value="" selected>All</option>
+                  <option value="true">Yes</option>
+                  <!-- Use true/false -->
+                  <option value="false">No</option>
+                </select>
+              </div>
+              <div class="col-md-2 mb-2">
+                <button
+                  type="submit"
+                  class="btn btn-secondary btn-sm btn-block"
+                  id="btnSearch"
+                >
+                  <i class="fas fa-search"></i> Search
+                </button>
+              </div>
+              <div class="col-md-2 mb-2">
+                <button
+                  type="button"
+                  class="btn btn-dark btn-sm btn-block"
+                  id="btnAdd"
+                  data-toggle="modal"
+                  data-target="#trainingModuleModal"
+                >
+                  <i class="fas fa-plus"></i> Add New
+                </button>
+              </div>
             </div>
-            <div class="col-md-3">
-              <label for="searchDepartment" class="font-weight-bold"
-                >Training Module Department</label
-              >
-              <select id="searchDepartment" class="form-control">
-                <option value="" disabled selected>
-                  Select a Training Department
-                </option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label for="searchEmpStatus" class="font-weight-bold"
-                >Enabled</label
-              >
-              <select id="searchEnabled" class="form-control">
-                <option value="" selected>All</option>
-                <option value="1">Yes</option>
-                <option value="0">No</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <button
-                type="submit"
-                class="btn btn-primary btn-block"
-                id="btnSearch"
-              >
-                Search
-              </button>
-            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Training Modules List Card -->
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-list-ul mr-2"></i>Training Modules
+          </h5>
+        </div>
+        <div class="card-body p-0">
+          <!-- Remove padding for edge-to-edge table -->
+          <div class="table-responsive table-container">
+            <table class="table table-striped table-hover mb-0">
+              <thead class="thead-dark">
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Group/Department</th>
+                  <th class="text-center">Enabled</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="trainingTableBody"></tbody>
+            </table>
           </div>
-        </form>
-      </div>
-      <div class="col-md-3">
-        <button
-          type="button"
-          class="btn btn-outline-success btn-block"
-          id="btnAdd"
-        >
-          Create Training Module
-        </button>
-      </div>
-      <div class="table-container">
-        <table class="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>Training Module Name</th>
-              <th>Training Module Description</th>
-              <th>Training Module Group</th>
-              <th>Enabled</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="trainingTableBody">
-            <!-- Data will be loaded dynamically -->
-          </tbody>
-        </table>
+        </div>
+        <div class="card-footer text-muted" id="tableFooter">
+          Loading modules...
+        </div>
       </div>
     </div>
-    <!-- Swal.fire("Error", `Please fill in all required fields.`, "error");
-      Swal.fire("Success", `Equipment ${mode}ed successfully!`, "success");
-      -->
+    <!-- End Container -->
 
     <!-- Footer -->
     <%- include('../partials/footer-simple') %>
@@ -121,43 +176,3 @@
     <script src="/js/mgmt-training-module.js" type="module"></script>
   </body>
 </html>
-<style>
-  .parent {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 20px;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    background: white;
-  }
-  .table-container {
-    max-height: 600px;
-    overflow-y: auto;
-    border-radius: 10px;
-  }
-  thead th {
-    position: sticky;
-    top: 0;
-    background: #000000 !important;
-    color: white !important;
-    z-index: 10;
-  }
-  tbody tr:hover {
-    background-color: #f1f1f1;
-  }
-  .slow .switch-group {
-    transition: left 0.7s;
-    -webkit-transition: left 0.7s;
-  }
-  .fast .switch-group {
-    transition: left 0.1s;
-    -webkit-transition: left 0.1s;
-  }
-  .quick .switch-group {
-    transition: none;
-    -webkit-transition: none;
-  }
-</style>
