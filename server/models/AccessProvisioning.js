@@ -23,7 +23,7 @@ const AccessProvisioning = sequelize.define(
     },
     access_role_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     enabled: {
       type: DataTypes.TINYINT,
