@@ -176,9 +176,9 @@ async function loadEqptOccupiedHis(eqptId) {
         <tr>
           <td>${item.id}</td>
           <td>${item.occupied_by_name || ""}</td>
-          <td>${item.occupied_date || ""}</td>
+          <td>${formatDate(item.occupied_date) || ""}</td>
           <td>${item.occupied_task_name || ""}</td>
-          <td>${item.released_date || ""}</td>
+          <td>${formatDate(item.released_date) || ""}</td>
           <td>${item.released_task_name || ""}</td>
         </tr>
       `;
@@ -356,7 +356,7 @@ async function returnEqptConfirm() {
   try {
     const occupiedEqptHisId = $("#return-id").val();
     const task = $("#return-task").val();
-  
+
     const occupiedEqpt = await EqptOccupiedHisApi.getTaskById(
       occupiedEqptHisId
     );
