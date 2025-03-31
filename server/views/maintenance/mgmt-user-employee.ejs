@@ -3,177 +3,299 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User/Employee Management</title>
+    <title>HRIS Management</title>
 
     <!-- Bootstrap CSS -->
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <!-- Font Awesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <style>
+      /* Sticky header using Bootstrap's sticky-top utility */
+      .table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        /* Use Bootstrap's dark theme */
+      }
+
+      /* Container for fixed height scrolling table */
+      .table-container {
+        max-height: 600px; /* Adjust as needed */
+        overflow-y: auto;
+      }
+
+      /* Style for highlighted row */
+      .table-hover tbody tr:hover {
+        cursor: pointer; /* Indicate rows are clickable */
+      }
+      .table tbody tr.table-active {
+        background-color: #cfe2ff; /* Example highlight color */
+      }
+
+      /* Ensure form sections are clearly separated */
+      .details-section {
+        margin-bottom: 1.5rem;
+        padding-bottom: 4rem;
+        border-bottom: 1px solid #eee;
+      }
+      .details-section:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      .card-body{
+        padding-bottom: 48px!important;
+      }
+
+      /* Slightly dim read-only fields */
+      input:read-only,
+      input:disabled {
+        background-color: #e9ecef;
+        opacity: 1;
+      }
+    </style>
   </head>
- 
+
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %>
 
-    <div class="parent">
-      <!-- Left Panel: Search Condition -->
-      <div>
-        <h5>Search Users</h5>
-        <input
-          type="text"
-          id="searchUser"
-          class="form-control mb-2"
-          placeholder="Search by Username"
-        />
-        <button class="btn btn-primary w-100" id="searchBtn">
-          Search
-        </button>
-      </div>
+    <div class="container-fluid mt-4">
+      <h2>HRIS Management</h2>
 
-      <!-- Middle Panel: User List -->
-      <div>
-        <h5>User List</h5>
-        <div class="table-container">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>User ID</th>
-                <th>Username</th>
-                <th>Role</th>
-                <th>Active</th>
-                <th>Created Date</th>
-                <th>Last Updated</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="userList"></tbody>
-          </table>
+      <!-- Controls Row -->
+      <div class="row mb-3 align-items-end">
+        <div class="col-md-4">
+          <label for="searchUser">Search by Username</label>
+          <input
+            type="text"
+            id="searchUser"
+            class="form-control"
+            placeholder="Enter username..."
+          />
         </div>
-      </div>
-
-      <!-- Right Panel: Employee Form -->
-      <div>
-        <h5>Employee Details</h5>
-        <form id="employeeForm">
-          <input type="hidden" id="employeeId" />
-
-          <div class="form-group">
-            <label class="form-label">First Name</label>
-            <input type="text" id="firstName" class="form-control" />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Last Name</label>
-            <input type="text" id="lastName" class="form-control" />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Department</label>
-            <select id="edit-department" class="form-control" required>
-              <option value="" disabled selected>
-                Select a department
-              </option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Status</label>
-            <select id="edit-status" class="form-control">
-              <option value="" disabled selected>
-                Select a status
-              </option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Address</label>
-            <input type="text" id="address" class="form-control" />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Phone</label>
-            <input type="text" id="phone" class="form-control" />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Active</label>
-            <select id="isActive" class="form-control">
-              <option value="true">Yes</option>
-              <option value="false">No</option>
-            </select>
-          </div>
-
-          <button type="button" class="btn btn-success w-100" id="saveEmployee">
-            Save
+        <div class="col-md-2">
+          <button class="btn btn-secondary btn-block" id="searchBtn">
+            <i class="fas fa-search"></i> Search
           </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- User Edit Modal -->
-    <div
-      class="modal fade"
-      id="editUserModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="editUserModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form id="editUserForm">
-              <input type="hidden" id="editUserId" />
-
-              <div class="form-group">
-                <label>Username</label>
-                <input
-                  type="text"
-                  id="editUsername"
-                  class="form-control"
-                  readonly
-                />
-              </div>
-
-              <div class="form-group">
-                <label>Role</label>
-                <select id="edit-role" class="form-control">
-                  <option value="" disabled> Select a Role</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label>Active</label>
-                <select id="editIsActive" class="form-control">
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
-                </select>
-              </div>
-
-              <button
-                type="button"
-                class="btn btn-primary w-100"
-                id="saveUserChanges"
-              >
-                Save Changes
-              </button>
-            </form>
-          </div>
+        </div>
+        <div class="col-md-3 ml-auto">
+          <!-- Push to the right -->
+          <button class="btn btn-dark btn-block" id="addNewUserBtn">
+            <i class="fas fa-user-plus"></i> Add New User/Employee
+          </button>
         </div>
       </div>
+
+      <!-- Main Content Row -->
+      <div class="row">
+        <!-- User List Column -->
+        <div class="col-lg-7 mb-4 mb-lg-0">
+          <div class="card shadow-sm">
+            <div class="card-header">
+              <h5 class="mb-0">User List</h5>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive table-container">
+                <table class="table table-hover mb-0">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th>User ID</th>
+                      <th>Username</th>
+                      <th>Role</th>
+                      <th>Active</th>
+                      <!-- User Account Status -->
+                      <th>Created Date</th>
+                      <th>Last Updated</th>
+                      <!-- Removed Action column, rely on row click -->
+                    </tr>
+                  </thead>
+                  <tbody id="userList"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer text-muted" id="userListFooter">
+              <!-- Optional: Add pagination controls or count here -->
+              Select a user to view/edit details.
+            </div>
+          </div>
+        </div>
+
+        <!-- Details Panel Column -->
+        <div class="col-lg-5">
+          <div class="card shadow-sm">
+            <div class="card-header">
+              <h5 class="mb-0" id="detailsPanelHeader">
+                User & Employee Details
+              </h5>
+            </div>
+            <div class="card-body">
+              <form id="detailsForm">
+                <!-- Hidden fields to store IDs -->
+                <input type="hidden" id="selectedUserId" />
+                <input type="hidden" id="selectedEmployeeId" />
+                <p id="selectUserPrompt" class="text-muted">
+                  Select a user from the list to view or edit their details, or
+                  click 'Add New User/Employee'.
+                </p>
+
+                <div id="formContent" style="display: none">
+                  <!-- Hide form until user selected or Add New clicked -->
+
+                  <!-- User Account Details Section -->
+                  <div class="details-section">
+                    <h6><i class="fas fa-user-cog mr-2"></i>User Account</h6>
+                    <div class="form-group">
+                      <label for="detailUsername">Username</label>
+                      <input
+                        type="text"
+                        id="detailUsername"
+                        class="form-control"
+                        readonly
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="detailRole">Role</label>
+                      <select
+                        id="detailRole"
+                        class="form-control custom-select"
+                        required
+                      >
+                        <option value="" disabled selected>
+                          Select a Role
+                        </option>
+                        <!-- Populate options via JS -->
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="detailUserActive">User Account Active</label>
+                      <select
+                        id="detailUserActive"
+                        class="form-control custom-select"
+                      >
+                        <option value="1">Yes (Can Login)</option>
+                        <option value="0">No (Cannot Login)</option>
+                      </select>
+                    </div>
+                    <!-- Add Password Reset Button if applicable -->
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-warning mb-2"
+                      id="resetPasswordBtn"
+                      style="display: none"
+                    >
+                      <!-- Show only for existing users -->
+                      <i class="fas fa-key"></i> Reset Password
+                    </button>
+                  </div>
+
+                  <!-- Employee Information Section -->
+                  <div class="details-section">
+                    <h6>
+                      <i class="fas fa-id-card mr-2"></i>Employee Information
+                    </h6>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="detailFirstName">First Name</label>
+                        <input
+                          type="text"
+                          id="detailFirstName"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="detailLastName">Last Name</label>
+                        <input
+                          type="text"
+                          id="detailLastName"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="detailDepartment">Department</label>
+                        <select
+                          id="detailDepartment"
+                          class="form-control custom-select"
+                          required
+                        >
+                          <option value="" disabled selected>
+                            Select a Department
+                          </option>
+                          <!-- Populate options via JS -->
+                        </select>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="detailEmploymentStatus"
+                          >Employment Status</label
+                        >
+                        <select
+                          id="detailEmploymentStatus"
+                          class="form-control custom-select"
+                          required
+                        >
+                          <option value="" disabled selected>
+                            Select a Status
+                          </option>
+                          <!-- Example Options (Populate via JS/Config) -->
+                          <option value="Full-time">Full-time</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="detailAddress">Address</label>
+                      <input
+                        type="text"
+                        id="detailAddress"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="detailPhone">Phone</label>
+                      <input type="tel" id="detailPhone" class="form-control" />
+                      <!-- Use type="tel" -->
+                    </div>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="mt-3">
+                    <button
+                      type="submit"
+                      class="btn btn-dark w-100"
+                      id="saveDetailsBtn"
+                    >
+                      <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary w-100 mt-2"
+                      id="clearFormBtn"
+                    >
+                      <i class="fas fa-times"></i> Clear / Cancel
+                    </button>
+                  </div>
+                </div>
+                <!-- End #formContent -->
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- End Details Column -->
+      </div>
+      <!-- End Main Content Row -->
     </div>
+    <!-- End Container -->
     <!-- Footer -->
     <%- include('../partials/footer-simple') %>
 
@@ -187,31 +309,3 @@
     <script src="/js/mgmt-user-employee.js" type="module"></script>
   </body>
 </html>
-<style>
-  .parent {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1.5fr;
-    gap: 20px;
-    padding: 20px;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    background: white;
-  }
-  .table-container {
-    max-height: 600px;
-    overflow-y: auto;
-    border-radius: 10px;
-  }
-  thead th {
-    position: sticky;
-    top: 0;
-    background: #000000 !important;
-    color: white !important;
-    z-index: 10;
-  }
-  tbody tr:hover {
-    background-color: #f1f1f1;
-  }
-</style>
