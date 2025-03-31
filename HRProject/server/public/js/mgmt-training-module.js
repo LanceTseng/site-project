@@ -99,10 +99,10 @@ async function loadTrainingModule() {
 
         // Action buttons (Edit & Save) with event binding
         const actionField = `<td>
-         <button class="btn btn-secondary btn-sm mx-1 edit-btn" data-id="${
+         <button class="btn btn-warning btn-sm mx-1 edit-btn" data-id="${
            training.training_module_id ?? "-1"
          }">Edit</button>
-         <button class="btn btn-primary btn-sm mx-1 save-btn" data-id="${
+         <button class="btn btn-dark btn-sm mx-1 save-btn" data-id="${
            training.training_module_id ?? "-1"
          }" disabled>Save</button>
        </td>`;
@@ -153,8 +153,8 @@ async function addField() {
         "Enabled"
       )}</td>
       <td>
-        <button class="btn btn-secondary btn-sm mx-1 edit-btn" data-id="-1">Edit</button>
-        <button class="btn btn-primary btn-sm mx-1 save-btn" data-id="-1" disabled>Save</button>
+        <button class="btn btn-warning btn-sm mx-1 edit-btn" data-id="-1">Edit</button>
+        <button class="btn btn-dark btn-sm mx-1 save-btn" data-id="-1" disabled>Save</button>
       </td>
     </tr>
   `;
