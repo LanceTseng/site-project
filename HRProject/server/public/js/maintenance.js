@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const menuItems = [
     { title: "Task Management", icon: "fas fa-tasks", description: "Manage tasks for maintenance activities.", link: "/mgmt-task" },
     { title: "Equipment Management", icon: "fas fa-tools", description: "View and manage maintenance equipment.", link: "/mgmt-equipment" },
-    { title: "User/Employee Management", icon: "fas fa-user-cog", description: "Manage users and employees.", link: "/mgmt-user-employee" },
+    { title: "HRIS Management", icon: "fas fa-user-cog", description: "Manage users and employees.", link: "/mgmt-user-employee" },
     { title: "Document Management", icon: "fas fa-file-alt", description: "View and manage maintenance documents.", link: "/mgmt-document" },
     { title: "Training Management", icon: "fas fa-chalkboard-teacher", description: "Access and manage training modules.", link: "/mgmt-training-module" },
     { title: "Access Provisioning Management", icon: "fas fa-universal-access", description: "Access provisioning modules.", link: "/mgmt-access" },
