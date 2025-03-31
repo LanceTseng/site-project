@@ -30,6 +30,48 @@ async function populateDropdown(dropdownId, taskName) {
   }
 }
 
+async function renderActionButton(training) {
+  let actionButton = "";
+
+  if (isEqualIgnoreCase(training.training_status, "pending")) {
+    if (loginUser.user_id == training.user_id) {
+      actionButton += `<button class="btn btn-primary btn-sm btn-start" data-id=${training.id}>Start</button>`;
+    }
+  }
+  if (isEqualIgnoreCase(training.training_status, "processing")) {
+    if (loginUser.user_id == training.user_id) {
+      actionButton += `<button class="btn btn-warning btn-sm btn-verify" data-id=${training.id}>Verify</button>`;
+    }
+  }
+  if (isEqualIgnoreCase(training.training_status, "verifying")) {
+    if (loginUser.department_id == training.training_department_id) {
+      actionButton += `<button class="btn btn-success btn-sm btn-complete" data-id=${training.id}>Completed</button>`;
+    }
+  }
+
+  if (isEqualIgnoreCase(training.training_department, "all")) {
+    actionButton = "";
+    if (isEqualIgnoreCase(training.training_status, "pending")) {
+      actionButton += `<button class="btn btn-primary btn-sm btn-start" data-id=${training.id}>Start</button>`;
+    }
+    if (isEqualIgnoreCase(training.training_status, "processing")) {
+      actionButton += `<button class="btn btn-warning btn-sm btn-verify" data-id=${training.id}>Verify</button>`;
+    }
+    if (isEqualIgnoreCase(training.training_status, "verifying")) {
+      actionButton += `<button class="btn btn-success btn-sm btn-complete" data-id=${training.id}>Completed</button>`;
+    }
+  }
+
+  if (accessVerify("Training Full Access")) {
+    actionButton = "";
+    actionButton += `<button class="btn btn-primary btn-sm btn-start" data-id=${training.id}>Start</button>`;
+    actionButton += `<button class="btn btn-warning btn-sm btn-verify" data-id=${training.id}>Verify</button>`;
+    actionButton += `<button class="btn btn-success btn-sm btn-complete" data-id=${training.id}>Completed</button>`;
+  }
+
+  return actionButton;
+}
+
 async function loadUserTraining() {
   try {
     const searchUserName = $("#searchUserName").val();
@@ -49,33 +91,8 @@ async function loadUserTraining() {
     const trainingTableBody = $("#trainingTableBody");
     trainingTableBody.empty();
 
-    if (accessVerify == "Training Verifier") {
-    }
-
-    response.forEach((training) => {
-      let actionButton = "";
-
-      if (isEqualIgnoreCase(training.training_status, "completed")) {
-      } else if (
-        isEqualIgnoreCase(training.training_status, "pending") &&
-        loginUser.user_id == training.user_id
-      ) {
-        actionButton += `<button class="btn btn-primary btn-sm btn-start" data-id=${training.id}>Start</button>`;
-      } else if (
-        isEqualIgnoreCase(training.training_status, "processing") &&
-        loginUser.user_id == training.user_id
-      ) {
-        actionButton += `<button class="btn btn-warning btn-sm btn-verify" data-id=${training.id}>Verify</button>`;
-      } else if (
-        isEqualIgnoreCase(training.training_status, "verifying") &&
-        isEqualIgnoreCase(
-          loginUser.department_name,
-          training.training_department
-        )
-      ) {
-        actionButton += `<button class="btn btn-success btn-sm btn-complete" data-id=${training.id}>Completed</button>`;
-      }
-
+    response.forEach(async (training) => {
+      const actionButton = await renderActionButton(training);
       const row = `
             <tr>
               <td>${training.user_name}</td>
@@ -191,7 +208,10 @@ async function navigateFromUserTask() {
   $("#searchDepartment").val(trainingDeptId);
   $("#searchLineId").val(lineId);
 
-  if ((lineId != null && trainingDeptId != null && userId == loginUser.user_id) || accessVerify("Training Full Access")) {
+  if (
+    (lineId != null && trainingDeptId != null && userId == loginUser.user_id) ||
+    accessVerify("Training Full Access")
+  ) {
     initUserTraining(lineId, trainingDeptId, userId);
   }
 }
