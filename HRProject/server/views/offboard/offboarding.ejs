@@ -7,27 +7,41 @@
 
     <!-- Bootstrap CSS -->
     <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+
+    <!-- Font Awesome CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- Custom CSS -->
   </head>
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %>
 
+    <!-- Main Content -->
     <div class="container mt-5">
-      <h2 class="text-center">Employee Offboarding</h2>
+      <h2 class="text-center mb-4">Employee Offboarding</h2>
       <div class="row">
         <div class="col-md-12">
           <div class="mb-3">
-            <input
-              type="text"
-              id="searchInput"
-              class="form-control"
-              placeholder="Search Employee..."
-            />
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fas fa-search"></i>
+              </span>
+              <input
+                type="text"
+                id="searchInput"
+                class="form-control"
+                placeholder="Search Employee..."
+              />
+            </div>
           </div>
-          <div class="table-container">
+          <div class="table-container shadow-sm p-3 bg-white rounded">
             <table class="table table-striped table-hover">
               <thead>
                 <tr>
@@ -36,11 +50,19 @@
                   <th>Last Name</th>
                   <th>Status</th>
                   <th>Department</th>
-                  <th>Action</th>
+                  <th class="text-center">Action</th>
                 </tr>
               </thead>
               <tbody id="employeeTableBody">
                 <!-- Data will be loaded here -->
+                <tr>
+                  <td colspan="6" class="text-center">
+                    <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Loading employees...</p>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -48,29 +70,39 @@
       </div>
     </div>
 
-    <div class="modal fade" id="offboardModal" tabindex="-1" aria-hidden="true">
+    <!-- Offboard Modal -->
+    <div
+      class="modal fade"
+      id="offboardModal"
+      tabindex="-1"
+      aria-labelledby="offboardModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Offboard Employee</h5>
+          <div class="modal-header bg-light">
+            <h5 class="modal-title" id="offboardModalLabel">
+              Offboard Employee
+            </h5>
             <button
               type="button"
-              class="close"
-              data-dismiss="modal"
+              class="btn-close"
+              data-bs-dismiss="modal"
               aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
+            ></button>
           </div>
           <div class="modal-body">
             <p>
-              Are you sure you want to offboard <strong id="employeeName"></strong>?
+              Are you sure you want to offboard
+              <strong id="employeeName"></strong>?
             </p>
             <input type="hidden" id="employeeId" />
-    
+
             <!-- Offboarding Date Selection -->
-            <div class="form-group">
-              <label for="offboardDate">Select Offboarding Date</label>
+            <div class="mb-3">
+              <label for="offboardDate" class="form-label"
+                >Select Offboarding Date</label
+              >
               <input
                 type="date"
                 class="form-control"
@@ -103,30 +135,107 @@
   </body>
 </html>
 <style>
-  .parent {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 20px;
+  /* Custom CSS for Employee Offboarding */
+
+  /* Theme Variables */
+  :root {
+    --body-bg: #f8f9fa;
+    --primary-color: #343a40;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --text-light: #ffffff;
+    --text-dark: #343a40;
+    --border-color: #dee2e6;
+    --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --border-radius: 0.5rem;
+    --transition-duration: 0.3s;
   }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    background: white;
+
+  body {
+    font-family: "Arial", sans-serif;
+    background-color: var(--body-bg);
+    color: var(--text-dark);
   }
+
+  .container {
+    max-width: 1200px;
+  }
+
+  h2 {
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Table Styling */
   .table-container {
-    max-height: 600px;
-    overflow-y: auto;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
   }
-  thead th {
-    position: sticky;
-    top: 0;
-    background: #000000 !important;
-    color: white !important;
-    z-index: 10;
+
+  .table {
+    margin-bottom: 0;
   }
-  tbody tr:hover {
-    background-color: #f1f1f1;
+
+  .table thead th {
+    background-color: var(--text-dark);
+    color: var(--text-light);
+    border-bottom: 2px solid #495057;
+    vertical-align: middle;
+  }
+
+  .table tbody td {
+    vertical-align: middle;
+  }
+
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+  }
+
+  /* Search Input Styling */
+  .input-group-text {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border: 1px solid var(--primary-color);
+  }
+
+  /* Button Styling */
+  .btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    transition: background-color var(--transition-duration),
+      border-color var(--transition-duration), transform 0.2s ease-in-out;
+  }
+
+  .btn-danger:hover {
+    background-color: #bb2d3b;
+    border-color: #bbad2b3b;
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  }
+
+  /* Modal Styling */
+  .modal-content {
+    border-radius: var(--border-radius);
+    border: none;
+    box-shadow: var(--box-shadow);
+  }
+
+  .modal-header {
+    background-color: #f8f9fa;
+    border-bottom: none;
+  }
+
+  .modal-title {
+    color: var(--text-dark);
+  }
+
+  /* Center table text for action buttons */
+  .text-center {
+    text-align: center;
   }
 </style>
