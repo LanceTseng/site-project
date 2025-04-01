@@ -15,72 +15,119 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
-    <style>
-      /* Background Gradient */
-      body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        text-align: center;
-      }
-
-      /* Glassmorphism Container */
-      .logout-container {
-        max-width: 450px;
-        padding: 40px;
-        border-radius: 15px;
-        background: rgba(255, 255, 255, 0.2);
-        background: linear-gradient(135deg, #e0f7fa, #80deea);
-
-        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        text-align: center;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-      }
-
-      /* Success Icon */
-      .success-icon {
-        font-size: 60px;
-        color: #28a745;
-      }
-
-      /* Title */
-      h1 {
-        color: #01750b;
-        font-weight: bold;
-        margin-top: 15px;
-      }
-
-      /* Button Styling */
-      .btn-custom {
-        background: #007bff;
-        color: #fff;
-        padding: 12px 24px;
-        font-size: 18px;
-        border-radius: 50px;
-        text-decoration: none;
-        transition: all 0.3s ease-in-out;
-        display: inline-block;
-        margin-top: 20px;
-      }
-
-      .btn-custom:hover {
-        background: #0056b3;
-        transform: scale(1.05);
-      }
-    </style>
+    <!-- Custom CSS -->
   </head>
 
   <body>
-    <div class="logout-container">
-      <i class="fas fa-check-circle success-icon"></i>
-      <h1 class="display-6">Logout Successful</h1>
-      <p class="lead">You have been logged out securely.</p>
-      <a href="/login" class="btn btn-custom">
-        <i class="fas fa-home me-2"></i> Return to Homepage
-      </a>
+    <div
+      class="container d-flex align-items-center justify-content-center vh-100"
+    >
+      <div class="logout-container">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h1 class="display-6">Logout Successful</h1>
+        <p class="lead">You have been logged out securely.</p>
+        <a href="/login" class="btn btn-custom">
+          <i class="fas fa-home me-2"></i> Return to Login
+        </a>
+      </div>
     </div>
   </body>
 </html>
+<style>
+  /* Custom CSS for Logout Page */
+
+  /* CSS Variables for theming */
+  :root {
+    --primary-color: #343a40;
+    --success-color: #28a745;
+    --light-bg: #e0f7fa;
+    --medium-bg: #80deea;
+    --text-dark: #343a40;
+    --glass-bg: rgba(255, 255, 255, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+  }
+
+  body {
+   
+    color: var(--text-dark); /* Consistent text color */
+  }
+
+  .logout-container {
+    max-width: 450px;
+    width: 100%;
+    padding: 40px;
+    border-radius: 15px;
+    background: var(--glass-bg);
+    box-shadow: 0px 10px 30px var(--shadow-color);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    text-align: center;
+    border: 1px solid var(--glass-border);
+  }
+
+  /* Success Icon */
+  .success-icon {
+    font-size: 60px;
+    color: var(--success-color);
+    animation: pulse 1.5s infinite alternate; /* Add subtle animation */
+  }
+
+  /* Keyframes for the success icon animation */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.1);
+    }
+  }
+
+  /* Title */
+  h1 {
+    color: var(--success-color);
+    font-weight: bold;
+    margin-top: 15px;
+  }
+
+  /* Button Styling */
+  .btn-custom {
+    background: var(--primary-color);
+    color: #fff;
+    padding: 12px 24px;
+    font-size: 18px;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+    margin-top: 20px;
+    border: none; /* Remove default border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  }
+
+  .btn-custom:hover {
+    transform: translateY(-3px); /* Lift slightly */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); /* Enhance shadow on hover */
+  }
+
+  /* Media Queries for Responsiveness */
+  @media (max-width: 576px) {
+    .logout-container {
+      padding: 30px;
+      border-radius: 10px;
+    }
+
+    .success-icon {
+      font-size: 50px;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .btn-custom {
+      font-size: 16px;
+      padding: 10px 20px;
+    }
+  }
+</style>
