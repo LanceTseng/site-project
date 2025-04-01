@@ -7,7 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
 
@@ -16,6 +16,118 @@
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
+
+    <!-- Custom CSS -->
+    <style>
+      /* Custom CSS for Employee Onboarding */
+
+      /* CSS Variables */
+      :root {
+        --body-bg: #f8f9fa;
+        --primary-color: #007bff;
+        --secondary-color: #6c757d;
+        --text-light: #ffffff;
+        --text-dark: #343a40;
+        --border-color: #dee2e6;
+        --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        --border-radius: 0.5rem;
+        --transition-duration: 0.3s;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: var(--body-bg);
+        color: var(--text-dark);
+      }
+
+      .container {
+        max-width: 1200px;
+      }
+
+      h1,
+      h2 {
+        color: var(--text-dark);
+        margin-bottom: 1.5rem;
+      }
+
+      /* Floating Labels */
+      .form-floating > .form-control,
+      .form-floating > .form-select {
+        padding: 1rem 0.75rem;
+      }
+
+      .form-floating > label {
+        padding: 0.75rem;
+      }
+
+      /* Fix for select dropdown z-index */
+      .form-floating > .form-select {
+        z-index: 2;
+      }
+      .form-floating > label {
+        z-index: 1;
+      }
+
+      /* Button Styles */
+      .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        transition: background-color var(--transition-duration),
+          border-color var(--transition-duration), transform 0.2s ease-in-out;
+      }
+
+      .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+      }
+
+      /* Table Styling */
+      .table-container {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+      }
+
+      .table {
+        margin-bottom: 0;
+      }
+
+      .table thead th {
+        background-color: var(--text-dark);
+        color: var(--text-light);
+        border-bottom: 2px solid #495057;
+      }
+
+      .table tbody td {
+        vertical-align: middle;
+      }
+
+      .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      /* Modal Styling */
+      .modal-content {
+        border-radius: var(--border-radius);
+        border: none;
+        box-shadow: var(--box-shadow);
+      }
+
+      .modal-header {
+        border-bottom: none;
+      }
+
+      .modal-title {
+        color: var(--text-dark);
+      }
+
+      /* Alert Styling */
+      .alert {
+        border-radius: var(--border-radius);
+      }
+    </style>
   </head>
 
   <body>
@@ -28,68 +140,94 @@
 
       <!-- Employee Form -->
       <form id="employee-form" class="mb-4">
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="first-name">First Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="first-name"
-              placeholder="Enter first name"
-              required
-            />
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input
+                type="text"
+                class="form-control"
+                id="first-name"
+                placeholder="Enter first name"
+                required
+              />
+              <label for="first-name">First Name</label>
+            </div>
           </div>
-          <div class="form-group col-md-6">
-            <label for="last-name">Last Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="last-name"
-              placeholder="Enter last name"
-              required
-            />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="department">Department</label>
-            <select id="department" class="form-control" required></select>
-          </div>
-          <div class="form-group col-md-6">
-            <label for="status">Status</label>
-            <select id="status" class="form-control"></select>
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input
+                type="text"
+                class="form-control"
+                id="last-name"
+                placeholder="Enter last name"
+                required
+              />
+              <label for="last-name">Last Name</label>
+            </div>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="phone">Phone</label>
-            <input
-              type="text"
-              class="form-control"
-              id="phone"
-              placeholder="Enter phone number"
-              required
-            />
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-floating">
+              <select id="department" class="form-select" required>
+                <option value="" disabled selected>Select a department</option>
+              </select>
+              <label for="department">Department</label>
+            </div>
           </div>
-          <div class="form-group col-md-6">
-            <label for="address">Address</label>
-            <input
-              type="text"
-              class="form-control"
-              id="address"
-              placeholder="Enter address"
-              required
-            />
-          </div>
-          <div class="form-group col-md-6">
-            <label for="onboardDate">Onboard Date</label>
-            <input type="date" class="form-control" id="onboardDate" required />
+          <div class="col-md-6">
+            <div class="form-floating">
+              <select id="status" class="form-select">
+                <option value="" disabled selected>Select a status</option>
+              </select>
+              <label for="status">Status</label>
+            </div>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Add Employee</button>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input
+                type="text"
+                class="form-control"
+                id="phone"
+                placeholder="Enter phone number"
+                required
+              />
+              <label for="phone">Phone Number</label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                placeholder="Enter address"
+                required
+              />
+              <label for="address">Address</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input
+                type="date"
+                class="form-control"
+                id="onboardDate"
+                required
+              />
+              <label for="onboardDate">Onboard Date</label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-dark">Add Employee</button>
       </form>
 
       <!-- Employee Table -->
@@ -98,7 +236,7 @@
 
         <div id="onboarding-alert" class="alert" style="display: none"></div>
         <div class="table-container shadow-sm p-3 bg-white rounded">
-          <table class="table table-hover" >
+          <table class="table table-hover">
             <thead>
               <tr>
                 <th>ID</th>
@@ -107,7 +245,7 @@
                 <th>Department</th>
                 <th>Status</th>
                 <th hidden>UserId</th>
-                <th>Actions</th>
+                <th class="text-center">Actions</th>
               </tr>
             </thead>
             <tbody id="employee-table-body">
@@ -117,33 +255,34 @@
         </div>
       </div>
     </div>
+
     <%- include('../partials/footer-simple') %>
+
     <!-- Edit Employee Modal -->
     <div
       class="modal fade"
       id="editModal"
       tabindex="-1"
-      role="dialog"
       aria-labelledby="editModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="editModalLabel">Edit Employee</h5>
             <button
               type="button"
-              class="close"
-              data-dismiss="modal"
+              class="btn-close"
+              data-bs-dismiss="modal"
               aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
+            ></button>
           </div>
           <div class="modal-body">
             <form id="edit-employee-form">
-              <div class="form-group">
-                <label for="edit-first-name">First Name</label>
+              <div class="mb-3">
+                <label for="edit-first-name" class="form-label"
+                  >First Name</label
+                >
                 <input
                   type="text"
                   class="form-control"
@@ -151,8 +290,8 @@
                   required
                 />
               </div>
-              <div class="form-group">
-                <label for="edit-last-name">Last Name</label>
+              <div class="mb-3">
+                <label for="edit-last-name" class="form-label">Last Name</label>
                 <input
                   type="text"
                   class="form-control"
@@ -160,23 +299,25 @@
                   required
                 />
               </div>
-              <div class="form-group">
-                <label for="edit-department">Department</label>
-                <select id="edit-department" class="form-control" required>
+              <div class="mb-3">
+                <label for="edit-department" class="form-label"
+                  >Department</label
+                >
+                <select id="edit-department" class="form-select" required>
                   <option value="" disabled selected>
                     Select a department
                   </option>
                 </select>
               </div>
-              <div class="form-group">
-                <label for="edit-status">Status</label>
-                <select id="edit-status" class="form-control">
+              <div class="mb-3">
+                <label for="edit-status" class="form-label">Status</label>
+                <select id="edit-status" class="form-select">
                   <option value="1">Active</option>
                   <option value="0">Inactive</option>
                 </select>
               </div>
-              <div class="form-group">
-                <label for="edit-phone">Phone</label>
+              <div class="mb-3">
+                <label for="edit-phone" class="form-label">Phone</label>
                 <input
                   type="text"
                   class="form-control"
@@ -184,8 +325,8 @@
                   required
                 />
               </div>
-              <div class="form-group">
-                <label for="edit-address">Address</label>
+              <div class="mb-3">
+                <label for="edit-address" class="form-label">Address</label>
                 <input
                   type="text"
                   class="form-control"
@@ -204,39 +345,12 @@
     </div>
 
     <!-- Bootstrap and jQuery JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Custom JavaScript -->
     <script src="/js/onboard.js" type="module"></script>
   </body>
 </html>
-<style>
-  .parent {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 20px;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    background: white;
-  }
-  .table-container {
-    max-height: 350px;
-    overflow-y: auto;
-    border-radius: 10px;
-  }
-  thead th {
-    position: sticky;
-    top: 0;
-    background: #000000 !important;
-    color: white !important;
-    z-index: 10;
-  }
-  tbody tr:hover {
-    background-color: #f1f1f1;
-  }
-</style>
