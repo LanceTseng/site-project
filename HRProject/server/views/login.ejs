@@ -14,131 +14,64 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-
-    <style>
-      body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        background: linear-gradient(135deg, #427885, #2193b0);
-        margin: 0;
-        font-family: "Poppins", sans-serif;
-      }
-
-      .login-container {
-        max-width: 400px;
-        width: 100%;
-        padding: 30px;
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        text-align: center;
-      }
-
-      .login-image {
-        max-width: 120px;
-        margin-bottom: 15px;
-      }
-
-      .form-group {
-        text-align: left;
-      }
-
-      .input-group {
-        position: relative;
-      }
-
-      .form-control {
-        border-radius: 8px;
-        padding: 10px;
-        border: 1px solid #ccc;
-      }
-
-      .input-group-append {
-        cursor: pointer;
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-      }
-
-      .btn-primary {
-        background-color: #2193b0;
-        border: none;
-        padding: 12px;
-        border-radius: 8px;
-        font-size: 16px;
-        transition: background 0.3s ease-in-out;
-      }
-
-      .btn-primary:hover {
-        background-color: #17697c;
-      }
-
-      .forgot-password {
-        margin-top: 10px;
-        font-size: 14px;
-      }
-
-      .forgot-password a {
-        color: #2193b0;
-        text-decoration: none;
-      }
-
-      .forgot-password a:hover {
-        text-decoration: underline;
-      }
-    </style>
   </head>
+
   <body>
-    <div class="login-container">
-      <!-- Top Image -->
-      <img src="/image/logo.jpg" alt="Login Logo" class="login-image" />
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+          <div class="login-container">
+            <!-- Top Image -->
+            <img src="/image/logo.jpg" alt="Login Logo" class="login-image" />
 
-      <h4 class="mb-4">Login</h4>
+            <h4 class="mb-4">Login</h4>
 
-      <!-- Login Form -->
-      <form id="loginForm">
-        <!-- Email -->
-        <div class="form-group">
-          <label for="username">User Name</label>
-          <input
-            type="text"
-            class="form-control"
-            id="username"
-            placeholder="Enter your username"
-            required
-          />
-        </div>
+            <!-- Login Form -->
+            <form id="loginForm">
+              <!-- User Name -->
+              <div class="form-group">
+                <label for="username">User Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  placeholder="Enter your username"
+                  required
+                />
+              </div>
 
-        <!-- Password -->
-        <div class="form-group">
-          <label for="password">Password</label>
-          <div class="input-group">
-            <input
-              type="password"
-              class="form-control"
-              id="password"
-              placeholder="Enter your password"
-              required
-            />
-            <div class="input-group-append" onclick="togglePassword()">
-              <span class="input-group-text"
-                ><i class="fas fa-eye-slash"></i
-              ></span>
-            </div>
+              <!-- Password -->
+              <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <div class="input-group-append" onclick="togglePassword()">
+                    <span class="input-group-text">
+                      <i id="togglePasswordIcon" class="fas fa-eye-slash"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Login Button -->
+              <button type="submit" class="btn btn-primary btn-block">
+                Login
+              </button>
+
+              <!-- Forgot Password Link -->
+              <div class="forgot-password">
+                <a href="#">Forgot Password?</a>
+              </div>
+            </form>
           </div>
         </div>
-
-        <!-- Login Button -->
-        <button type="submit" class="btn btn-primary btn-block">Login</button>
-
-        <!-- Forgot Password Link -->
-        <div class="forgot-password">
-          <a href="#">Forgot Password?</a>
-        </div>
-      </form>
+      </div>
     </div>
 
     <!-- Bootstrap JS and dependencies -->
@@ -150,3 +83,80 @@
     <script src="/js/authorize.js" type="module"></script>
   </body>
 </html>
+<style>
+  /* Custom CSS for Login Page */
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    /* background: linear-gradient(135deg, #427885, #2193b0); */
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+  }
+
+  .login-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+
+  .login-image {
+    max-width: 120px;
+    margin-bottom: 15px;
+  }
+
+  .form-group {
+    text-align: left;
+  }
+
+  .input-group {
+    position: relative;
+  }
+
+  .form-control {
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+
+  .input-group-append {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .btn-primary {
+    background-color: #2193b0;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background 0.3s ease-in-out;
+  }
+
+  .btn-primary:hover {
+    background-color: #17697c;
+  }
+
+  .forgot-password {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .forgot-password a {
+    color: #2193b0;
+    text-decoration: none;
+  }
+
+  .forgot-password a:hover {
+    text-decoration: underline;
+  }
+</style>
