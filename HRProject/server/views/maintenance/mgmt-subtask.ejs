@@ -10,6 +10,57 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <style>
+      /* Sticky header using Bootstrap's dark theme */
+      .table thead.thead-dark th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #343a40; /* Explicit dark background */
+        color: white;
+        vertical-align: middle;
+      }
+
+      /* Table container scroll */
+      .table-container {
+        max-height: 600px; /* Adjust height */
+        overflow-y: auto;
+        position: relative; /* Needed for sticky header */
+      }
+
+      /* Center content in specific columns */
+      .table th.text-center,
+      .table td.text-center {
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      /* Modal styling */
+      .modal-content {
+        border-radius: 8px;
+      }
+      .modal-header .close {
+        padding: 1rem;
+        margin: -1rem -1rem -1rem auto;
+        font-size: 1.5rem;
+      }
+
+      /* Header styling */
+      #taskNameDisplay {
+        color: #495057; /* Bootstrap default text color */
+        font-weight: 600;
+      }
+      .page-header {
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 1rem;
+      }
+    </style>
   </head>
 
   <body>
@@ -17,78 +68,106 @@
     <%- include('../partials/navbar') %>
 
     <!-- Content -->
-    <div class="container mt-4">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Subtasks for: <span id="taskName"></span></h2>
+    <div class="container-fluid mt-4">
+      <!-- Page Header -->
+      <div
+        class="d-flex justify-content-between align-items-center mb-4 page-header"
+      >
+        <h2 class="mb-0">
+          Subtasks for: <span id="taskNameDisplay">(Loading...)</span>
+        </h2>
+        <!-- Hidden input to store parent task ID -->
+        <input type="hidden" id="parentTaskId" />
 
-        <div class="d-flex gap-2">
+        <div class="btn-group" role="group">
           <button
             type="button"
-            class="btn btn-dark btn-primary-add shadow-sm"
+            class="btn btn-dark btn-sm"
             id="addSubtaskButton"
+            data-toggle="modal"
+            data-target="#subtaskModal"
           >
-            Add Subtask
+            <i class="fas fa-plus mr-1"></i> Add Subtask
           </button>
-
           <a
             href="/mgmt-task"
-            class="btn btn-secondary back-btn btn-primary-add shadow-sm"
+            class="btn btn-secondary btn-sm"
             id="backToTaskBtn"
           >
-            Back to Task
+            <i class="fas fa-arrow-left mr-1"></i> Back to Tasks
           </a>
         </div>
       </div>
 
-      <div class="table-container shadow-sm p-3 bg-white rounded">
-        <!-- Subtask Table -->
-        <table class="table table-hover mt-4" id="subtaskTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Subtask Name</th>
-              <th>Description</th>
-              <th>Document</th>
-              <th>Documnet Upload</th>
-              <th>Device</th>
-              <th>Training Module</th>
-              <th>Handover</th>
-              <th>Survey/Interview</th>
-              <th>Enable</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <!-- Subtask List Card -->
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-list-ol mr-2"></i>Subtask List</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive table-container">
+            <table class="table table-hover mb-0" id="subtaskTable">
+              <thead class="thead-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>Subtask Name</th>
+                  <th>Description</th>
+                  <th>Document</th>
+                  <th class="text-center">Upload Req.</th>
+                  <th>Device Type</th>
+                  <th>Training</th>
+                  <th class="text-center">Handover</th>
+                  <th>Survey</th>
+                  <th class="text-center">Enabled</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="subtaskTableBody">
+                <!-- Data populated by JS -->
+                <tr>
+                  <td colspan="11" class="text-center text-muted">
+                    Loading subtasks...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer text-muted" id="tableFooter">Loading...</div>
       </div>
     </div>
+    <!-- End Container -->
+
     <!-- Add/Edit Subtask Modal -->
     <div
       class="modal fade"
-      id="addSubtaskModal"
+      id="subtaskModal"
       tabindex="-1"
-      role="dialog"
-      aria-labelledby="addSubtaskModalLabel"
+      aria-labelledby="subtaskModalLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog modal-lg" role="document">
-        <!-- Optional: modal-lg for wider modal -->
+        <!-- modal-lg for more space -->
         <div class="modal-content shadow">
           <div class="modal-header">
-            <h5 class="modal-title" id="addSubtaskModalLabel">Add Subtask</h5>
+            <h5 class="modal-title" id="subtaskModalLabel">Add Subtask</h5>
+            <!-- Correct BS4 close button -->
             <button
               type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
           </div>
           <div class="modal-body">
-            <form id="addSubtaskForm">
-              <!-- Hidden Subtask ID -->
+            <form id="subtaskForm">
+              <!-- Hidden Subtask ID for edits -->
               <input type="hidden" id="subtaskId" />
 
               <!-- Subtask Name -->
-              <div class="form-group mb-3">
+              <div class="form-group">
                 <label for="subtaskName"
                   >Subtask Name <span class="text-danger">*</span></label
                 >
@@ -101,128 +180,108 @@
               </div>
 
               <!-- Description -->
-              <div class="form-group mb-3">
-                <label for="subtaskDescription"
-                  >Description <span class="text-danger">*</span></label
-                >
+              <div class="form-group">
+                <label for="subtaskDescription">Description</label>
                 <textarea
                   class="form-control"
                   id="subtaskDescription"
                   rows="3"
-                  required
                 ></textarea>
               </div>
 
               <!-- Row for related items -->
-              <div class="row">
-                <div class="col-md-6">
-                  <!-- Document Template -->
-                  <div class="form-group mb-3">
-                    <label for="documentId">Document Template</label>
-                    <select class="form-control" id="documentId">
-                      <option value="" selected>None</option>
-                      <!-- Allow None -->
-                      <!-- Options populated by JS -->
-                    </select>
-                  </div>
+              <div class="form-row">
+                <div class="col-md-6 form-group">
+                  <label for="documentId">Document Template</label>
+                  <select class="form-control custom-select" id="documentId">
+                    <option value="">None</option>
+                    <!-- Allow None, value="" -->
+                    <!-- Options populated by JS -->
+                  </select>
                 </div>
-                <div class="col-md-6">
-                  <!-- File Requirement (Upload Required) -->
-                  <div class="form-group mb-3">
-                    <label for="fileRequirement"
-                      >Document Upload Required?</label
-                    >
-                    <select class="form-control" id="fileRequirement">
-                      <option value="0">No</option>
-                      <option value="1">Yes</option>
-                    </select>
-                    <small class="form-text text-muted"
-                      >Does the user need to upload a file for this step?</small
-                    >
-                  </div>
+                <div class="col-md-6 form-group">
+                  <label for="fileRequirement">Document Upload Required?</label>
+                  <select
+                    class="form-control custom-select"
+                    id="fileRequirement"
+                  >
+                    <option value="false">No</option>
+                    <!-- Use boolean strings -->
+                    <option value="true">Yes</option>
+                  </select>
+                  <small class="form-text text-muted"
+                    >User must upload a file for this step?</small
+                  >
                 </div>
               </div>
 
-              <div class="row">
-                <div class="col-md-6">
-                  <!-- Device Type -->
-                  <div class="form-group mb-3">
-                    <label for="deviceId">Device Type</label>
-                    <select class="form-control" id="deviceId">
-                      <option value="" selected>None</option>
-                      <!-- Allow None -->
-                      <!-- Options populated by JS -->
-                    </select>
-                  </div>
+              <div class="form-row">
+                <div class="col-md-6 form-group">
+                  <label for="deviceId">Device Type</label>
+                  <select class="form-control custom-select" id="deviceId">
+                    <option value="">None</option>
+                    <!-- Options populated by JS -->
+                  </select>
                 </div>
-                <div class="col-md-6">
-                  <!-- Training Module -->
-                  <div class="form-group mb-3">
-                    <label for="trainingModuleId">Training Module</label>
-                    <select class="form-control" id="trainingModuleId">
-                      <option value="" selected>None</option>
-                      <!-- Allow None -->
-                      <!-- Options populated by JS -->
-                    </select>
-                  </div>
+                <div class="col-md-6 form-group">
+                  <label for="trainingModuleId">Training Module</label>
+                  <select
+                    class="form-control custom-select"
+                    id="trainingModuleId"
+                  >
+                    <option value="">None</option>
+                    <!-- Options populated by JS -->
+                  </select>
                 </div>
               </div>
 
-              <div class="row">
-                <div class="col-md-6">
-                  <!-- Survey / Interview -->
-                  <div class="form-group mb-3">
-                    <label for="surveyId">Survey / Interview</label>
-                    <select class="form-control" id="surveyId">
-                      <option value="" selected>None</option>
-                      <!-- Allow None -->
-                      <!-- Options populated by JS -->
-                    </select>
-                  </div>
+              <div class="form-row">
+                <div class="col-md-6 form-group">
+                  <label for="surveyId">Survey / Interview</label>
+                  <select class="form-control custom-select" id="surveyId">
+                    <option value="">None</option>
+                    <!-- Options populated by JS -->
+                  </select>
                 </div>
-                <div class="col-md-6">
-                  <!-- Handover -->
-                  <div class="form-group mb-3">
-                    <label for="handoverId">Handover Required?</label>
-                    <select class="form-control" id="handoverId">
-                      <option value="0">No</option>
-                      <option value="1">Yes</option>
-                    </select>
-                  </div>
+                <div class="col-md-6 form-group">
+                  <label for="handoverId">Handover Required?</label>
+                  <select class="form-control custom-select" id="handoverId">
+                    <option value="false">No</option>
+                    <!-- Use boolean strings -->
+                    <option value="true">Yes</option>
+                  </select>
                 </div>
               </div>
 
-              <!-- Hidden Interview ID (If needed specifically, otherwise handled by Survey/Interview dropdown) -->
-              <input type="hidden" id="interviewId" />
-              <!--
-          <div class="form-group mb-3" hidden>
-            <label for="interviewId">Interview</label>
-            <select class="form-control" id="interviewId">
-              <option value="" disabled selected>Select an interview</option>
-            </select>
-          </div>
-          -->
-
-              <div class="row">
-                <div class="col-md-6">
-                  <!-- Enable -->
-                  <div class="form-group mb-3">
-                    <label for="enable">Enable Subtask?</label>
-                    <select class="form-control" id="enable">
-                      <option value="true">Yes</option>
-                      <option value="false">No</option>
-                    </select>
-                  </div>
+              <div class="form-row">
+                <div class="col-md-6 form-group">
+                  <label for="enabled">Enable Subtask?</label>
+                  <select class="form-control custom-select" id="enabled">
+                    <option value="true">Yes</option>
+                    <!-- Use boolean strings -->
+                    <option value="false" selected>No</option>
+                    <!-- Default to No -->
+                  </select>
                 </div>
+                <!-- Optional: Add Order/Sequence field if needed -->
               </div>
             </form>
+            <!-- End Form Tag -->
           </div>
           <div class="modal-footer">
             <button
               type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <!-- Link button to form for submission -->
+            <button
+              type="submit"
               class="btn btn-dark"
-              id="saveSubtask"
-              data-mode=""
+              id="saveSubtaskBtn"
+              form="subtaskForm"
             >
               Save Subtask
             </button>
@@ -244,33 +303,3 @@
     <script type="module" src="/js/mgmt-subtask.js"></script>
   </body>
 </html>
-<style>
-  .table-container {
-    max-height: 600px;
-    overflow-y: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-  }
-  thead th {
-    position: sticky;
-    top: 0;
-    background: #000000 !important;
-    color: white !important;
-    z-index: 10;
-  }
-  .btn-primary-add {
-    border-radius: 6px;
-    font-size: 1rem;
-    padding: 10px 15px;
-  }
-  .modal-content {
-    border-radius: 8px;
-  }
-  .form-control {
-    border-radius: 6px;
-  }
-  #taskName {
-    color: darkslategray;
-  }
-</style>
