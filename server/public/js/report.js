@@ -25,12 +25,12 @@ const cardData = [
     color: "text-primary",
     link: "/report-training",
   },
-  {
-    title: "Goals",
-    icon: "fa-bullseye",
-    color: "text-secondary",
-    link: "/report-goal",
-  },
+  // {
+  //   title: "Goals",
+  //   icon: "fa-bullseye",
+  //   color: "text-secondary",
+  //   link: "/report-goal",
+  // },
   {
     title: "Ticket Request",
     icon: "fa-ticket",

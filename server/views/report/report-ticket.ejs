@@ -4,140 +4,193 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ticket Request</title>
-
     <!-- Bootstrap CSS -->
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <!-- Font Awesome CSS -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/report-ticket.css" />
   </head>
 
   <body>
     <!-- Navbar -->
     <%- include('../partials/navbar') %>
-    <div class="parent">
-      <!-- section 1 -->
-      <div>
-        <h2 class="text-center">Search Tickets</h2>
-        <form id="search-form">
-          <div class="form-group">
-            <label for="searchTicket" class="font-weight-bold">Topic</label>
-            <input
-              type="text"
-              id="searchTicket"
-              class="form-control"
-              placeholder="Enter Task Name"
-            />
+
+    <div class="container-fluid">
+      <div class="row mt-3">
+        <!-- Search Tickets Section -->
+        <div class="col-md-4">
+          <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+              <i class="fas fa-search mr-2"></i>Search Tickets
+            </div>
+            <div class="card-body">
+              <form id="search-form">
+                <div class="form-group">
+                  <label for="searchTicket">Topic</label>
+                  <input
+                    type="text"
+                    id="searchTicket"
+                    class="form-control form-control-sm"
+                    placeholder="Enter Task Name"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="searchDepartment">Department</label>
+                  <select
+                    id="searchDepartment"
+                    class="form-control form-control-sm"
+                  >
+                    <option value="" selected>Select a Department</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="searchTicketStatus">Status</label>
+                  <select
+                    id="searchTicketStatus"
+                    class="form-control form-control-sm"
+                  >
+                    <option value="" selected>Select a Status</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-dark btn-block">
+                  <i class="fas fa-search mr-1"></i> Search
+                </button>
+              </form>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="searchDepartment" class="font-weight-bold"
-              >Department</label
-            >
-            <select id="searchDepartment" class="form-control">
-              <option value="" disabled selected>Select a Department</option>
-            </select>
+        </div>
+
+        <!-- Ticket Forum Section -->
+        <div class="col-md-8">
+          <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+              <i class="fas fa-ticket-alt mr-2"></i>Ticket Forum
+            </div>
+            <div class="card-body">
+              <button
+                type="button"
+                class="btn btn-dark mb-3"
+                data-toggle="modal"
+                data-target="#ticketModal"
+              >
+                <i class="fas fa-plus mr-1"></i> Create Ticket
+              </button>
+              <h5>Submitted Tickets</h5>
+              <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th>Ticket#</th>
+                      <th>Ticket Topic</th>
+                      <th>Ticket Status</th>
+                      <th>Department</th>
+                      <th>Created By</th>
+                      <th>Created Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ticketTableBody">
+                    <!-- Data will be loaded dynamically -->
+                    <tr>
+                      <td colspan="6" class="text-center">
+                        <div class="spinner-border" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
+                        <p>Loading tickets...</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="searchTicketStatus" class="font-weight-bold"
-              >Status</label
-            >
-            <select id="searchTicketStatus" class="form-control">
-              <option value="" disabled selected>Select a Status</option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-primary" id="btnSearch">
-            Search
-          </button>
-        </form>
+        </div>
       </div>
 
-      <!-- section 2 -->
-      <div>
-        <h2 class="text-center">Ticket Forum</h2>
-        <div class="container mt-4"></div>
-        <button
-          type="button"
-          class="btn btn-primary mb-3"
-          data-toggle="modal"
-          data-target="#ticketModal"
-        >
-          <i class="fa fa-plus"></i> Create Ticket
-        </button>
+      <!-- Ticket Details Section -->
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+              <i class="fas fa-info-circle mr-2"></i>Ticket Details
+            </div>
+            <div class="card-body">
+              <h5 id="ticketTitle" class="font-weight-bold">[Ticket Topic]</h5>
+              <p id="ticketDescription" class="text-muted">
+                [Ticket Description]
+              </p>
+              <p id="ticketId" class="text-muted" hidden></p>
 
-        <h5 class="mt-4">Submitted Tickets</h5>
-        <div id="ticketList" class="mt-2">
-          <div class="table-container">
-            <table class="table table-striped table-hover">
-              <thead>
-                <tr>
-                  <th>Ticket#</th>
-                  <th>Ticket Topic</th>
-                  <th>Ticket Status</th>
-                  <th>Department</th>
-                  <th>Creaated By</th>
-                  <th>Created Date</th>
-                </tr>
-              </thead>
-              <tbody id="ticketTableBody">
-                <!-- Data will be loaded dynamically -->
-              </tbody>
-            </table>
+              <h6 class="mt-4">Actions</h6>
+              <div class="d-flex flex-wrap">
+                <button
+                  type="button"
+                  class="btn btn-info btn-sm mr-2 mb-2 btn-update-status"
+                  data-status="1"
+                  id="btnReOpen"
+                >
+                  <i class="fas fa-undo mr-1"></i> ReOpen
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-warning btn-sm mr-2 mb-2 btn-update-status"
+                  data-status="2"
+                  id="btnProcessing"
+                >
+                  <i class="fas fa-spinner fa-spin mr-1"></i> Processing
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-success btn-sm mr-2 mb-2 btn-update-status"
+                  data-status="3"
+                  id="btnCompleted"
+                >
+                  <i class="fas fa-check-circle mr-1"></i> Completed
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm mr-2 mb-2 btn-update-status"
+                  data-status="4"
+                  id="btnCancel"
+                >
+                  <i class="fas fa-times-circle mr-1"></i> Cancelled
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm mr-2 mb-2 btn-update-status"
+                  data-status="5"
+                  id="btnReject"
+                >
+                  <i class="fas fa-ban mr-1"></i> Reject
+                </button>
+              </div>
+
+              <h6 class="mt-4">Comments</h6>
+              <div id="commentsSection" class="card p-3 mt-2">
+                <!-- Existing Comments Will Be Loaded Here -->
+              </div>
+
+              <!-- Comment Input -->
+              <div class="card p-3 mt-3" id="response-area">
+                <h6>Reply</h6>
+                <textarea
+                  id="commentInput"
+                  class="form-control"
+                  rows="3"
+                  placeholder="Write a comment..."
+                ></textarea>
+                <button id="postComment" class="btn btn-dark mt-2">
+                  Post Reply
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <!-- section 3 -->
-      <div>
-        <div class="container mt-4">
-          <h5 class="mt-4">Ticket Details</h5>
-        </div>
-        <!-- Ticket Information -->
-        <div class="card p-3 mb-3">
-          <h5 id="ticketTitle" class="font-weight-bold">[Ticket Topic]</h5>
-          <p id="ticketDescription" class="text-muted">[Ticket Description]</p>
-          <p id="ticketId" class="text-muted" hidden></p>
-        </div>
-
-        <div>
-          <h6 class="mt-4">Action</h6>
-          <button type="button" class="btn btn-info btn-update-status" data-status="1" id="btnReOpen">
-            ReOpen
-          </button>
-          <button type="button" class="btn btn-warning btn-update-status" data-status="2" id="btnProcessing">
-            Processing
-          </button>
-          <button type="button" class="btn btn-success btn-update-status" data-status="3" id="btnCompleted">
-            Completed
-          </button>
-          <button type="button" class="btn btn-danger btn-update-status" data-status="4" id="btnCancel">
-            Cancelled
-          </button>
-          <button type="button" class="btn btn-danger btn-update-status" data-status="5" id="btnReject">
-            Reject
-          </button>
-        </div>
-        <!-- Comment Section -->
-        <h6 class="mt-4">Response</h6>
-        <div id="commentsSection">
-          <!-- Existing Comments Will Be Loaded Here -->
-        </div>
-
-        <!-- Comment Input -->
-        <div class="card p-3 mt-3" id="response-area">
-          <h6>Reply</h6>
-          <textarea
-            id="commentInput"
-            class="form-control"
-            rows="3"
-            placeholder="Write a comment..."
-          ></textarea>
-          <button id="postComment" class="btn btn-primary mt-2">
-            Post Reply
-          </button>
         </div>
       </div>
     </div>
@@ -152,7 +205,7 @@
     >
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
+          <div class="modal-header bg-light">
             <h5 class="modal-title" id="ticketModalLabel">
               Create a New Ticket
             </h5>
@@ -162,7 +215,7 @@
               data-dismiss="modal"
               aria-label="Close"
             >
-              <span>&times;</span>
+              <span>×</span>
             </button>
           </div>
           <div class="modal-body">
@@ -180,7 +233,7 @@
                 >Issue Department</label
               >
               <select id="addTicketDepartment" class="form-control" required>
-                <option value="" disabled selected>Select a Department</option>
+                <option value="" selected>Select a Department</option>
               </select>
             </div>
             <div class="mb-3">
@@ -210,7 +263,6 @@
         </div>
       </div>
     </div>
-
     <!-- Footer -->
     <%- include('../partials/footer-simple') %>
 
@@ -224,37 +276,125 @@
   </body>
 </html>
 <style>
-  .parent {
-    display: grid;
-    grid-template-columns: 1fr 2fr 2fr;
-    gap: 20px;
-    padding: 20px;
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
   }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    background: white;
+
+  .container-fluid {
+    padding: 15px;
   }
-  .table-container {
-    max-height: 600px;
-    overflow-y: auto;
-    border-radius: 10px;
+
+  /* Card styling */
+  .card {
+    border: none;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   }
-  thead th {
-    position: sticky;
-    top: 0;
-    background: #000000 !important;
-    color: white !important;
-    z-index: 10;
+
+  .card-header {
+    font-weight: bold;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
-  tbody tr:hover {
-    background-color: #f1f1f1;
+
+  .card-body {
+    padding: 1.25rem;
   }
+
+  /* Table styling */
+  .table thead th {
+    background-color: #343a40;
+    color: #fff;
+    border-bottom: 2px solid #495057;
+    font-size: 0.9rem;
+  }
+
+  .table tbody td {
+    font-size: 0.85rem;
+    vertical-align: middle;
+  }
+
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+  }
+
+  /* Form styling */
+  .form-control-sm {
+    font-size: 0.8rem;
+  }
+
+  /* Comments section */
   #commentsSection {
-  max-height: 300px; /* Adjust height as needed */
-  overflow-y: auto; /* Enables vertical scrolling */
-  border: 1px solid #ccc; /* Optional: Adds a border */
-  padding: 10px; /* Optional: Adds some spacing */
-  background-color: #f9f9f9; /* Optional: Light background */
-}
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background-color: #fff;
+  }
+
+  #commentsSection .comment {
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+  }
+
+  #commentsSection .comment strong {
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  #commentsSection .comment p {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Modal styling */
+  .modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  /* Button styling */
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+
+  .btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+  }
+
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+
+  /* Loading indicator */
+  .loading-indicator {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+  }
+
+  /* Utility classes */
+  .mt-3 {
+    margin-top: 1.5rem;
+  }
 </style>
