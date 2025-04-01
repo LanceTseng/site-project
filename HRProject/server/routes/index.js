@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-// Route for home page
+//home
 router.get("/", (req, res) => {
-  res.render("login", { title: "Login" });
+  res.render("home", { title: "Home" });
 });
 
 //hr dashboard
@@ -21,6 +21,9 @@ router.get("/dashboard-it", (req, res) => {
 });
 
 
+router.get("/login", (req, res) => {
+  res.render("login", { title: "Login" });
+});
 
 // Route for Login Settings
 router.get("/login", (req, res) => {

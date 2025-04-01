@@ -57,7 +57,7 @@ async function populateFormContent(formId) {
               .addClass("btn-check");
             const label = $("<label>")
               .attr("for", `q${question.id}-${i}`)
-              .addClass("btn btn-outline-primary btn-sm")
+              .addClass("btn btn-outline-secondary btn-sm")
               .text(i);
             ratingGroup.append(radio, label);
             if (i === 1) radio.prop("checked", true);
