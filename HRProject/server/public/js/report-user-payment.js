@@ -1,205 +1,306 @@
+/**
+ * @file report-user-payment.js
+ * @description Manages employee payment information, including searching, displaying, and editing payments.
+ */
+
 import * as ObjectTypeApi from "./services/objectTypeServices.js";
 import * as UserPaymentApi from "./services/uesrPaymentServices.js";
 import { accessVerify } from "./utils/authVerify.js";
-import { isEqualIgnoreCase, formatDate } from "./utils/stringUtils.js";
+import { formatDate } from "./utils/stringUtils.js";
 
+// --- Constants ---
+const DEFAULT_PAYMENT_ID = "-1"; // Used for new payments
+const PAYMENT_TYPE_TASK_NAME = "payment_type";
+const EMPLOYEE_STATUS_TASK_NAME = "employee_status";
+
+// --- DOM Element Caching ---
+const domElements = {
+  searchForm: "#search-form",
+  searchName: "#searchName",
+  searchDepartment: "#searchDepartment",
+  searchEmpStatus: "#searchEmpStatus",
+  btnSearch: "#btnSearch",
+  paymentTableBody: "#paymentTableBody",
+};
+
+// --- Global Variables ---
+let paymentTypes = [];
+let departments = [];
+let employeeStatuses = [];
+
+// --- Utility Functions ---
+
+/**
+ * @function showError
+ * @description Displays an error message using SweetAlert2.
+ * @param {string} message - The error message to display.
+ */
+function showError(message) {
+  Swal.fire({
+    icon: "error",
+    title: "Error",
+    text: message,
+  });
+}
+
+/**
+ * @function showSuccess
+ * @description Displays a success message using SweetAlert2.
+ * @param {string} message - The success message to display.
+ */
+function showSuccess(message) {
+  Swal.fire({
+    icon: "success",
+    title: "Success",
+    text: message,
+  });
+}
+
+/**
+ * @function populateDropdown
+ * @description Populates a select dropdown with data from an API call.
+ * @param {string} dropdownId - The ID of the select element.
+ * @param {string} taskName - The task name to retrieve from the ObjectTypeApi.
+ */
 async function populateDropdown(dropdownId, taskName) {
   try {
     const items = (await ObjectTypeApi.getTaskByName(taskName)) || [];
+    let options = `<option value="">Select an option</option>`;
 
-    // Add an empty option as the first item
-    const options =
-      `<option value="">-- Select --</option>` +
-      items
-        .map(
-          (item) =>
-            `<option value="${item.object_type_item_key}">${item.object_type_item_value}</option>`
-        )
-        .join("");
+    options += items
+      .map(
+        (item) =>
+          `<option value="${item.object_type_item_key}">${item.object_type_item_value}</option>`
+      )
+      .join("");
 
     $(dropdownId).html(options);
+
+    // Store the fetched data
+    if (taskName === "department") {
+      departments = items;
+    } else if (taskName === "employee_status") {
+      employeeStatuses = items;
+    } else if (taskName === "payment_type") {
+      paymentTypes = items;
+    }
   } catch (error) {
-    handleError(error, `Error populating ${taskName} dropdown`);
+    console.error(`Error populating ${taskName} dropdown:`, error);
+    showError(`Failed to load ${taskName} options.`);
   }
 }
 
-function addTDTag(element, id) {
-  return `<td id="text-${id}">${element}</td>`;
+/**
+ * @function createTableRow
+ * @description Creates a table row with employee payment data.
+ * @param {object} payment - The employee payment data.
+ * @returns {string} The HTML for the table row.
+ */
+function createTableRow(payment) {
+  const paymentId = payment.payment_id ?? DEFAULT_PAYMENT_ID;
+  const userId = payment.user_id ?? "";
+  const paymentTypeName =
+    paymentTypes.find(
+      (pt) => pt.object_type_item_key === payment.payment_type_id
+    )?.object_type_item_value || "N/A";
+
+  return `
+    <tr data-id="${paymentId}">
+      <td>${payment.user_id || ""}</td>
+      <td>${payment.employee_first_name || ""}</td>
+      <td>${payment.employee_last_name || ""}</td>
+      <td>${payment.employee_status_name || ""}</td>
+      <td>
+        <select class="form-control payment-type" data-payment-id="${paymentId}" disabled>
+          ${paymentTypes
+            .map(
+              (pt) => `
+            <option value="${pt.object_type_item_key}" ${
+                pt.object_type_item_key === payment.payment_type_id
+                  ? "selected"
+                  : ""
+              }>${pt.object_type_item_value}</option>
+          `
+            )
+            .join("")}
+        </select>
+      </td>
+      <td><input type="text" class="form-control annual-salary" value="${
+        payment.annual_salary || ""
+      }" data-payment-id="${paymentId}" disabled></td>
+      <td><input type="text" class="form-control weekly-hours" value="${
+        payment.weekly_work_hours || ""
+      }" data-payment-id="${paymentId}" disabled></td>
+      <td><input type="text" class="form-control termination-pay" value="${
+        payment.termination_pay || ""
+      }" data-payment-id="${paymentId}" disabled></td>
+      <td>${formatDate(payment.created_at)}</td>
+      <td>${formatDate(payment.updated_at)}</td>
+      <td class="text-center">
+        <button class="btn btn-secondary btn-sm edit-btn" data-payment-id="${paymentId}">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+        <button class="btn btn-primary btn-sm save-btn" data-payment-id="${paymentId}" data-user-id="${userId}" disabled>
+          <i class="fas fa-save"></i> Save
+        </button>
+      </td>
+    </tr>
+  `;
 }
 
-function addDropdown(list, selectedItem) {
-  let options = `<option value="" ${
-    selectedItem == null ? "selected" : ""
-  }>Select an option</option>`;
-
-  options += list
-    .map((v) => {
-      const attrSelected =
-        selectedItem == v.object_type_item_key ? "selected" : "";
-      return `<option value="${v.object_type_item_key}" ${attrSelected}>${v.object_type_item_value}</option>`;
-    })
-    .join("");
-
-  return `<select class="form-control" id="paymentType" disabled>${options}</select>`;
-}
-
-function addInputText(value, elementId) {
-  return `<input
-                type="text"
-                id="input-${elementId}"
-                class="form-control"
-                value="${value ?? ""}" 
-                disabled
-              />`;
-}
-
+/**
+ * @function loadEmployeePayment
+ * @description Loads employee payment data based on search criteria and displays it in the table.
+ */
 async function loadEmployeePayment() {
   try {
-    const searchName = $("#searchName").val() ?? "";
-    const searchDepartment = $("#searchDepartment").val() ?? "";
-    const searchStatus = $("#searchStatus").val() ?? "";
+    const searchName = $(domElements.searchName).val() || "";
+    const searchDepartment = $(domElements.searchDepartment).val() || "";
+    const searchEmpStatus = $(domElements.searchEmpStatus).val() || "";
+
+    const loadingRow = `
+      <tr>
+          <td colspan="11" class="text-center">
+              <div class="spinner-border" role="status">
+                  <span class="sr-only">Loading...</span>
+              </div>
+              <p>Loading employee payments...</p>
+          </td>
+      </tr>`;
+    $(domElements.paymentTableBody).html(loadingRow);
 
     const response = await UserPaymentApi.getUserPaymentViewByCondition({
       name: searchName,
       department: searchDepartment,
-      status: searchStatus,
+      status: searchEmpStatus,
     });
 
-    const paymentTableBody = $("#paymentTableBody");
-    paymentTableBody.empty();
+    if (!response || response.length === 0) {
+      $(domElements.paymentTableBody).html(
+        `<tr><td colspan="11" class="text-center">No employee payments found.</td></tr>`
+      );
+      return;
+    }
 
-    // Fetch payment types once (avoid multiple calls inside loop)
-    const paymentTypes = await ObjectTypeApi.getTaskByName("payment_type");
+    let tableRows = "";
+    response.forEach((payment) => {
+      tableRows += createTableRow(payment);
+    });
 
-    // Use `map()` to construct rows
-    const rows = await Promise.all(
-      response.map(async (payment) => {
-        const userIdField = addTDTag(payment.user_id ?? "-");
-        const firstNameField = addTDTag(payment.employee_first_name ?? "-");
-        const lastNameField = addTDTag(payment.employee_last_name ?? "-");
-        const statusField = addTDTag(payment.employee_status_name ?? "-");
-        const paymentTypeField = addTDTag(
-          addDropdown(paymentTypes, payment.payment_type_id)
-        );
-        const annualSalaryField = addTDTag(
-          addInputText(payment.annual_salary, "AnnualSalary")
-        );
-        const weeklyWorkHoursField = addTDTag(
-          addInputText(payment.weekly_work_hours, "WeeklyWorkHours")
-        );
-        const terminationPayField = addTDTag(
-          addInputText(payment.termination_pay, "TerminationPay")
-        );
-        const createdAtField = addTDTag(
-          formatDate(payment.created_at),
-          "createdDate"
-        );
-        const updatedAtField = addTDTag(
-          formatDate(payment.updated_at),
-          "updatedDate"
-        );
-
-        // Action buttons (Edit & Save) with event binding
-        const actionField = `<td>
-       <button class="btn btn-secondary btn-sm mx-1 edit-btn" data-id="${
-         payment.payment_id ?? "-1"
-       }">Edit</button>
-       <button class="btn btn-primary btn-sm mx-1 save-btn" data-id="${
-         payment.payment_id ?? "-1"
-       }" data-userid="${payment.user_id}" disabled>Save</button>
-     </td>`;
-
-        return `<tr data-id="${payment.payment_id ?? "-1"}">
-          ${userIdField}
-          ${firstNameField}
-          ${lastNameField}
-          ${statusField}
-          ${paymentTypeField}
-          ${annualSalaryField}
-          ${weeklyWorkHoursField}
-          ${terminationPayField}
-          ${createdAtField}
-          ${updatedAtField}
-            ${actionField}
-        </tr>`;
-      })
-    );
-
-    // Append all rows at once
-    paymentTableBody.append(rows.join(""));
+    $(domElements.paymentTableBody).html(tableRows);
   } catch (error) {
-    console.error("Error loading payments:", error);
-    alert("Failed to load employee payments.");
+    console.error("Error loading employee payments:", error);
+    showError("Failed to load employee payments.");
+    $(domElements.paymentTableBody).html(
+      `<tr><td colspan="11" class="text-center">Failed to load employee payments. Please try again later.</td></tr>`
+    );
   }
 }
 
+/**
+ * @function editField
+ * @description Enables editing mode for the specified table row.
+ * @param {jQuery} row - The jQuery object representing the table row.
+ */
 function editField(row) {
   row.find("input, select").prop("disabled", false); // Enable form fields
   row.find(".save-btn").prop("disabled", false); // Enable Save button
 }
 
-$(document).ready(function () {
-  populateDropdown("#searchDepartment", "department");
-  populateDropdown("#searchStatus", "employee_status");
+/**
+ * @function savePayment
+ * @description Saves the updated payment information.
+ * @param {jQuery} button - The jQuery object representing the "Save" button.
+ */
+async function savePayment(button) {
+  const row = button.closest("tr");
+  const paymentId = button.data("payment-id");
+  const userId = button.data("user-id");
 
-  loadEmployeePayment();
+  // Collect updated payment data from input fields
+  const updatedPayment = {
+    user_id: userId,
+    annual_pay: row.find(".annual-salary").val().trim(),
+    work_hours_per_week: row.find(".weekly-hours").val().trim(),
+    termination_pay: row.find(".termination-pay").val().trim(),
+    payment_type_id: row.find(".payment-type").val(),
+  };
 
-  $("#btnSearch").click((e) => {
+  try {
+    let apiResponse;
+
+    if (paymentId === DEFAULT_PAYMENT_ID) {
+      // Create new payment
+      apiResponse = await UserPaymentApi.createRelUserPayment(updatedPayment);
+      showSuccess("Payment Created Successfully");
+    } else {
+      // Update existing payment
+      apiResponse = await UserPaymentApi.updateRelUserPayment(
+        paymentId,
+        updatedPayment
+      );
+      showSuccess("Payment Updated Successfully");
+    }
+
+    // Update the updated date cell
+    const updatedDate = formatDate(apiResponse.last_updated_date);
+    row.find("td:nth-child(10)").text(updatedDate);
+  } catch (error) {
+    console.error("Error updating payment:", error);
+    showError(`Failed to save payment information. ${error.message}`);
+  } finally {
+    // Always disable the input elements and save buttons
+    row.find("input, select").prop("disabled", true);
+    button.prop("disabled", true);
+  }
+}
+
+/**
+ * @function setupEventListeners
+ * @description Sets up event listeners for various actions.
+ */
+function setupEventListeners() {
+  // Search Form Submission
+  $(domElements.searchForm).on("submit", (e) => {
     e.preventDefault();
     loadEmployeePayment();
   });
 
-  $("#paymentTableBody").on("click", ".edit-btn", function () {
+  // Edit Button Click
+  $(domElements.paymentTableBody).on("click", ".edit-btn", function () {
     const row = $(this).closest("tr");
     editField(row);
   });
 
-  $("#paymentTableBody").on("click", ".save-btn", async function () {
-    const row = $(this).closest("tr");
-    const paymentId = $(this).data("id");
-    const userId = $(this).data("userid");
-
-    // Collect updated payment data from input fields
-    const updatedPayment = {
-      id: paymentId,
-      user_id: userId,
-      annual_pay: row.find("#input-AnnualSalary").val().trim(),
-      work_hours_per_week: row.find("#input-WeeklyWorkHours").val().trim(),
-      termination_pay: row.find("#input-TerminationPay").val().trim(),
-      payment_type_id: row.find("#paymentType").val(),
-    };
-
-    try {
-      // API call to update payment details
-      if (paymentId == -1) {
-        delete updatedPayment.id;
-
-        const response = await UserPaymentApi.createRelUserPayment(
-          updatedPayment
-        );
-        row.find("#text-createdDate").text(formatDate(response.created_date));
-        row
-          .find("#text-updatedDate")
-          .text(formatDate(response.last_updated_date));
-      } else {
-        const response = await UserPaymentApi.updateRelUserPayment(
-          paymentId,
-          updatedPayment
-        );
-
-        row
-          .find("#text-updatedDate")
-          .text(formatDate(response.last_updated_date));
-      }
-
-      Swal.fire("Success", `Payment edited successfully!`, "success");
-    } catch (error) {
-      console.error("Error updating payment:", error);
-      Swal.fire("Error", error.message, "error");
-    }
-
-    // Disable input fields and Save button after saving
-    row.find("input, select").prop("disabled", true);
-    row.find(".save-btn").prop("disabled", true);
+  // Save Button Click
+  $(domElements.paymentTableBody).on("click", ".save-btn", function () {
+    savePayment($(this));
   });
-});
+}
+
+/**
+ * @function initializePage
+ * @description Initializes the page by populating dropdowns, loading employee payments, and setting up event listeners.
+ */
+async function initializePage() {
+  try {
+    // Populate dropdowns
+    await Promise.all([
+      populateDropdown(domElements.searchDepartment, "department"),
+      populateDropdown(domElements.searchEmpStatus, "employee_status"),
+      populateDropdown("#addPaymentType", "payment_type"), // Assuming you have a create form as well
+    ]);
+
+    // Load employee payment data
+    loadEmployeePayment();
+
+    // Set up event listeners
+    setupEventListeners();
+  } catch (error) {
+    console.error("Page initialization error:", error);
+    showError("Failed to initialize the page.");
+  }
+}
+
+// --- Document Ready ---
+$(document).ready(initializePage);
