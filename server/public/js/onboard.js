@@ -132,12 +132,12 @@ async function loadEmployees() {
             <td>${emp.status_name || ""}</td>
             <td hidden>${emp.link_user_id || ""}</td>
             <td class="text-center">
-              <button class="btn btn-sm btn-primary edit-btn" data-id="${
+              <button class="btn btn-sm btn-info edit-btn" data-id="${
                 emp.employee_id || ""
-              }">Edit</button>
+              }"><i class="fas fa-pencil-alt"></i></button>
               ${
                 isEqualIgnoreCase(emp.status_name, "pending")
-                  ? `<button class="btn btn-sm btn-success start-onboarding-btn" data-id="${emp.link_user_id}">Start Onboarding</button>`
+                  ? `<button class="btn btn-sm btn-success start-onboarding-btn" data-id="${emp.link_user_id}"><i class="fas fa-play"></i></button>`
                   : ""
               }
             </td>
