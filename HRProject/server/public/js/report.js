@@ -7,18 +7,18 @@ const cardData = [
     color: "text-secondary",
     link: "/report-user-task",
   },
-  {
-    title: "Profile",
-    icon: "fa-id-card",
-    color: "text-secondary",
-    link: "/report-profile",
-  },
-  {
-    title: "Document",
-    icon: "fa-file-alt",
-    color: "text-secondary",
-    link: "document.html",
-  },
+  // {
+  //   title: "Profile",
+  //   icon: "fa-id-card",
+  //   color: "text-secondary",
+  //   link: "/report-profile",
+  // },
+  // {
+  //   title: "Document",
+  //   icon: "fa-file-alt",
+  //   color: "text-secondary",
+  //   link: "document.html",
+  // },
   {
     title: "Training",
     icon: "fa-chalkboard-teacher",
