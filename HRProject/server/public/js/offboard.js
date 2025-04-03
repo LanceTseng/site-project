@@ -98,7 +98,7 @@ async function loadEmployee() {
         NORMAL_STATUS_NAME
       );
       const btnOffboarding = isNormal
-        ? `<button class="btn btn-danger btn-sm btn-offboarding" data-id="${employee.user_id}" data-name="${employee.username}"><i class="fas fa-sign-out-alt me-1"></i> Start Offboard</button>`
+        ? `<button class="btn btn-danger btn-sm btn-offboarding" data-id="${employee.user_id}" data-name="${employee.username}"><i class="fas fa-play"></i></button>`
         : "";
 
       const row = `
