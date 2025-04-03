@@ -169,10 +169,7 @@ async function displayUserTaskHeader() {
  * @returns {string} The HTML for the table row.
  */
 function buildTaskRow(task) {
-  const processRate =
-    task.count_child_tasks > 0
-      ? (task.child_tasks_completed / task.count_child_tasks) * 100
-      : 0;
+  const processing_rate = task.processing_rate;
   return `
     <tr class="task-row" data-task-head-id="${task.head_id}">
       <td>${task.user_name || ""}</td>
@@ -180,7 +177,7 @@ function buildTaskRow(task) {
       <td>${task.pt_desc || ""}</td>
       <td>${task.task_group_name || ""}</td>
       <td>${task.pt_status_name || ""}</td>
-      <td>${processRate.toFixed(2)}%</td>
+      <td>${processing_rate}%</td>
       <td>${formatDate(task.pt_start_date) || ""}</td>
       <td>${formatDate(task.pt_end_date) || ""}</td>
       <td>${
