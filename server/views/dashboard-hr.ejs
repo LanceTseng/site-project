@@ -20,16 +20,22 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
   </head>
   <body>
     <!-- Navbar -->
     <%- include('./partials/navbar') %>
 
     <!-- Main Content -->
-     
+
     <div class="container mt-5">
       <!-- Welcome Section -->
-      <div class="row mb-4">
+      <div
+        class="row mb-4 animate__animated animate__rubberBand"
+      >
         <div class="col-12 text-center">
           <h4>Welcome to HR Management System</h4>
           <h4>Hello, <span id="employeeName">John Doe</span></h4>
@@ -37,7 +43,7 @@
       </div>
 
       <!-- Quick Actions -->
-      <div class="row g-3 mb-4">
+      <div class="row g-3 mb-4 animate__animated animate__backInRight">
         <div class="col-12 col-md-4">
           <div class="card border-primary">
             <div class="card-body text-center">
@@ -76,7 +82,9 @@
       </div>
 
       <!-- Statistics Section -->
-      <div class="row g-3 mb-4">
+      <div
+        class="row g-3 mb-4 animate__animated animate__backInRight animate__delay-1s"
+      >
         <div class="col-12 text-center">
           <h5>Quick Statistics</h5>
         </div>
@@ -115,7 +123,7 @@
       </div>
 
       <!-- Recent Activities -->
-      <div class="row">
+      <div class="row animate__animated animate__backInRight animate__delay-2s">
         <div class="col-12">
           <h5>Recent Activities</h5>
           <div
