@@ -12,6 +12,7 @@ import * as UserApi from "./services/userServices.js";
 import * as UserParentTaskApi from "./services/relUserParentTaskServices.js";
 import * as UserChildTaskApi from "./services/relUserChildTaskServices.js";
 import * as EmployeeViewApi from "./services/employeeViewService.js";
+import * as DocumentApi from "./services/documentServices.js";
 import { isEqualIgnoreCase } from "./utils/stringUtils.js";
 
 // --- Constants ---
@@ -194,22 +195,29 @@ async function startOnboardingProcess(userId) {
       await Promise.all(
         childTasks
           .filter((t) => Boolean(t.enabled))
-          .map((child) =>
-            UserChildTaskApi.createTask({
+          .map(async (child) => {
+            let document = null;
+
+            if (child.document_id) {
+              document = await DocumentApi.getTaskById(child.document_id);
+              if (!document) throw new Error("Document not found.");
+            }
+
+            await UserChildTaskApi.createTask({
               user_parenttask_id: userParentTask.id,
               child_task_id: child.child_task_id,
               status: 0,
               document_id: child.document_id || null,
-              document_path: child.document_path || "",
-              require_upload: child.require_upload || 0,
+              document_path: document ? document.document_path : "",
+              require_upload: document ? document.require_upload : 0,
               equipment_type_id: child.equipment_type_id || null,
               training_module_id: child.training_module_id || null,
               access_provisioning_id: child.access_provisioning_id || null,
               interview_id: child.interview_id || null,
               survey_id: child.survey_id || null,
               hand_over_id: child.hand_over_id || null,
-            })
-          )
+            });
+          })
       );
     }
 
