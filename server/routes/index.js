@@ -158,4 +158,9 @@ router.get("/upload", (req, res) => {
   res.render("upload");
 });
 
+router.get("/upload-file-excel", (req, res) => {
+  res.render("excel-import");
+});
+
+
 module.exports = router;
