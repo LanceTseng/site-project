@@ -29,7 +29,6 @@ class RelUserPaymentController {
     }
   }
 
-
   async getRelUserPaymentById(req, res) {
     try {
       const id = req.params.id;
@@ -50,6 +49,7 @@ class RelUserPaymentController {
     try {
       const id = req.params.id;
       const data = req.body;
+
       const relUserPayment =
         await RelUserPaymentRepository.updateRelUserPayment(id, data);
       if (relUserPayment[0] > 0) {

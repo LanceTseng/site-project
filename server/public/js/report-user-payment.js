@@ -229,12 +229,13 @@ async function savePayment(button) {
   try {
     let apiResponse;
 
-    if (paymentId === DEFAULT_PAYMENT_ID) {
+    if (paymentId == DEFAULT_PAYMENT_ID) {
       // Create new payment
       apiResponse = await UserPaymentApi.createRelUserPayment(updatedPayment);
       showSuccess("Payment Created Successfully");
     } else {
       // Update existing payment
+      updatedPayment.id = paymentId;
       apiResponse = await UserPaymentApi.updateRelUserPayment(
         paymentId,
         updatedPayment
