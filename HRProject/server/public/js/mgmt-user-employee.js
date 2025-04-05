@@ -125,6 +125,9 @@ function populateForm(data) {
   ); // API returns status
   $("#detailAddress").val(data.address || "");
   $("#detailPhone").val(data.phone || "");
+
+  $("#detailOnboardDate").val(data.onboard_date || ""); // Optional field
+  $("#detailOffboardDate").val(data.offboard_date || ""); // Optional field
   // Note: Removed the employee-specific 'isActive' field from the form, using only 'detailUserActive'
 
   showForm("edit", username);
@@ -243,7 +246,7 @@ async function handleFormSubmit(event) {
     // User Data
     username: isUpdating ? undefined : $("#detailUsername").val(), // Only send username on create
     role_id: $("#detailRole").val(),
-    is_active: $("#detailUserActive").val() === "true",
+    is_active: $("#detailUserActive").val() == "1", // Convert to boolean
 
     // Employee Data (Send even if creating user, backend should handle creating linked employee)
     employee_id: $("#selectedEmployeeId").val() || null, // Pass existing employee ID if updating
@@ -253,6 +256,8 @@ async function handleFormSubmit(event) {
     status: $("#detailEmploymentStatus").val(),
     address: $("#detailAddress").val(),
     phone: $("#detailPhone").val(),
+    onboard_date: $("#detailOnboardDate").val() || null, // Optional field
+    offboard_date: $("#detailOffboardDate").val() || null, // Optional field
     // Add user_id relation explicitly if backend needs it for employee creation/update
     // user_id: userId // Might be needed if Employee API requires it explicitly
   };
