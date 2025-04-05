@@ -68,6 +68,7 @@ class ParentTaskController {
     }
   }
 
+  //------------------------view
   async getParentTasksViewByCondition(req, res) {
     try {
       const { task_group_id, enabled } = req.query;
