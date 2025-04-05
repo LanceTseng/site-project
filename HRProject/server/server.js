@@ -92,6 +92,8 @@ app.use("/api", relUserTrainingRoutes);
 //upload test
 const fileRoutes = require("./routes/fileRoutes");
 app.use("/api", fileRoutes);
+const excelUploadRoutes = require("./routes/excelUploadRoutes");
+app.use("/api", excelUploadRoutes);
 
 //view
 app.get("/", (req, res) => {
