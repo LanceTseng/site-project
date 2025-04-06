@@ -371,7 +371,7 @@ async function handleNavigation() {
     $(selectors.searchLineId).val(lineId); // Store for potential initial query
 
     const canInitialize =
-      userId === loginUser?.user_id || accessVerify("Training Full Access");
+      userId == loginUser?.user_id || accessVerify("Training Full Access");
 
     if (canInitialize) {
       await initializeUserTrainingForTask(lineId, trainingDeptId, userId);

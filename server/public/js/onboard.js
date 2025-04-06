@@ -208,7 +208,7 @@ async function startOnboardingProcess(userId) {
               child_task_id: child.child_task_id,
               status: 0,
               document_id: child.document_id || null,
-              document_path: document ? document.document_path : "",
+              document_path: "",
               require_upload: document ? document.require_upload : 0,
               equipment_type_id: child.equipment_type_id || null,
               training_module_id: child.training_module_id || null,
