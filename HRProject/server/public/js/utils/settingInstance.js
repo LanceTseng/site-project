@@ -1,0 +1,1 @@
+import * as ObjectTypeApi from "../services/objectTypeServices.js";

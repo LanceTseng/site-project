@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Access Provisioning Management</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <style>
+      /* Sticky header using Bootstrap's dark theme */
+      .table thead.thead-dark th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        /* Background/color handled by thead-dark */
+        vertical-align: middle; /* Align header text and checkbox */
+      }
+
+      /* Container for fixed height scrolling table */
+      .table-container {
+        max-height: 450px; /* Adjust as needed */
+        overflow-y: auto;
+      }
+
+      /* Center content in action/checkbox columns */
+      .table th.text-center,
+      .table td.text-center {
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      /* Simple Checkbox Styling (Keep or switch to BS4 Custom Checkbox) */
+      #selectAll,
+      .select-item {
+        width: 1.1rem; /* Slightly larger */
+        height: 1.1rem;
+        cursor: pointer;
+        accent-color: #007bff; /* Use theme color */
+        vertical-align: middle; /* Align with text/icons */
+      }
+      /* Optional hover */
+      #selectAll:hover,
+      .select-item:hover {
+        opacity: 0.8;
+      }
+
+      /* Align batch action buttons */
+      .batch-actions .btn {
+        margin-bottom: 0.5rem;
+      }
+
+      /* Ensure labels have consistent bottom margin */
+      .form-group label {
+        margin-bottom: 0.3rem;
+        font-weight: 500; /* Slightly bolder labels */
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+
+    <div class="container-fluid mt-4">
+      <h2 class="text-center mb-4">Access Provisioning Management</h2>
+
+      <!-- Search Filters Card -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-filter mr-2"></i>Search Filters</h5>
+        </div>
+        <div class="card-body">
+          <form id="search-form">
+            <div class="form-row align-items-end">
+              <div class="col-md-3 mb-2">
+                <label for="searchAccessName">Access Name</label>
+                <input
+                  type="text"
+                  id="searchAccessName"
+                  class="form-control form-control-sm"
+                  placeholder="Enter name..."
+                />
+              </div>
+              <div class="col-md-3 mb-2">
+                <label for="searchAccessType">Access Type</label>
+                <select
+                  id="searchAccessType"
+                  class="form-control form-control-sm custom-select"
+                >
+                  <option value="" selected>All Types</option>
+                  <!-- Populate via JS -->
+                </select>
+              </div>
+
+              <div class="col-md-3 mb-2">
+                <button
+                  type="submit"
+                  class="btn btn-secondary btn-sm btn-block"
+                  id="searchAccess"
+                >
+                  <i class="fas fa-search"></i> Search
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Main Content Row (Table and Batch Actions) -->
+      <div class="row">
+        <!-- Access Provisioning Table Column -->
+        <div class="col-lg-9 mb-4 mb-lg-0">
+          <div class="card shadow-sm">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h5 class="mb-0">
+                <i class="fas fa-list-check mr-2"></i>Access List
+              </h5>
+              <button
+                type="button"
+                class="btn btn-dark btn-sm"
+                id="addAccess"
+                data-toggle="modal"
+                data-target="#accessModal"
+              >
+                <i class="fas fa-plus mr-1"></i> Create Access
+              </button>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive table-container">
+                <table class="table table-striped table-hover mb-0">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th class="text-center" style="width: 5%">
+                        <input
+                          type="checkbox"
+                          id="selectAll"
+                          title="Select/Deselect All"
+                        />
+                      </th>
+                      <th style="width: 20%">Access Name</th>
+                      <th>Description</th>
+                      <th style="width: 15%">Access Type</th>
+                      <th class="text-center" style="width: 10%">Enabled</th>
+                      <th class="text-center" style="width: 10%">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="accessTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer text-muted" id="tableFooter">
+              Loading access list...
+            </div>
+          </div>
+        </div>
+
+        <!-- Batch Actions Column -->
+        <div class="col-lg-3">
+          <div class="card shadow-sm batch-actions">
+            <div class="card-header">
+              <h5 class="mb-0">
+                <i class="fas fa-bolt mr-2"></i>Batch Actions
+              </h5>
+            </div>
+            <div class="card-body">
+              <p class="text-muted mb-2">
+                Selected items: <strong id="selectedCount">0</strong>
+              </p>
+              <button
+                id="enableSelected"
+                class="btn btn-success btn-sm btn-block"
+                disabled
+              >
+                <i class="fas fa-check-circle mr-1"></i> Enable Selected
+              </button>
+              <button
+                id="disableSelected"
+                class="btn btn-danger btn-sm btn-block"
+                disabled
+              >
+                <i class="fas fa-times-circle mr-1"></i> Disable Selected
+              </button>
+              <!-- Optional: Batch Delete -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Main Content Row -->
+    </div>
+    <!-- End Container -->
+
+    <!-- Add/Edit Modal -->
+    <div
+      class="modal fade"
+      id="accessModal"
+      tabindex="-1"
+      aria-labelledby="accessModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="accessModalLabel">
+              Add Access Provision
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="accessForm">
+              <input type="hidden" id="accessId" />
+
+              <div class="form-group">
+                <label for="editAccessNameInput"
+                  >Access Name <span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editAccessNameInput"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="editAccessDescription">Description</label>
+                <textarea
+                  class="form-control"
+                  id="editAccessDescription"
+                  rows="3"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="editAccessType"
+                  >Access Type <span class="text-danger">*</span></label
+                >
+                <select
+                  class="form-control custom-select"
+                  id="editAccessType"
+                  required
+                >
+                  <option value="" disabled selected>Select Type</option>
+                  <!-- Populate via JS -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="editEnabled">Enabled</label>
+                <select class="form-control custom-select" id="editEnabled">
+                  <option value="true">Yes</option>
+                  <!-- Use boolean strings -->
+                  <option value="false" selected>No</option>
+                  <!-- Default to No? -->
+                </select>
+              </div>
+            </form>
+            <!-- End Form Tag Here -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <!-- Submit button triggers form submission -->
+            <button
+              type="submit"
+              class="btn btn-dark"
+              id="saveAccess"
+              form="accessForm"
+            >
+              Save Access
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('../partials/footer-simple') %>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/mgmt-access-provisioning.js" type="module"></script>
+  </body>
+</html>

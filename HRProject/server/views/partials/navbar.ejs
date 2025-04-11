@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HR Portal</title>
+
+    <!-- Bootstrap 5.3 & Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <style>
+      /* Navbar Styling */
+      .navbar {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #fff;
+      }
+      .nav-link {
+        font-size: 1.1rem;
+        transition: color 0.3s ease-in-out;
+      }
+      .nav-link:hover {
+        color: #f8f9fa !important;
+        text-decoration: underline;
+      }
+      .navbar-toggler {
+        border: none;
+        outline: none;
+      }
+      .navbar-toggler:focus {
+        box-shadow: none;
+      }
+      .btn-login {
+        background: #3cd350;
+        color: #000000 !important;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: 0.3s ease-in-out;
+      }
+      .btn-login:hover {
+        background: #09ff00;
+        color: #000000 !important;
+      }
+
+      .btn-logout {
+        background: #dd3232;
+        color: #ffffff !important;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: 0.3s ease-in-out;
+      }
+      .btn-logout:hover {
+        background: #ff0000;
+        color: #ffffff !important;
+      }
+      /* Ensure content is not hidden behind the navbar */
+      body {
+        padding-top: 72px;
+        background-color: #f8f9fa;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="/">HR Portal</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item" id="nav-username">
+              <p class="nav-link">
+                <strong><span id="login-user">Hello, Guest</span></strong>
+              </p>
+
+              <p></p>
+            </li>
+
+            <li class="nav-item" id="nav-login">
+              <a class="nav-link btn-login" href="/login">
+                <i class="fas fa-user me-2"></i>Login
+              </a>
+            </li>
+            <li class="nav-item" id="nav-logout">
+              <a class="nav-link btn-logout" href="/logout">
+                <i class="fas fa-user me-2"></i>Logout
+              </a>
+            </li>
+            <li class="nav-item" id="nav-dashboard">
+              <a class="nav-link" href="">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+              </a>
+            </li>
+            <li class="nav-item" id="nav-report">
+              <a class="nav-link" href="/report">
+                <i class="fas fa-chart-bar me-2"></i>Reports
+              </a>
+            </li>
+            <li class="nav-item" id="nav-maintenance">
+              <a class="nav-link" href="/maintenance">
+                <i class="fas fa-tools me-2"></i>Management
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Bootstrap 5.3 Script -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/navbar.js" type="module"></script>
+  </body>
+</html>

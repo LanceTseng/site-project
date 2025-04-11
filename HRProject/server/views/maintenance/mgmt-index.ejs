@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maintenance Menu</title>
+
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .col-md-4 {
+        display: flex;
+        justify-content: center;
+      }
+
+      .card {
+        width: 420px; /* Set a fixed width */
+        height: 220px; /* Set a fixed height to make it square */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        text-align: center;
+        border-radius: 12px;
+        border: none;
+        background-color: rgba(0, 255, 221, 0.658);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .card i {
+        font-size: 3rem;
+        color: #092544;
+      }
+
+      .card-title {
+        font-size: 1rem;
+        font-weight: bold;
+      }
+
+      .card-text {
+        font-size: 0.9rem;
+        flex-grow: 1; /* Allows text to expand evenly */
+      }
+
+      .custom-btn {
+        background-color: #092544;
+        border: none;
+        color: white;
+        width: 100%;
+        border-radius: 8px;
+        transition: background 0.3s ease-in-out;
+        margin-top: auto; /* Pushes the button to the bottom */
+      }
+
+      .custom-btn:hover {
+        background-color: #e3e7eb;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container mt-5">
+      <div class="row g-4" id="menu-container"></div>
+    </div>
+
+    <%- include('../partials/footer-simple') %>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/js/maintenance.js" type="module"></script>
+  </body>
+</html>

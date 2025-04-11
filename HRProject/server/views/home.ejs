@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HR Management System</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <!-- <link rel="stylesheet" href="/css/home.css" /> -->
+  </head>
+
+  <body>
+    <div class="hero" id="home">
+      <div class="hero-content">
+        <h1>Welcome to the HR Management System</h1>
+        <p>Streamline your HR processes and empower your employees.</p>
+        <a href="/login" class="btn btn-primary btn-lg">
+          <i class="fas fa-sign-in-alt me-2"></i> Login
+        </a>
+        <a href="#who-we-are" class="btn btn-outline-light btn-lg scroll-link">
+          Learn More
+        </a>
+      </div>
+
+      <!-- Animated Background -->
+      <div class="ocean">
+        <div class="wave"></div>
+        <div class="wave"></div>
+      </div>
+    </div>
+
+    <!-- Who We Are Section -->
+    <section id="who-we-are" class="py-5 bg-light">
+      <div class="container">
+        <h2 class="text-center mb-4">Who We Are</h2>
+        <div class="row">
+          <div class="col-md-6">
+            <img
+              src="/image/logo.jpg"
+              alt="HR Team"
+              class="img-fluid rounded shadow-sm"
+            />
+          </div>
+          <div class="col-md-6">
+            <p class="lead">
+              We are a team of dedicated HR professionals passionate about
+              creating a better workplace for everyone. Our mission is to
+              provide innovative and effective HR solutions that help
+              organizations thrive.
+            </p>
+            <p>
+              Our HR Management System is designed to simplify complex HR tasks,
+              improve employee engagement, and drive organizational success.
+            </p>
+            <p>
+              We believe in putting people first and empowering them to reach
+              their full potential.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        $(".scroll-link").on("click", function (event) {
+          if (this.hash !== "") {
+            event.preventDefault();
+            var hash = this.hash;
+
+            $("html, body").animate(
+              {
+                scrollTop: $(hash).offset().top,
+              },
+              800, // Animation time
+              function () {
+                window.location.hash = hash;
+              }
+            );
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+<style>
+  /* CSS Variables for theming */
+  :root {
+    --primary-color: #3498db; /* Modern Blue */
+    --secondary-color: #ecf0f1; /* Lighter Gray */
+    --text-dark: #2c3e50; /* Darker Blue Gray */
+    --text-light: #ffffff; /* White */
+    --shadow-color: rgba(0, 0, 0, 0.15); /* Increased Shadow */
+    --transition-speed: 0.3s; /* For faster transitions */
+    --wave-color: rgba(255, 255, 255, 0.4); /* More transparent waves */
+  }
+
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Modern Font */
+    background-color: var(--secondary-color);
+    color: var(--text-dark);
+    overflow-x: hidden; /* Hide horizontal scrollbars */
+  }
+
+  .hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(
+      to bottom,
+      #b3e5fc,
+      #81d4fa
+    ); /* Softer Gradient */
+    overflow: hidden;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2; /* Ensure text is above the waves */
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto; /* Center the content horizontally */
+  }
+
+  .hero-content h1 {
+    font-size: 3.75rem; /* Slightly Larger Title */
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1.25rem;
+    text-shadow: 2px 2px 5px var(--shadow-color);
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  .hero-content p {
+    font-size: 1.6rem;
+    color: var(--text-dark);
+    line-height: 1.7;
+    text-shadow: 1px 1px 3px var(--shadow-color);
+    animation: fadeIn 1.5s ease-in-out;
+    margin-bottom: 2rem;
+  }
+
+  .hero-content .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    font-size: 1.2rem;
+    padding: 14px 28px; /* Slightly Larger Button */
+    border-radius: 35px; /* More Rounded Buttons */
+    box-shadow: 0 5px 10px var(--shadow-color);
+    transition: all var(--transition-speed) ease-in-out;
+  }
+
+  .hero-content .btn-primary:hover {
+    background-color: #2471a3; /* Darken on Hover */
+    border-color: #2471a3;
+    transform: translateY(-4px); /* Greater Lift Effect */
+    box-shadow: 0 7px 14px var(--shadow-color);
+  }
+
+  .hero-content .btn-outline-light {
+    color: var(--text-light);
+    border-color: var(--text-light);
+    margin-left: 15px;
+    transition: all var(--transition-speed) ease-in-out;
+  }
+
+  .hero-content .btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px); /* subtle lift */
+    box-shadow: 0 3px 6px var(--shadow-color);
+  }
+
+  /* Keyframe Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Wave Animation Styles */
+  .ocean {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 160px; /* Adjust as needed */
+    background: #3498db; /* Ocean color */
+  }
+
+  .wave {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    bottom: -30%; /* Position the waves */
+    left: 0;
+    background: var(--wave-color);
+    border-radius: 50%;
+    animation: wave 8s linear infinite;
+  }
+
+  /* Second wave with different animation properties */
+  .wave:nth-of-type(2) {
+    bottom: -35%;
+    left: -25%;
+    animation: wave 12s linear infinite;
+  }
+
+  /* Wave Animation Keyframes */
+  @keyframes wave {
+    0% {
+      transform: translate3d(-50%, 0, 0);
+    }
+    100% {
+      transform: translate3d(50%, 0, 0);
+    }
+  }
+
+  /* Who We Are Section */
+  #who-we-are {
+    padding-top: 90px; /* Increased padding */
+    padding-bottom: 90px;
+  }
+
+  #who-we-are h2 {
+    font-size: 3rem;
+    color: var(--text-dark);
+    font-weight: 700; /* Stronger font weight */
+    margin-bottom: 35px;
+    text-shadow: 1px 1px 3px var(--shadow-color); /* subtle text shadow */
+  }
+
+  #who-we-are p {
+    font-size: 1.3rem;
+    line-height: 1.8;
+    color: var(--text-dark);
+    margin-bottom: 20px; /* More spacing between paragraphs */
+  }
+
+  #who-we-are img {
+    border-radius: 20px; /* Softer image corners */
+    box-shadow: 0 7px 20px var(--shadow-color); /* deeper shadow */
+    transition: transform 0.4s ease; /* smooth transition on hover */
+  }
+
+  #who-we-are img:hover {
+    transform: scale(1.03);
+  }
+
+  /* Media Queries */
+  @media (max-width: 768px) {
+    .hero-content h1 {
+      font-size: 2.75rem;
+    }
+
+    .hero-content p {
+      font-size: 1.3rem;
+    }
+
+    .hero-content .btn-primary {
+      font-size: 1.1rem;
+      padding: 11px 22px;
+    }
+
+    .ocean {
+      height: 120px;
+    }
+
+    #who-we-are h2 {
+      font-size: 2.5rem;
+    }
+
+    #who-we-are p {
+      font-size: 1.15rem;
+    }
+  }
+</style>

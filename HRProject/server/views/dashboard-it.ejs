@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HR Management System</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Material Icons -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- FontAwesome Icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <%- include('./partials/navbar') %>
+
+    <!-- Main Content -->
+    <div class="container mt-5">
+      <!-- Welcome Section -->
+      <div class="row mb-4 animate__animated animate__rubberBand">
+        <div class="col-12 text-center">
+          <h4>Welcome to HR Management System</h4>
+          <h4>Hello, <span id="employeeName">John Doe</span></h4>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="row g-3 mb-4 animate__animated animate__backInRight">
+        <div class="col-12 col-md-4">
+          <div class="card border-primary">
+            <div class="card-body text-center">
+              <i class="fa-solid fa-tasks text-primary fa-2x mb-3"></i>
+              <h5>Task List</h5>
+              <a href="/report-user-task" class="btn btn-primary mt-2">
+                <i class="fa-solid fa-arrow-circle-right me-2"></i> Go To Task
+                List
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="card border-warning">
+            <div class="card-body text-center">
+              <i
+                class="fa-solid fa-screwdriver-wrench text-warning fa-2x mb-3"
+              ></i>
+              <h5>Equiptment</h5>
+              <a href="" class="btn btn-warning mt-2">
+                <i class="fa-solid fa-arrow-circle-right me-2"></i> Go To
+                Equipment
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="card border-success">
+            <div class="card-body text-center">
+              <i
+                class="fa-solid fa-universal-access text-success fa-2x mb-3"
+              ></i>
+              <h5>Access Provisioning</h5>
+              <a href="./report" class="btn btn-success mt-2">
+                <i class="fa-solid fa-arrow-circle-right me-2"></i> View Access
+                Provisioning
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics Section -->
+      <div
+        class="row g-3 mb-4 animate__animated animate__backInRight animate__delay-1s"
+      >
+        <div class="col-12 text-center">
+          <h5>Quick Statistics</h5>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card text-center bg-light">
+            <div class="card-body">
+              <h3 id="totalEquipment">25</h3>
+              <p>Total Equipments</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card text-center bg-light">
+            <div class="card-body">
+              <h3 id="occupiedEquipment">10</h3>
+              <p>Occupied Equipments</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card text-center bg-light">
+            <div class="card-body">
+              <h3 id="openTicket">150</h3>
+              <p>Open Tickets</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="card text-center bg-light">
+            <div class="card-body">
+              <h3 id="todayComplete">15</h3>
+              <p>Today Close Ticket</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activities -->
+      <div class="row animate__animated animate__backInRight animate__delay-2s">
+        <div class="col-12">
+          <h5>Recent Activities</h5>
+          <div
+            class="table-responsive"
+            style="max-height: 225px; overflow-y: auto"
+          >
+            <table class="table table-striped">
+              <thead
+                class="thead-dark"
+                style="position: sticky; top: 0; background: white; z-index: 10"
+              >
+                <tr>
+                  <th>Equiptment Name</th>
+                  <th>Status</th>
+                  <th>Occupied By</th>
+                  <th>Update Date</th>
+                </tr>
+              </thead>
+              <tbody id="recentActivities"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('./partials/footer-simple') %>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.2/umd/popper.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="/js/dashboard-it.js" type="module"></script>
+  </body>
+</html>
+<style>
+  /* Import Google Fonts */
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto:wght@300;400;500&display=swap");
+
+  /* General Reset */
+  body {
+    font-family: "Poppins", "Roboto", Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 10;
+    color: #333;
+  }
+
+  /* Container & Layout */
+  .container {
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  /* Typography */
+  h3,
+  h4 {
+    font-weight: bold;
+    color: #333;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  /* Card Styles */
+  .card {
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .card i {
+    font-size: 2rem;
+  }
+
+  /* Quick Actions & Statistics */
+  .card.bg-light {
+    border: none;
+    padding: 15px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Buttons */
+  .btn {
+    width: 100%;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+
+  .btn-danger {
+    background-color: #dc3545;
+    border: none;
+  }
+
+  .btn-danger:hover {
+    background-color: #a71d2a;
+  }
+
+  .btn-success {
+    background-color: #28a745;
+    border: none;
+  }
+
+  .btn-success:hover {
+    background-color: #1c7430;
+  }
+
+  /* Table Styling */
+  .table-responsive {
+    max-height: 225px;
+    overflow-y: auto;
+  }
+
+  .table {
+    margin-bottom: 0;
+  }
+
+  .table thead {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .btn {
+      font-size: 0.9rem;
+      padding: 8px;
+    }
+
+    .card i {
+      font-size: 1.8rem;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+
+    <!-- Bootstrap & FontAwesome -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+  </head>
+  <body>
+    <!-- Wave effect -->
+    <div class="waveWrapper">
+      <div class="wave waveOne"></div>
+      <div class="wave waveTwo"></div>
+      <div class="wave waveThree"></div>
+    </div>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+          <div class="login-container">
+            <!-- Top Image -->
+            <img src="/image/logo.jpg" alt="Login Logo" class="login-image" />
+
+            <h4 class="mb-4 animate__animated animate__bounce animate__faster">
+              Login
+            </h4>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+              <!-- User Name -->
+              <div class="userInputBox">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  required
+                />
+                <label for="username">User Name</label>
+              </div>
+
+              <!-- Password -->
+              <div class="userInputBox">
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    required
+                  />
+                  <label for="password">Password</label>
+                  <div class="input-group-append" onclick="togglePassword()">
+                    <span class="input-group-text">
+                      <i id="togglePasswordIcon" class="fas fa-eye-slash"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Login Button -->
+              <button type="submit" class="btn btn-dark btn-block">
+                Login
+              </button>
+
+              <!-- Forgot Password Link -->
+              <div class="forgot-password">
+                <a href="/">Home</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/authorize.js" type="module"></script>
+  </body>
+</html>
+<style>
+  /* Custom CSS for Login Page */
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: #667eea; /* fallback for no CSS3 */
+    background: linear-gradient(
+      to right,
+      #76aee8,
+      #9ec6f0
+    ); /* Gradient fallback */
+    color: #000; /* Darken text for contrast */
+    overflow: hidden;
+  }
+
+  /* ---- particles.js container ---- */
+
+  #particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: #4682b4;
+    background-image: url("");
+    background-repeat: no-repeat;
+    background-size: 20%;
+    background-position: 50% 50%;
+    z-index: 0; /* Ensure particles are behind the content */
+  }
+
+  /* Gradient Animation Keyframes */
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Wave Container */
+  .waveWrapper {
+    position: absolute;
+    width: 100%;
+    overflow: visible;
+    bottom: 0;
+    left: 0;
+    height: 200px; /* Adjust the height as needed */
+    z-index: 1; /* Waves should be above particles but below content */
+    pointer-events: none; /* Allows clicking through waves */
+  }
+
+  /* Wave Styles */
+  .wave {
+    position: absolute;
+    width: 300%;
+    height: 300%;
+    left: 50%;
+    bottom: -50%;
+    transform: translate(-50%, -50%);
+    background: rgba(
+      255,
+      255,
+      255,
+      0.2
+    ); /* Adjust transparency for visibility */
+    border-radius: 40%;
+    animation: waveAnimation 10s linear infinite;
+    will-change: transform; /* Smoothness hint */
+  }
+
+  /* Wave Variations */
+  .wave.waveOne {
+    animation-duration: 12s;
+  }
+
+  .wave.waveTwo {
+    animation-duration: 8s;
+    background-color: rgba(255, 255, 255, 0.35); /* A slightly different hue */
+  }
+
+  .wave.waveThree {
+    animation-duration: 15s;
+    background-color: rgba(255, 255, 255, 0.25); /* Another hue for depth */
+  }
+
+  /* Wave Animation Keyframes */
+  @keyframes waveAnimation {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  /* Login Container Styles */
+  .login-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .login-image {
+    max-width: 120px;
+    margin-bottom: 15px;
+  }
+
+  .userInputBox {
+    position: relative;
+    margin-bottom: 30px;
+  }
+
+  .userInputBox label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #000000;
+    pointer-events: none;
+    transition: 0.5s;
+  }
+
+  .userInputBox input {
+    width: 100%;
+    background: transparent;
+    outline: none;
+    border: 0;
+    color: #000000;
+    border-bottom: 1px solid #000000;
+    padding: 10px 0;
+    margin-bottom: 30px;
+    font-size: 16px;
+  }
+
+  .userInputBox input:focus ~ label,
+  .userInputBox input:valid ~ label {
+    top: -20px;
+    font-size: 12px;
+    color: #000000;
+  }
+
+  .input-group {
+    position: relative;
+  }
+
+  .form-control {
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+
+  .input-group-append {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .btn-dark {
+    background-color: #343a40; /* Dark gray button */
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background-color 0.3s ease-in-out;
+  }
+
+  .btn-dark:hover {
+    background-color: #23272b; /* Darker gray on hover */
+  }
+
+  .forgot-password {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .forgot-password a {
+    color: #2193b0;
+    text-decoration: none;
+  }
+
+  .forgot-password a:hover {
+    text-decoration: underline;
+  }
+</style>

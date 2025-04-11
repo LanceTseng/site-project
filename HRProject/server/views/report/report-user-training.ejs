@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Training Module</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <!-- Custom CSS -->
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+
+    <div class="container-fluid mt-4">
+      <div class="row">
+        <!-- Filter Section -->
+        <div class="col-lg-3">
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+              <h5 class="mb-0">
+                <i class="fas fa-filter mr-2"></i>Training Filter
+              </h5>
+            </div>
+            <div class="card-body">
+              <!-- Hidden field for navigation -->
+              <input type="hidden" id="searchLineId" />
+
+              <div class="form-group">
+                <label for="searchTrainingName">Training Name</label>
+                <input
+                  type="text"
+                  id="searchTrainingName"
+                  class="form-control form-control-sm"
+                  placeholder="Enter Training Name"
+                />
+              </div>
+              <div class="form-group">
+                <label for="searchUserName">User Name</label>
+                <input
+                  type="text"
+                  id="searchUserName"
+                  class="form-control form-control-sm"
+                  placeholder="Enter User Name"
+                />
+              </div>
+              <div class="form-group">
+                <label for="searchDepartment">Training Department</label>
+                <select
+                  id="searchDepartment"
+                  class="form-control form-control-sm"
+                >
+                  <option value="" selected>-- Select --</option>
+                  <!-- Options populated by JS -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="searchStatus">Training Status</label>
+                <select id="searchStatus" class="form-control form-control-sm">
+                  <option value="" selected>-- Select --</option>
+                  <!-- Options populated by JS -->
+                </select>
+              </div>
+              <button id="processQuery" class="btn btn-secondary btn-block">
+                <i class="fas fa-search mr-1"></i> Process Query
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="col-lg-9">
+          <div class="card shadow-sm">
+            <div class="card-header">
+              <h4 class="mb-0 text-center">
+                <i class="fas fa-tasks mr-2"></i>Training Module Status
+              </h4>
+            </div>
+            <div class="card-body p-0">
+              <!-- Add p-0 to card-body to remove padding around the table -->
+              <div class="table-container">
+                <table class="table table-striped table-hover mb-0">
+                  <!-- remove mb-0 if using card-body padding -->
+                  <thead class="thead-dark">
+                    <!-- Use thead-dark for better contrast -->
+                    <tr>
+                      <th>Trained User</th>
+                      <th>Training Name</th>
+                      <th>Status</th>
+                      <th>Verify Dept.</th>
+                      <th>Verified By</th>
+                      <th>Start Date</th>
+                      <th>End Date</th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="trainingTableBody">
+                    <!-- Data loading placeholder -->
+                    <tr>
+                      <td colspan="8" class="text-center p-5">
+                        <div class="spinner-border text-primary" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading training data...</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Optional: Add Pagination controls here if needed -->
+            <!-- <div class="card-footer"></div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('../partials/footer-simple') %>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/report-user-training.js" type="module"></script>
+  </body>
+</html>
+<style>
+  /* Ensure container-fluid takes full width */
+  .container-fluid {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  /* Card styling consistency */
+  .card {
+    border: none; /* Optional: remove default border */
+    margin-bottom: 1.5rem; /* Consistent spacing */
+  }
+
+  .card-header h5,
+  .card-header h4 {
+    font-weight: 500; /* Medium weight titles */
+  }
+
+  /* Table container with scroll */
+  .table-container {
+    max-height: 77vh; /* Adjust height as needed, using viewport height */
+    overflow-y: auto;
+    border-radius: 0 0 0.25rem 0.25rem; /* Match card bottom corners */
+    border: 1px solid #dee2e6; /* Add a subtle border */
+    border-top: none; /* Remove top border as header is part of table */
+  }
+
+  /* Sticky table header */
+  .table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #343a40; /* Bootstrap dark color - ensure it matches thead-dark */
+    color: white;
+    z-index: 10;
+    box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.1); /* Subtle separator line */
+    font-size: 0.9rem; /* Slightly smaller header font */
+    text-align: left; /* Default align left */
+    vertical-align: middle; /* Center vertically */
+  }
+  .table thead th:last-child,
+  .table tbody td:last-child {
+    text-align: center; /* Center align action column */
+  }
+
+  /* Table body styling */
+  .table tbody td {
+    vertical-align: middle; /* Align cell content vertically */
+    font-size: 0.875rem; /* Slightly smaller body font */
+    word-break: break-word; /* Prevent long text from breaking layout */
+  }
+
+  /* Hover effect */
+  .table-hover tbody tr:hover {
+    background-color: #e9ecef; /* Lighter hover color */
+  }
+
+  /* Action buttons spacing */
+  #trainingTableBody .btn {
+    margin-right: 5px;
+    margin-bottom: 5px; /* Add space for wrapping buttons */
+    padding: 0.25rem 0.5rem; /* Smaller button padding */
+    font-size: 0.75rem; /* Smaller button font */
+  }
+  #trainingTableBody .btn:last-child {
+    margin-right: 0;
+  }
+
+  /* Make form labels slightly smaller */
+  .form-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+  }
+
+  /* Loading indicator styling */
+  #trainingTableBody .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+</style>
