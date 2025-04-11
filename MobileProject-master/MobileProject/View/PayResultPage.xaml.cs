@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-
+using System.Threading;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -12,6 +12,8 @@ namespace MobileProject.View
         {
             InitializeComponent();
 
+
+            Thread.Sleep(3000);
             var existingPages = Application.Current.MainPage.Navigation.NavigationStack.ToList();
             foreach (var page in existingPages)
             {

@@ -17,4 +17,11 @@ public interface IOrdersRepository
     Task<Response> UpdateOrderAsync(Order order);
 
     Task<Response> DeleteOrderAsync(int id);
+
+    //view
+    Task<IEnumerable<OrderView>> GetAllOrdersViewAsync();
+
+    Task<IEnumerable<OrderView>> GetOrderViewByConditionAsync(
+        string? userName, string? transactionCode, string? status,
+        int? userId, DateTime? dateFrom, DateTime? dateTo);
 }

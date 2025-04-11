@@ -262,5 +262,10 @@
             Command="{Binding SelectedAllCommand}"
             Order="Secondary"
             Priority="3" />
+        <ToolbarItem
+            Name="Export Report"
+            Command="{Binding ExportReportCommand}"
+            Order="Secondary"
+            Priority="4" />
     </ContentPage.ToolbarItems>
 </ContentPage>

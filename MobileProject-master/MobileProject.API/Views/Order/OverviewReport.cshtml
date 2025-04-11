@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Report Overview</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mui/material@latest/dist/material.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-quartz.css">
+</head>
+<body>
+<div class="container">
+    <h2 class="mb-4 text-primary text-center">Overview Report</h2>
+    <!-- Filter Conditions -->
+    <div class="card p-3 mb-3">
+        <div class="row">
+            <div class="col-md-3">
+                <label>Date Range:</label>
+                <input type="date" id="startDate" class="form-control">
+                <input type="date" id="endDate" class="form-control mt-2">
+            </div>
+            <div class="col-md-3">
+                <label>User:</label>
+                <input type="text" id="userFilter" class="form-control" placeholder="Enter username">
+            </div>
+            <div class="col-md-3">
+                <label>Role:</label>
+                <select id="roleFilter" class="form-control">
+                    <option value="">All</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button class="btn btn-primary w-100" id="applyFilters">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AG Grid Table -->
+    <div id="reportGrid" class="ag-theme-alpine" style="height: 400px;"></div>
+
+    <!-- Charts -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <canvas id="barChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+</div>
+
+    <!-- CDN Imports -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@31.0.1/dist/ag-grid-community.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- External JavaScript -->
+    <script src="~/js/reportOverview.js"></script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MobileProject.Helpers;
@@ -18,7 +19,9 @@ namespace MobileProject.ViewModel
 
         private ObservableCollection<Order> _orders;
         private ObservableCollection<Cart> _selectedOrderDetails;
+        private ObservableCollection<Cart> _filteredOrderDetails;
         private Order _selectedOrder;
+        private string _searchText;
 
         private DateTime _dateFrom = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
         private DateTime _dateTo = DateTime.Today;
@@ -33,7 +36,17 @@ namespace MobileProject.ViewModel
         public ObservableCollection<Cart> SelectedOrderDetails
         {
             get => _selectedOrderDetails;
-            set => SetProperty(ref _selectedOrderDetails, value);
+            set
+            {
+                SetProperty(ref _selectedOrderDetails, value);
+                FilterProducts();
+            }
+        }
+
+        public ObservableCollection<Cart> FilteredOrderDetails
+        {
+            get => _filteredOrderDetails;
+            set => SetProperty(ref _filteredOrderDetails, value);
         }
 
         public Order SelectedOrder
@@ -43,6 +56,16 @@ namespace MobileProject.ViewModel
             {
                 SetProperty(ref _selectedOrder, value);
                 LoadOrderDetails();
+            }
+        }
+
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                SetProperty(ref _searchText, value);
+                FilterProducts();
             }
         }
 
@@ -65,8 +88,9 @@ namespace MobileProject.ViewModel
         }
 
         public ICommand SearchCommand { get; }
+        public ICommand FilterProductCommand { get; }
 
-        public HistoryPageViewModel( IProductService productService, ICartRecordService cartRecordService, IOrderService orderService)
+        public HistoryPageViewModel(IProductService productService, ICartRecordService cartRecordService, IOrderService orderService)
         {
             _productService = productService;
             _cartRecordService = cartRecordService;
@@ -74,8 +98,10 @@ namespace MobileProject.ViewModel
 
             Orders = new ObservableCollection<Order>();
             SelectedOrderDetails = new ObservableCollection<Cart>();
+            FilteredOrderDetails = new ObservableCollection<Cart>();
 
             SearchCommand = new Command(async () => await OnSearch());
+            FilterProductCommand = new Command(FilterProducts);
 
             _ = LoadData();
         }
@@ -113,7 +139,6 @@ namespace MobileProject.ViewModel
                 dateFrom: DateFrom, dateTo: DateTo);
 
             if (orders != null) Orders = new ObservableCollection<Order>(orders);
-         
         }
 
         private async void LoadOrderDetails()
@@ -132,6 +157,24 @@ namespace MobileProject.ViewModel
                 {
                     SelectedOrderDetails.Add(new Cart(cartRecord, product));
                 }
+            }
+
+            FilterProducts();
+        }
+
+        private void FilterProducts()
+        {
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+                FilteredOrderDetails = new ObservableCollection<Cart>(SelectedOrderDetails);
+            }
+            else
+            {
+                var filtered = SelectedOrderDetails
+                    .Where(c => c.Product.Name.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+
+                FilteredOrderDetails = new ObservableCollection<Cart>(filtered);
             }
         }
     }

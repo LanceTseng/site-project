@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Microcharts;
 using MobileProject.Model;
-using MobileProject.Repository;
 using MobileProject.Service;
 using MobileProject.Service.Interface;
+using MobileProject.Utility;
 using SkiaSharp;
 using Xamarin.Forms;
 
@@ -70,6 +70,7 @@ namespace MobileProject.ViewModel
         }
 
         public ICommand ProcessReportCommand { get; }
+        public ICommand ProcessExportReportCommand { get; }
 
         public OverviewReportPageViewModel(IOverviewReportService overviewReportService)
         {
@@ -77,6 +78,7 @@ namespace MobileProject.ViewModel
 
             Reports = new ObservableCollection<Overview>();
             ProcessReportCommand = new Command(async () => await ProcessReport());
+            ProcessExportReportCommand = new Command(async () => await ProcessExportReport());
 
             _ = LoadData();
         }
@@ -87,7 +89,7 @@ namespace MobileProject.ViewModel
         public BarChart ProductSalesChart
         {
             get => _productSalesChart;
-            set => SetProperty(ref _productSalesChart, value); // Notifies view of changes
+            set => SetProperty(ref _productSalesChart, value);
         }
 
         public PieChart ProductSummaryChart
@@ -133,14 +135,10 @@ namespace MobileProject.ViewModel
                     Reports.Clear();
                     return;
                 }
-
-                // Example filtering (if needed)
                 var filteredReports = allReports.ToList();
 
-                // Update the ObservableCollection efficiently
                 Reports = new ObservableCollection<Overview>(filteredReports);
 
-                // Generate Charts
                 GenerateBarChartProductSales(filteredReports);
                 GeneratePieChartProductSummary(filteredReports);
             }
@@ -148,6 +146,41 @@ namespace MobileProject.ViewModel
             {
                 Debug.WriteLine($"Error processing report: {ex.Message}");
             }
+        }
+
+        private async Task ProcessExportReport()
+        {
+            var allReports = await _overviewReportService.GetOverviewByConditionAsync(
+                userName: Username, role: Role, productName: ProductName, dateFrom: FromDate, dateTo: ToDate);
+
+            if (allReports == null || !allReports.Any())
+            {
+                ProductSalesChart = null;
+                ProductSummaryChart = null;
+                Debug.WriteLine("No reports found.");
+                Reports.Clear();
+                return;
+            }
+
+            // Convert to ExportOverviewReport
+            var filteredReports = allReports.Select(o => new ExportOverviewReport
+            {
+                UserName = o.UserName,
+                TransactionCode = o.TransactionCode,
+                ProductName = o.ProductName,
+                ProductPrice = o.ProductPrice,
+                Quantity = o.Quantity,
+                TotalPrice = o.TotalPrice,
+                OrderDate = o.OrderDate
+            }).ToList();
+
+            // Export to Excel
+            var filePath = await ExportFileHelper.ExportToExcelAsync(filteredReports, "OverviewReport");
+
+            // Show success message if file is exported successfully
+            if (!string.IsNullOrEmpty(filePath))
+                await Application.Current.MainPage.DisplayAlert("Success", $"File saved at:\n{filePath}", "OK");
+
         }
 
         private void GenerateBarChartProductSales(List<Overview> reports)
@@ -164,7 +197,7 @@ namespace MobileProject.ViewModel
                 {
                     Label = g.Key,
                     ValueLabel = g.Sum(r => (float)r.TotalPrice).ToString("C"),
-                    Color = SKColor.Parse("#68B9C0") // Customize color
+                    Color = SKColor.Parse("#68B9C0")
                 })
                 .ToList();
 
@@ -173,8 +206,8 @@ namespace MobileProject.ViewModel
                 Entries = chartEntries,
                 LabelTextSize = 40,
                 BackgroundColor = SKColor.Parse("#FFFFFF"),
-                BarAreaAlpha = 128, // Semi-transparent bars for better visibility
-                MaxValue = chartEntries.Max(e => float.Parse(e.ValueLabel.Replace("$", ""))) + 10 // Avoid bar cutoff
+                BarAreaAlpha = 128,
+                MaxValue = chartEntries.Max(e => float.Parse(e.ValueLabel.Replace("$", ""))) + 10
             };
         }
 

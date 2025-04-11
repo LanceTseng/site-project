@@ -7,6 +7,7 @@ using System.Windows.Input;
 using MobileProject.Model;
 using MobileProject.Service;
 using MobileProject.Service.Interface;
+using MobileProject.Utility;
 using Xamarin.Forms;
 
 namespace MobileProject.ViewModel
@@ -59,6 +60,7 @@ namespace MobileProject.ViewModel
         public ICommand EditCommand { get; }
         public ICommand QueryCommand { get; }
         public ICommand SelectedAllCommand { get; }
+        public ICommand ExportReportCommand { get; }
 
         public UserMgmtViewModel(IUserService userService)
         {
@@ -70,10 +72,11 @@ namespace MobileProject.ViewModel
             EditCommand = new Command<UserMgmt>(OnEdit);
             QueryCommand = new Command(async () => await OnQuery());
             SelectedAllCommand = new Command(OnSelectedAll);
+            ExportReportCommand = new Command(async () => await OnExportReport());
 
             _ = LoadData();
         }
-
+         
         private async Task LoadData()
         {
             var users = await _userService.GetAllUsersAsync();
@@ -163,6 +166,30 @@ namespace MobileProject.ViewModel
             OnPropertyChanged(nameof(TableData));
         }
 
+        private async  Task OnExportReport()
+        {
+            var users = await _userService.GetUsersByConditionAsync(userName: UserName, phone: Phone, email: Email, role: RoleSelected);
+            if (users != null)
+            {
+                TableData = new ObservableCollection<UserMgmt>(users.Select(u => new UserMgmt(u)));
+            }
+
+            var filteredUsers = users.Select((o) => new ExportUserReport()
+            {
+                UserName = o.UserName,
+                CreatedDate = o.CreatedDate,
+                Email = o.Email,
+                Role = o.Role,
+                Phone = o.Phone
+            }).ToList();
+
+            var filePath = await ExportFileHelper.ExportToExcelAsync(filteredUsers, "UserReport");
+
+            // Show success message if file is exported successfully
+            if (!string.IsNullOrEmpty(filePath))
+                await Application.Current.MainPage.DisplayAlert("Success", $"File saved at:\n{filePath}", "OK");
+
+        }
         private void OnSelectedAll()
         {
             foreach (var userMgmt in TableData)

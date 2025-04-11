@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MobileProject.Model
 {
@@ -29,8 +27,17 @@ namespace MobileProject.Model
 
         public Overview()
         {
-            
         }
     }
 
+    public class ExportOverviewReport
+    {
+        public string UserName { get; set; }
+        public string TransactionCode { get; set; }
+        public string ProductName { get; set; }
+        public decimal ProductPrice { get; set; }
+        public decimal Quantity { get; set; }
+        public decimal TotalPrice { get; set; }
+        public DateTime OrderDate { get; set; }
+    }
 }

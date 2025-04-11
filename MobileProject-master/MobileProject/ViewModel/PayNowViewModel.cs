@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using MobileProject.Helpers;
 using MobileProject.Model;
-using MobileProject.Repository;
 using MobileProject.Service.Interface;
 using MobileProject.Service;
 using MobileProject.View;
@@ -184,7 +183,7 @@ namespace MobileProject.ViewModel
             if (string.IsNullOrWhiteSpace(creditCardNumber))
                 return false;
 
-            // Regex pattern for major credit card formats (Visa, MasterCard, etc.)
+           
             var regex = new System.Text.RegularExpressions.Regex(@"^\d{16}$");
             return regex.IsMatch(creditCardNumber);
         }

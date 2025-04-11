@@ -97,7 +97,8 @@ public class CartRecordRepository : ICartRecordRepository
         string? status = null,
         int? userId = null,
         int? productId = null,
-        string? transactionCode = null)
+        string? transactionCode = null
+       )
     {
         using var connection = new SqlConnection(_connectionString);
 
@@ -122,5 +123,46 @@ public class CartRecordRepository : ICartRecordRepository
         parameters.Add("@ProductId", productId ?? (object)DBNull.Value);
 
         return await connection.QueryAsync<CartRecord>(query.ToString(), parameters);
+    }
+
+    public async Task<IEnumerable<CartRecordView>> GetAllCartRecordsViewAsync()
+    {
+        using var connection = new SqlConnection(_connectionString);
+        return await connection.QueryAsync<CartRecordView>("SELECT * FROM CartRecordView");
+    }
+
+    public async Task<IEnumerable<CartRecordView>> GetCartRecordsViewByConditionAsync(
+        string? userName = null,
+        string? productName = null,
+        string? status = null,
+        int? userId = null,
+        int? productId = null,
+        string? transactionCode = null,
+        int? cartId = null)
+    {
+        using var connection = new SqlConnection(_connectionString);
+
+        var query = new StringBuilder(@"
+            SELECT cr.*
+            FROM CartRecordView cr
+            WHERE (@UserName IS NULL OR cr.UserName LIKE '%' + @UserName + '%')
+            AND (@ProductName IS NULL OR cr.ProductName LIKE  '%' + @ProductName + '%')
+            AND (@TransactionCode IS NULL OR cr.TransactionCode LIKE  '%' + @TransactionCode + '%')
+            AND (@Status IS NULL OR cr.Status = @Status)
+            AND (@UserId = 0 OR cr.UserId = @UserId)
+            AND (@ProductId = 0 OR cr.ProductId = @ProductId)
+            AND (@CartId = 0 OR cr.Id = @CartId)");
+
+        var parameters = new DynamicParameters();
+        parameters.Add("@UserName", userName);
+        parameters.Add("@ProductName", productName);
+        parameters.Add("@TransactionCode", transactionCode);
+        parameters.Add("@Status", status);
+        parameters.Add("@UserId", userId ?? (object)DBNull.Value);
+        parameters.Add("@ProductId", productId ?? (object)DBNull.Value);
+        parameters.Add("@CartId", cartId ?? (object)DBNull.Value);
+
+
+        return await connection.QueryAsync<CartRecordView>(query.ToString(), parameters);
     }
 }

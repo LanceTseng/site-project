@@ -22,7 +22,6 @@ namespace MobileProject.Service
             return await _apiService.CallApiAsync<IEnumerable<Product>>($"{BaseUrl}/GetAllProducts", HttpMethod.Get);
         }
 
-        // Get products by condition (e.g., name, price range)
         public async Task<IEnumerable<Product>> GetProductsByConditionAsync(string productName = null, double maxPrice = 9999, decimal minPrice = 0)
         {
             // Construct the query string for GET request

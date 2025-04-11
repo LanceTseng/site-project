@@ -8,7 +8,6 @@ using MobileProject.View;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MobileProject.Model;
-using MobileProject.Repository;
 using MobileProject.Service;
 using MobileProject.Service.Interface;
 using Xamarin.Forms;
@@ -94,7 +93,7 @@ namespace MobileProject.ViewModel
 
         public ICommand SignUpCommand { get; }
 
-        public SignUpPageViewModel( IUserService userService)
+        public SignUpPageViewModel(IUserService userService)
         {
             _userService = userService;
 
@@ -136,6 +135,13 @@ namespace MobileProject.ViewModel
                 return;
             }
 
+            if (await IsExistedEmail(Email))
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", "Email existed.", "OK");
+                return;
+            }
+
+
             if (!IsValidPhone(Phone))
             {
                 await Application.Current.MainPage.DisplayAlert(
@@ -148,10 +154,9 @@ namespace MobileProject.ViewModel
 
             IsBusy = true;
 
-            // Simulate signup delay (e.g., saving to a database)
             await Task.Delay(2000);
-            
-           await _userService.CreateUserAsync(new User()
+
+            await _userService.CreateUserAsync(new User()
             {
                 UserName = Username,
                 Password = Password,
@@ -163,8 +168,6 @@ namespace MobileProject.ViewModel
 
             IsBusy = false;
 
-            // Perform your signup logic here
-            // Example: Save data to SQLite or call an API
             await Application.Current.MainPage.DisplayAlert("Success", "Account created successfully", "OK");
             Application.Current.MainPage = new NavigationPage(new LoginPage());
         }
@@ -184,14 +187,25 @@ namespace MobileProject.ViewModel
             if (SignUpCommand is Command command)
             {
                 command.ChangeCanExecute();
-            }   
+            }
         }
 
         private async Task<bool> IsValidUserName(string userName)
         {
-            var userExisted = await _userService.GetUsersByConditionAsync(userName:userName);
+            var users = await _userService.GetUsersByConditionAsync(userName: userName);
+
+            var userExisted = users.FirstOrDefault(x => x.UserName == userName);
 
             return (userExisted != null);
+        }
+
+        private async Task<bool> IsExistedEmail(string email)
+        {
+            var userEmails = await _userService.GetUsersByConditionAsync(email: email);
+
+            var existedEmail = userEmails.FirstOrDefault(x => x.Email == email);
+
+            return (existedEmail != null);
         }
 
         private bool IsValidPassword(string password)

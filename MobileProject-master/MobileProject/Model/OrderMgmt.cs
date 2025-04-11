@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
-using Xamarin.Forms.Xaml.Diagnostics;
 
 namespace MobileProject.Model
 {
     public class OrderMgmt : BaseModel
     {
-        
         private User _user;
+
         public User User
         {
             get => _user;
@@ -17,11 +15,11 @@ namespace MobileProject.Model
             {
                 _user = value;
                 OnPropertyChanged();
-
             }
         }
 
         private Order _order;
+
         public Order Order
         {
             get => _order;
@@ -38,6 +36,7 @@ namespace MobileProject.Model
         }
 
         private List<CartMgmt> _cartMgmt;
+
         public List<CartMgmt> CartMgmts
         {
             get => _cartMgmt;
@@ -53,7 +52,9 @@ namespace MobileProject.Model
             "new",
             "completed"
         };
+
         private string _status;
+
         public string Status
         {
             get => _status;
@@ -73,12 +74,11 @@ namespace MobileProject.Model
             }
         }
 
-        
-
         public ObservableCollection<KeyValuePair<int, string>> UserOptions { get; }
             = new ObservableCollection<KeyValuePair<int, string>>();
 
         private KeyValuePair<int, string> _selectedUser;
+
         public KeyValuePair<int, string> SelectedUser
         {
             get => _selectedUser;
@@ -87,11 +87,12 @@ namespace MobileProject.Model
                 _selectedUser = value;
                 OnPropertyChanged();
                 // Update the SelectedUserId whenever a new user is selected
-                Order.UserId  = _selectedUser.Key;
+                Order.UserId = _selectedUser.Key;
             }
         }
 
         private bool _isSelected;
+
         public bool IsSelected
         {
             get => _isSelected;
@@ -106,6 +107,7 @@ namespace MobileProject.Model
         }
 
         private bool _isEnabled;
+
         public bool IsEnabled
         {
             get => _isEnabled;
@@ -132,6 +134,7 @@ namespace MobileProject.Model
             IsEnabled = true;
             IsSelected = true;
         }
+
         public OrderMgmt(User user, Order order, List<CartMgmt> carts)
         {
             User = user;
@@ -140,6 +143,5 @@ namespace MobileProject.Model
             IsSelected = false;
             IsEnabled = false;
         }
-
     }
 }

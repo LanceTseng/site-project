@@ -15,4 +15,9 @@ public interface ICartRecordRepository
     Task<Response> UpdateCartRecordAsync(CartRecord cartRecord);
 
     Task<Response> DeleteCartRecordAsync(int id);
+
+    //View
+    Task<IEnumerable<CartRecordView>> GetAllCartRecordsViewAsync();
+    Task<IEnumerable<CartRecordView>> GetCartRecordsViewByConditionAsync(string? userName, string? productName, string? status, int? userId, int? productId, string? transactionCode, int? cartId);
+
 }

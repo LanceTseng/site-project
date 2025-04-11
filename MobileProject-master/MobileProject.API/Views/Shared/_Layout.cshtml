@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>凸 - SC Restaurant</title>
+
+    <!-- Bootstrap & FontAwesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .navbar-nav .nav-link {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 🔹 Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container">
+            <a href="/home" class="navbar-brand fw-bold text-warning">
+                <i class="fas fa-store"></i> 凸 SC DiuLeiLoMo Restaurant 凸
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a href="/home" class="nav-link text-light">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                </ul>
+                 
+                 
+                <div class="user-section d-flex align-items-center">
+                    <span class="nav-link text-light me-3">
+                        <i class="fas fa-user"></i> <span class="text-login-user">Hello, Guest</span>
+                    </span>
+                    <a href="/auth" class="btn btn-outline-primary btn-sm btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="/" type="button" class="btn btn-outline-danger btn-sm btn-logout" >
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 🔹 Page Content -->
+    <div class="container mt-4">
+        @RenderBody()
+    </div>
+
+    <!-- Bootstrap Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/navbar.js"></script>
+</body>
+</html>
