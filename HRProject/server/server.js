@@ -102,7 +102,7 @@ app.get("/", (req, res) => {
 });
 
 db.authenticate()
-  .then(() => console.log("✅ MySQL Connected"))
+  .then(() => console.log("✅ DB Connected"))
   .catch((err) => console.error("❌ DB Connection Failed:", err));
 
 app.use(errorLogger); // Logs incoming requests
