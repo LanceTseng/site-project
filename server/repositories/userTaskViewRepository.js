@@ -131,11 +131,11 @@ class UserTaskViewRepository {
       const replacements = {};
 
       if (taskName) {
-        query += " AND pt_name COLLATE utf8mb4_unicode_ci  LIKE :taskName";
+        query += " AND pt_name  LIKE :taskName";
         replacements.taskName = `%${taskName}%`;
       }
       if (userName) {
-        query += " AND user_name COLLATE utf8mb4_unicode_ci LIKE :userName";
+        query += " AND user_name LIKE :userName";
         replacements.userName = `%${userName}%`;
       }
 
