@@ -126,7 +126,7 @@ async function loadEmployees() {
       .map((emp) => {
         return `
           <tr>
-            <td>${emp.employee_id || ""}</td>
+            <td>${emp.link_user_id || ""}</td>
             <td>${emp.first_name || ""}</td>
             <td>${emp.last_name || ""}</td>
             <td>${emp.department_name || ""}</td>
@@ -221,7 +221,7 @@ async function startOnboardingProcess(userId) {
       );
     }
 
-    const emp = await EmployeeApi.getTaskById(userId);
+    const emp = await EmployeeApi.getTaskByUserId(userId);
     emp.status = ACTIVE_STATUS_ID; // onboarding
     await EmployeeApi.updateTask(emp.employee_id, emp);
 

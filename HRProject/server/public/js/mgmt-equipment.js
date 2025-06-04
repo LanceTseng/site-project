@@ -333,7 +333,7 @@ async function assignEqptConfirm() {
     await EqptOccupiedHisApi.createTask(eqptOccupied);
 
     const eqpt = await EquipmentApi.getTaskById(eqptOccupied.equipment_id);
-    eqpt.occupied = true;
+    eqpt.occupied = 1;
     await EquipmentApi.updateTask(eqpt.equipment_id, eqpt);
 
     if (eqptOccupied.occupied_task_id > 0) {
@@ -366,7 +366,7 @@ async function returnEqptConfirm() {
     await EqptOccupiedHisApi.updateTask(occupiedEqptHisId, occupiedEqpt);
 
     const eqpt = await EquipmentApi.getTaskById(occupiedEqpt.equipment_id);
-    eqpt.occupied = false;
+    eqpt.occupied = 0;
     await EquipmentApi.updateTask(occupiedEqpt.equipment_id, eqpt);
 
     Swal.fire("Success", `Equipment assigned successfully!`, "success");
