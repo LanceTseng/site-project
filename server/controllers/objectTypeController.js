@@ -71,4 +71,4 @@ class BObjectTypeController {
   }
 }
 
-module.exports = new BObjectTypeController();
+module.exports = new BObjectTypeController(); 
