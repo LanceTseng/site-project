@@ -1,0 +1,371 @@
+"pg_get_functiondef"
+"CREATE OR REPLACE FUNCTION public.get_child_task_desc_fn(p_task_id integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    lv_task_desc VARCHAR(255);
+BEGIN
+    SELECT child_task_description
+    INTO lv_task_desc
+    FROM b_child_tasks
+    WHERE child_task_id = p_task_id;
+
+    RETURN lv_task_desc;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_child_task_name_fn(p_task_id integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    lv_task_name VARCHAR(255);
+BEGIN
+    SELECT child_task_name
+    INTO lv_task_name
+    FROM b_child_tasks
+    WHERE child_task_id = p_task_id;
+
+    RETURN lv_task_name;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_document_name_fn(p_doc_id integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    lv_doc_name VARCHAR(255);
+BEGIN
+    SELECT document_name
+    INTO lv_doc_name
+    FROM b_documents
+    WHERE document_id = p_doc_id
+    LIMIT 1;
+
+    RETURN lv_doc_name;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_doument_name_fn(p_doc_id integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    lv_doc_name VARCHAR(255);
+BEGIN
+    SELECT document_name
+    INTO lv_doc_name
+    FROM b_documents
+    WHERE document_id = p_doc_id
+    LIMIT 1;
+
+    RETURN lv_doc_name;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_equipment_code_fn(p_eqpt_id integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    lv_eqpt_code VARCHAR(255);
+BEGIN
+    SELECT equipment_code
+    INTO lv_eqpt_code
+    FROM b_equipments
+    WHERE equipment_id = p_eqpt_id
+    LIMIT 1;
+
+    RETURN lv_eqpt_code;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_equipment_name_fn(p_eid integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    lv_eqpt_name VARCHAR(45);
+BEGIN
+    SELECT e.equipment_name
+    INTO lv_eqpt_name
+    FROM b_equipments e
+    WHERE e.equipment_id = p_eid
+    LIMIT 1;
+
+    RETURN COALESCE(lv_eqpt_name, '');
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_form_name_fn(p_form_id integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    lv_form_name VARCHAR(100);
+BEGIN
+    SELECT f.form_name
+    INTO lv_form_name
+    FROM b_form_design f
+    WHERE f.form_id = p_form_id
+    LIMIT 1;
+
+    RETURN lv_form_name;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_latest_occupied_by_fn(p_eqpt_id integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    ln_occupied_by INT;
+BEGIN
+    SELECT h.occupied_by
+    INTO ln_occupied_by
+    FROM b_eqpt_occupied_his h
+    WHERE h.equipment_id = p_eqpt_id
+      AND h.released_date IS NULL
+    ORDER BY h.occupied_date DESC
+    LIMIT 1;
+
+    RETURN ln_occupied_by;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_object_type_item_value_fn(p_object_type_name character varying, p_object_type_item_key integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    result_value VARCHAR;
+BEGIN
+    SELECT object_type_item_value
+    INTO result_value
+    FROM b_object_type
+    WHERE object_type_name = p_object_type_name
+      AND object_type_item_key = p_object_type_item_key
+    LIMIT 1;
+
+    RETURN result_value;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_parent_task_desc_fn(p_task_id integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    lv_task_desc VARCHAR(255);
+BEGIN
+    SELECT task_description
+    INTO lv_task_desc
+    FROM b_parent_tasks
+    WHERE task_id = p_task_id
+    LIMIT 1;
+
+    RETURN lv_task_desc;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_parent_task_name_fn(p_task_id integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    lv_task_name VARCHAR(255);
+BEGIN
+    SELECT task_name
+    INTO lv_task_name
+    FROM b_parent_tasks
+    WHERE task_id = p_task_id
+    LIMIT 1;
+
+    RETURN lv_task_name;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_processing_rate_fn(p_parent_task_id integer)
+ RETURNS numeric
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    ln_ct_total INT := 0;
+    ln_ct_done INT := 0;
+    ln_ct_rate DECIMAL(10,2) := 0;
+BEGIN
+    -- Get total count of child tasks from v_user_child_task
+    SELECT COUNT(1)
+    INTO ln_ct_total
+    FROM v_user_child_task ct
+    WHERE ct.user_parenttask_id = p_parent_task_id;
+
+    IF ln_ct_total > 0 THEN
+        -- Get count of completed child tasks from v_user_child_task
+        SELECT COUNT(1)
+        INTO ln_ct_done
+        FROM v_user_child_task ct
+        WHERE ct.user_parenttask_id = p_parent_task_id
+          AND ct.ct_status_name = 'completed';
+
+        ln_ct_rate := (ln_ct_done::DECIMAL / ln_ct_total) * 100;
+
+    ELSE
+        -- Fallback to rel_user_parenttask table if no child tasks found
+        SELECT COUNT(1)
+        INTO ln_ct_total
+        FROM rel_user_parenttask ct
+        WHERE ct.id = p_parent_task_id;
+
+        SELECT COUNT(1)
+        INTO ln_ct_done
+        FROM rel_user_parenttask ct
+        WHERE ct.id = p_parent_task_id
+          AND ct.status = 2;
+
+        IF ln_ct_total > 0 THEN
+            ln_ct_rate := (ln_ct_done::DECIMAL / ln_ct_total) * 100;
+        ELSE
+            ln_ct_rate := 0;
+        END IF;
+    END IF;
+
+    RETURN ROUND(ln_ct_rate, 2);
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_task_group_id_fn(p_task_id integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    p_group_id INT := -1;
+BEGIN
+    SELECT COALESCE(task_group_id, -1)
+    INTO p_group_id
+    FROM b_parent_tasks
+    WHERE task_id = p_task_id
+    LIMIT 1;
+
+    RETURN p_group_id;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_task_group_name_fn(p_task_id integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    p_group_name VARCHAR(255);
+BEGIN
+    SELECT get_object_type_item_value_fn('task_group', task_group_id)
+    INTO p_group_name
+    FROM b_parent_tasks
+    WHERE task_id = p_task_id
+    LIMIT 1;
+
+    RETURN p_group_name;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_task_name_by_line_fn(p_line_id integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    lv_task_name VARCHAR(255);
+BEGIN
+    SELECT v.ct_name
+    INTO lv_task_name
+    FROM v_user_task v
+    WHERE v.line_id = p_line_id
+    ORDER BY v.ct_name DESC
+    LIMIT 1;
+
+    RETURN COALESCE(lv_task_name, '');
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_user_name_fn(p_user_id integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    lv_user_name VARCHAR(255);
+BEGIN
+    SELECT username INTO lv_user_name
+    FROM b_users
+    WHERE user_id = p_user_id
+    LIMIT 1;
+
+    RETURN lv_user_name;
+END;
+$function$
+"
+"CREATE OR REPLACE FUNCTION public.get_user_task_user_id_by_id_fn(p_head_id integer)
+ RETURNS character varying
+ LANGUAGE plpgsql
+ STABLE
+AS $function$
+DECLARE
+    ln_user_id VARCHAR(255);
+BEGIN
+    SELECT user_id INTO ln_user_id
+    FROM v_user_parent_task
+    WHERE head_id = p_head_id
+    LIMIT 1;
+
+    RETURN ln_user_id;
+END;
+$function$
+"
+"CREATE OR REPLACE PROCEDURE public.remove_task_by_user(IN p_user integer, IN p_group integer)
+ LANGUAGE plpgsql
+AS $procedure$DECLARE
+    child_count INT := 0;
+    parent_count INT := 0;
+BEGIN
+    -- Delete child tasks
+    DELETE FROM rel_user_childtask c
+    WHERE EXISTS (
+        SELECT 1
+        FROM v_user_task v
+        WHERE v.pt_group_id = p_group
+          AND v.user_id = p_user
+          AND v.line_id = c.id
+    );
+    GET DIAGNOSTICS child_count = ROW_COUNT;
+
+    -- Delete parent tasks
+    DELETE FROM rel_user_parenttask p
+    WHERE EXISTS (
+        SELECT 1
+        FROM v_user_task v
+        WHERE v.pt_group_id = p_group
+          AND v.user_id = p_user
+		  and v.head_id = p.id
+    );
+    GET DIAGNOSTICS parent_count = ROW_COUNT;
+
+    RAISE NOTICE 'Deleted % child rows, % parent rows', child_count, parent_count;
+END;
+$procedure$
+"
