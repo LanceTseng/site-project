@@ -1,5 +1,5 @@
 // utils/axiosInstance.js
-const BASE_URL = "https://hrproject-rosz.onrender.com";
+const BASE_URL = "http://localhost:3000/";
 const axiosInstance = axios.create({
   baseURL: BASE_URL, // Adjust if necessary
   headers: {
