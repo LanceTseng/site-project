@@ -246,7 +246,7 @@ async function handleFormSubmit(event) {
     // User Data
     username: isUpdating ? undefined : $("#detailUsername").val(), // Only send username on create
     role_id: $("#detailRole").val(),
-    is_active: $("#detailUserActive").val() == "1", // Convert to boolean
+    is_active: $("#detailUserActive").val(),  
 
     // Employee Data (Send even if creating user, backend should handle creating linked employee)
     employee_id: $("#selectedEmployeeId").val() || null, // Pass existing employee ID if updating
@@ -305,14 +305,16 @@ async function handleFormSubmit(event) {
 
   try {
     let response;
-    if (isUpdating) {
+     if (isUpdating) {
       await UserApi.updateTask(userId, {
         role_id: formData.role_id,
         is_active: formData.is_active,
       });
+    
       if (formData.employee_id) {
         // Update existing employee
-        await EmployeeApi.updateTask(formData.employee_id, {
+        console.log("Updated existing employee:", formData);
+      response =  await EmployeeApi.updateTask(formData.employee_id, {
           first_name: formData.first_name,
           last_name: formData.last_name,
           department_id: formData.department_id,
@@ -324,6 +326,7 @@ async function handleFormSubmit(event) {
           onboard_date: formData.onboard_date || null, // Optional field
           offboard_date: formData.offboard_date || null, // Optional field
         });
+        
       } else {
         // Create new employee linked to user
         await EmployeeApi.createTask({
