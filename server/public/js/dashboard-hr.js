@@ -2,12 +2,11 @@ import * as EmployeeViewApi from "./services/employeeViewService.js";
 import { accessVerify } from "./utils/authVerify.js";
 
 $(document).ready(async function () {
-
-    //auth check
-    if(!accessVerify("HR Dashboard")){
-      window.location.href = "/unauth";
-      return;
-    }
+  //auth check
+  if (!accessVerify("HR Dashboard")) {
+    window.location.href = "/unauth";
+    return;
+  }
 
   let loginUser = JSON.parse(sessionStorage.getItem("user"));
   $("#employeeName").text(`${loginUser.username} - ${loginUser.user_role}`);
@@ -20,11 +19,23 @@ $(document).ready(async function () {
       return;
     }
 
+    const now = new Date();
+    const thisMonth = now.getMonth();
+    const thisYear = now.getFullYear();
+
     // Count statistics
     const activeOnboarding = data.filter((o) => o.status == 1).length;
     const pendingOffboarding = data.filter((o) => o.status == 2).length;
     const totalEmployees = data.length;
-    const recentHires = data.filter((o) => [0, 1, 3].includes(o.status)).length;
+    const recentHires = data.filter(
+      (o) =>
+        [0, 1, 3].includes(o.status) &&
+        o.onboard_date &&
+        new Date(o.onboard_date).getMonth() == thisMonth &&
+        new Date(o.onboard_date).getFullYear() == thisYear
+    ).length;
+
+    console.log(data);
 
     // Update UI
     $("#activeOnboarding").text(activeOnboarding);
@@ -35,11 +46,9 @@ $(document).ready(async function () {
     // Populate Recent Activities Table
     const tableBody = $("#recentActivities").empty(); // Clear existing rows
 
-    const recentActivities = data
-     
-      .sort((a, b) => {
-        return new Date(b.last_updated_date) - new Date(a.last_updated_date);
-      });
+    const recentActivities = data.sort((a, b) => {
+      return new Date(b.last_updated_date) - new Date(a.last_updated_date);
+    });
 
     if (recentActivities.length > 0) {
       const statusClasses = {
