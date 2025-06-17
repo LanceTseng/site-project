@@ -289,6 +289,7 @@ async function handleEmployeeFormSubmit(event) {
     const onboard_date = $(domElements.onboardDateInput).val();
     const phone = $(domElements.phoneInput).val();
     const address = $(domElements.addressInput).val();
+    const is_active = 1;
 
     const newUser = await UserApi.createTask({
       username,
@@ -304,7 +305,7 @@ async function handleEmployeeFormSubmit(event) {
       phone: phone,
       address: address,
       onboard_date: onboard_date,
-      is_active: true,
+      is_active: is_active,
       link_user_id: newUser.user_id,
     });
 

@@ -34,9 +34,9 @@ const Employee = sequelize.define(
       allowNull: true,
     },
     is_active: {
-      type: DataTypes.BOOLEAN, // Boolean instead of TINYINT
+      type: DataTypes.SMALLINT, // Boolean instead of TINYINT
       allowNull: false,
-      defaultValue: true,
+      defaultValue: 1,
     },
     onboard_date: {
       type: DataTypes.DATE, // Fixed incorrect DataType
