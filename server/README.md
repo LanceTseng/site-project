@@ -36,7 +36,7 @@ This is a comprehensive Human Resources management system designed to streamline
 1.  **Clone the repository:**
     ```bash
     git clone <repository-url>
-    cd NCT-Assignment
+    cd <your-folder>
     ```
 
 2.  **Install server dependencies:**
